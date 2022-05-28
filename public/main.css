@@ -1,0 +1,218 @@
+/* Card Personalizada */
+
+.row-yt{
+    margin-top: 12px;
+    display: block;
+}
+
+.col-md-12-yt{
+    border: 1px solid lightgray;
+    font-size: 1.2rem;
+    padding: 0px;
+    display: flex;
+    padding: 0.3rem 0px;
+    border-radius: 0.3rem;
+}
+
+
+#Input-Buscador > div > div > div > div > fieldset{
+    top: 1px !important;
+}
+
+footer{
+    background-color: white !important;
+    padding: 0.5rem 0.5rem !important;
+    border-top: 1px solid lightgray !important; 
+}
+
+span.v-badge__badge.primary{
+    padding-top: 2px !important;
+    border: 1px solid white !important;
+    top: 1px !important;
+    left: 18px !important;
+    background: #f44336 !important;
+}
+
+#carrito > div{
+    background-color: white !important;
+    border: none !important;
+  }
+.cover-img-yt{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    width: 100%;
+    min-height: 100%;
+    margin: auto;
+    background-color: white;
+}
+
+.img-yt{
+    min-width: 1px;
+    min-height: 1px;
+    height: 100%;
+}
+
+.separador-yt{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    min-width: 0;
+    overflow: visible;
+}
+
+.item1-yt{
+    display: block;
+    -webkit-box-flex: 1;
+    -webkit-flex-grow: 1;
+    flex-grow: 1;
+    min-width: 0;
+    overflow: hidden;
+    padding: 0 8px;
+}
+
+.h4-yt{
+    max-height: 3.75em;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    margin: 0;
+    font-size: 0.8rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    font-weight: 400;
+}
+
+.item2-yt{
+    flex-shrink: 0;
+    color: #909090;
+    display: flex;
+}
+
+.buttom-yt{
+    border: none;
+    background: transparent;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    box-sizing: border-box;
+    outline: none;
+    font: inherit;
+    text-transform: inherit;
+    color: inherit;
+}
+
+.container-img-yt{
+    width: 160px;
+    height: 110px;
+    position: relative;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.icon-yt{
+    display: inline-block;
+    -webkit-flex-shrink: 0;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    stroke: none;
+}
+
+.icon-yt > svg {
+    width: 100%;
+    height: 100%;
+}
+
+.container-price-yt{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    font-weight: 400;
+}
+
+.price-offer{   
+    font-size: 0.8rem;
+    text-decoration-line: line-through;
+    color: gray;
+}
+
+.price-real{
+    color: green;
+    font-size: 1rem;
+    text-align: end;
+    padding-top: 0.5rem;
+}
+
+.off-price{
+    color: red;
+    font-size: 0.7rem;
+}
+
+.container{
+    background-color: white;
+    padding: 0;
+    margin: 0;
+}
+
+.container-pc{
+    padding-top: 0 !important;
+}
+
+/* plus */
+
+.minusplusnumber {
+    border:1px solid silver;
+    border-radius:5px;
+    background-color: #FFF;
+    margin:0 5px 0 5px;
+    display:inline-block;
+    user-select: none;
+  }
+  .minusplusnumber div {
+    display:inline-block;
+  }
+  .minusplusnumber #field_container input {
+    width:18px;
+    text-align:center;
+    font-size:15px;
+    padding:3px;
+    border:none;
+  }
+  .minusplusnumber .mpbtn {
+    padding:3px 10px 3px 10px;
+    cursor:pointer;
+    border-radius:5px;
+  }
+  .minusplusnumber .mpbtn:hover {
+    background-color:#DDD;
+  }
+  .minusplusnumber .mpbtn:active {
+    background-color:#c5c5c5;
+  }
+  .btn-agregar{
+    margin: 1rem 0rem 0rem 0.3rem;
+  }
+  .spacer {
+    width: 100%;
+    padding-bottom: 75%;
+  }
+
+  span.price-before:before {
+    content: '$ ';
+}

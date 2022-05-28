@@ -37,13 +37,13 @@
       <v-col v-if="imgMarca != '' && Enviando == false" cols="4" class="pa-0 ma-0 center aling-center" style="text-align: -webkit-center;">
         <v-img
           max-width="100"
-          :src="'http://localhost:3000/marcavehiculo/' + this.imgMarca"
+          :src="'http://143.198.165.86:3000/marcavehiculo/' + this.imgMarca"
         ></v-img>
       </v-col>
       <v-col v-if="imgModelo != '' && Enviando == false" cols="8" class="pa-0 ma-0 center aling-center" style="text-align: -webkit-center;">
         <v-img
           max-width="100"
-          :src="'http://localhost:3000/vehiculo/'+ this.imgModelo + '.png'"
+          :src="'http://143.198.165.86:3000/vehiculo/'+ this.imgModelo + '.png'"
         ></v-img>
       </v-col>
     </v-row>
@@ -334,7 +334,7 @@ import API from '../../../../api.js';
 
        this.Productos = this.Productos = this.Productos.map(e => {
         if(e.CodigoImportadora == CodigoImportadora){
-          e.CurrentImg = 'http://localhost:3000/repuestos/' + e.CodigoImportadora + '.jpg?version=' + this.imgUpdate;
+          e.CurrentImg = 'http://143.198.165.86:3000/repuestos/' + e.CodigoImportadora + '.jpg?version=' + this.imgUpdate;
         }
         return e;
       })
@@ -387,7 +387,7 @@ import API from '../../../../api.js';
       //Productos
 
       Datos.ProductosList.map(e => {
-        e.CurrentImg = 'http://localhost:3000/repuestos/' + e.CurrentImg + '.jpg';
+        e.CurrentImg = 'http://143.198.165.86:3000/repuestos/' + e.CurrentImg + '.jpg';
       })
 
       this.Productos = Datos.ProductosList;
@@ -420,7 +420,7 @@ import API from '../../../../api.js';
       }else if(Accion == 'eliminar'){
       this.Productos = this.Productos.map(e => {
         if(e.CodigoImportadora == CodigoImportadora){
-          e.CurrentImg = 'http://localhost:3000/repuestos/default.jpg';
+          e.CurrentImg = 'http://143.198.165.86:3000/repuestos/default.jpg';
         }
         return e;
       })

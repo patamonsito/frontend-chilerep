@@ -31,7 +31,7 @@
           </v-row>
           <v-spacer></v-spacer>
         </v-toolbar>
-        <v-img  height="250" :src="'http://localhost:3000/repuestos/' + Repuesto.CurrentImg + '.jpg'"></v-img>
+        <v-img  height="250" :src="'http://143.198.165.86:3000/repuestos/' + Repuesto.CurrentImg + '.jpg'"></v-img>
         <v-row no-gutters>
           <div style="font-size: 14px; font-weight: bold;padding: 0.3rem 1rem; text-align: center;">{{ Repuesto.Descripcion }}</div>
           <div style="font-size: 12px; font-weight: bold;padding: 0rem 1rem; text-align: center;text-decoration: line-through;color: gray;">$ {{ Repuesto.PrecioCliente }}</div>

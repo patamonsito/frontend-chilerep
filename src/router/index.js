@@ -5,6 +5,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    name: 'inicio',
+    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/dashboard/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/dashboard/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/dashboard/main.vue') : console.log('Pantalla no compatible'))
+  },
+  {
     path: '/dev/importar-productos',
     name: 'dev-agregar-repuestos',
     component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/developer/importar-productos/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/developer/importar-productos/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/developer/importar-productos/main.vue') : console.log('Pantalla no compatible'))

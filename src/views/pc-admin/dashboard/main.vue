@@ -3,17 +3,23 @@
 </style>
 <template>
     <div>
-        <h4>Buscar Factura</h4>
-        <div class="subtitle-1 mt-3 mb-3 text--secondary">Aqui podras ver todos los productos disponibles.</div>
+        <h4>Bienvenido al ERP de Chilerepuestos</h4>
+        <div class="subtitle-1 mt-3 mb-3 text--secondary">Este ERP Se encuentra en desarrollo.</div>
         <v-divider></v-divider>
     <!-- <catalogo></catalogo> -->
-    
-    <object data="" type="" style="width:100%; height:calc(100vh - 3rem)"></object>
+
+    <div class="center">
+        <img src="https://fixu.cl/wp-content/uploads/2020/02/mantenimiento-web-1024x630.png" alt="">
+    </div>
+
+
+        
+
     </div>
 </template>
 
 <script>
-import API from '../../../../api.js'
+import API from '../../../api.js';
 // import catalogo from './catalogo.vue';
     export default {
     name: 'buscar-factura',
@@ -47,16 +53,6 @@ import API from '../../../../api.js'
     //Apis
     async created(){
         // this.dato  = await API.function()
-        fetch("http://143.198.165.86:3000/api/certificado/Letter/62744a2e357b3a34c6458d2b", {method:'GET',  headers: {'Content-Type': 'application/json'} })
-            .then( (r) => r.json())
-            .then( d => {
-                
-                let obj = document.querySelector("object");
-                let link = document.querySelector("a");
-                
-                obj.setAttribute("data", "data:application/pdf;base64," + d.data.base64)
-                link.setAttribute("href", "data:application/pdf;base64," + d.data.base64);
-        })
     },
 
     //WindowsOnready

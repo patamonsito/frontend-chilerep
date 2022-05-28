@@ -19,7 +19,7 @@
                 <div class="col-md-12-yt">
                   <div class="container-img-yt">
                     <div class="cover-img-yt">
-                      <img :src="'http://localhost:3000/repuestos/' + Producto.CurrentImg + '.jpg'" class="img-yt" alt="yt-items" />
+                      <img :src="'http://143.198.165.86:3000/repuestos/' + Producto.CurrentImg + '.jpg'" class="img-yt" alt="yt-items" />
                     </div>
                   </div>
                   <div class="separador-yt">
@@ -127,7 +127,7 @@
                 <div class="col-md-12-yt">
                   <div class="container-img-yt">
                     <div class="cover-img-yt">
-                      <img :src="'http://localhost:3000/repuestos/' + Producto.CurrentImg + '.jpg'" class="img-yt" alt="yt-items" />
+                      <img :src="'http://143.198.165.86:3000/repuestos/' + Producto.CurrentImg + '.jpg'" class="img-yt" alt="yt-items" />
                     </div>
                   </div>
                   <div class="separador-yt">

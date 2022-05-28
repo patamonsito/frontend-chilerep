@@ -3,7 +3,7 @@
 </style>
 <template>
     <div>
-        <h4>Catalogo</h4>
+        <h4>Busqueda de Productos por modelo</h4>
         <div class="subtitle-1 mt-3 mb-3 text--secondary">Aqui podras ver todos los productos disponibles.</div>
         <v-divider></v-divider>
     <catalogo></catalogo>

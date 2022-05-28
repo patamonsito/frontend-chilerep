@@ -3,7 +3,7 @@
 </style>
 <template>
     <div>
-        <h4>Lineas de Productos</h4>
+        <h4>Busqueda de Productos por linea</h4>
         <div class="subtitle-1 mt-3 mb-3 text--secondary">Seleccione MarcaVehiculo y Linea para ver los productos disponibles.</div>
         <v-divider></v-divider>
         <lineas

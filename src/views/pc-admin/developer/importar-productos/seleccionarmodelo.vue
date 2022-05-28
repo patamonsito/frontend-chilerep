@@ -37,13 +37,13 @@
       <v-col cols="4" class="pa-0 ma-0 center aling-center" style="text-align: -webkit-center;">
         <v-img
           max-width="100"
-          :src="'http://localhost:3000/marcavehiculo/' + this.imgMarca"
+          :src="'http://143.198.165.86:3000/marcavehiculo/' + this.imgMarca"
         ></v-img>
       </v-col>
       <v-col cols="8" class="pa-0 ma-0 center aling-center" style="text-align: -webkit-center;">
         <v-img
           max-width="100"
-          :src="'http://localhost:3000/vehiculo/'+ this.imgModelo + '.png'"
+          :src="'http://143.198.165.86:3000/vehiculo/'+ this.imgModelo + '.png'"
         ></v-img>
       </v-col>
     </v-row>

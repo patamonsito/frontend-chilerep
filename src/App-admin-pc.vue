@@ -51,7 +51,7 @@
               class="mb-4"
               size="64"
             >
-            <v-img :src="'http://localhost:3000/avatars/' + Usuario.Avatar"></v-img>
+            <v-img :src="'http://143.198.165.86:3000/avatars/' + Usuario.Avatar"></v-img>
             </v-avatar>
     
             <div>Bienvenido<br>
@@ -79,6 +79,7 @@
 <!-- simple  -->
       <v-list-item-group
         color="primary"
+        v-if="Usuario.Rol == 'Director' || Usuario.Rol == 'Administrador' || Usuario.Rol == 'Vendedor'"
       >
         <v-list-item @click="controller('Carrito')">
           <v-list-item-icon>
@@ -101,6 +102,7 @@
         :key="item.title"
         v-model="item.active"
         :prepend-icon="item.action"
+        v-if="item.rol.includes(Usuario.Rol)"
       >
       
         <template v-slot:activator>
@@ -1267,99 +1269,99 @@
         cards: ['Today', 'Yesterday'],
         drawer: null,
         items: [
+                // {
+                //   action: 'mdi-code-json',
+                //   title: 'Developer',
+                //   items: [
+                //     { title: 'Agregar Repuestos' },
+                //     { title: 'Gestionar Imagenes' },
+                //   ],
+                // },
                 {
-                  action: 'mdi-code-json',
-                  title: 'Developer',
-                  items: [
-                    { title: 'Agregar Repuestos' },
-                    { title: 'Gestionar Imagenes' },
-                  ],
-                },
-                {
+                  rol: ["Vendedor", "Director", "Administrador"],
                   action: 'mdi-car-door',
                   title: 'Productos',
                   items: [
-                    { title: 'Buscador' },
+                    // { title: 'Buscador' },
                     { title: 'Modelo' },
                     { title: 'Linea' },
-                    { title: 'Marca' },
+                    // { title: 'Marca' },
                   ],
                 },
+                // {
+                //   action: 'mdi-account-group',
+                //   title: 'Clientes',
+                //   items: [
+                //     { title: 'Gestionar Clientes' },
+                //   ],
+                // },
                 {
-                  action: 'mdi-account-group',
-                  title: 'Clientes',
-                  items: [
-                    { title: 'Gestionar Clientes' },
-                  ],
-                },
-                {
+                  rol: ["Bodeguero", "Finanzas", "Director", "Administrador"],
                   action: 'mdi-folder-account',
                   title: 'Proveedores',
                   items: [
                     { title: 'Gestionar Proovedores' },
                   ],
                 },
+                // {
+                //   action: 'mdi-cash-register',
+                //   title: 'Ventas',
+                //   items: [
+                //     { title: 'Libro Venta' },
+                //     { title: 'Guia Despacho' },
+                //   ],
+                // },
+                // {
+                //   action: 'mdi-rocket-launch',
+                //   title: 'Ecommerce',
+                //   items: [
+                //     { title: 'Ventas Ecommerce' },
+                //     { title: 'Seguimientos' },
+                //   ],
+                // },
                 {
-                  action: 'mdi-cash-register',
-                  title: 'Ventas',
-                  items: [
-                    { title: 'Libro Venta' },
-                    { title: 'Guia Despacho' },
-                  ],
-                },
-                {
-                  action: 'mdi-rocket-launch',
-                  title: 'Ecommerce',
-                  items: [
-                    { title: 'Ventas Ecommerce' },
-                    { title: 'Seguimientos' },
-                  ],
-                },
-                {
+                  rol: ["Bodeguero", "Director", "Administrador"],
                   action: 'mdi-human-dolly',
                   title: 'Bodega',
                   items: [
                     { title: 'Gestionar Bodegas' },
-                    { title: 'Ingresar Mercaderia' },
-                    { title: 'Movimientos' },
-                    { title: 'Buscar Factura' },
-                    { title: 'Gestion de Productos' },
+                    { title: 'Gestionar Mercaderia' },
                   ],
                 },
-                {
-                  action: 'mdi-package',
-                  title: 'Pedidos',
-                  items: [
-                    { title: 'Gestionar Pedidos' },
-                  ],
-                },
-                {
-                  action: 'mdi-poll',
-                  title: 'Estadisticas',
-                  items: [
-                    { title: 'Rentabilidad' },
-                    { title: 'Productos' },
-                    { title: 'Ecommerce' },
-                    { title: 'Bodega' },
-                    { title: 'Vendedores' },
-                  ],
-                },
-                {
-                  action: 'mdi-github',
-                  title: 'Soporte',
-                  items: [
-                    { title: 'Crear Ticket' },
-                    { title: 'Mis Ticket' },
-                  ],
-                },
-                {
-                  action: 'mdi-cog',
-                  title: 'Configuracion',
-                  items: [
-                    { title: 'Mis Datos' },
-                    { title: 'Sucursales' },
-                  ],
-                },
+                // {
+                //   action: 'mdi-package',
+                //   title: 'Pedidos',
+                //   items: [
+                //     { title: 'Gestionar Pedidos' },
+                //   ],
+                // },
+                // {
+                //   action: 'mdi-poll',
+                //   title: 'Estadisticas',
+                //   items: [
+                //     { title: 'Rentabilidad' },
+                //     { title: 'Productos' },
+                //     { title: 'Ecommerce' },
+                //     { title: 'Bodega' },
+                //     { title: 'Vendedores' },
+                //   ],
+                // },
+                // {
+                //   action: 'mdi-github',
+                //   title: 'Soporte',
+                //   items: [
+                //     { title: 'Crear Ticket' },
+                //     { title: 'Mis Ticket' },
+                //   ],
+                // },
+                // {
+                //   action: 'mdi-cog',
+                //   title: 'Configuracion',
+                //   items: [
+                //     { title: 'Mis Datos' },
+                //     { title: 'Sucursales' },
+                //   ],
+                // },
               ],
         UsuarioLogin: "",
         UsuarioLoginRules: [(v) => !!v || "Ingrese su Usuario"],
@@ -1758,7 +1760,7 @@
               this.$router.push({ path: "/productos/lineas" });  
             }else if(text == 'Gestionar Bodegas'){
               this.$router.push({ path: "/bodega/gestionar-bodegas" });
-            }else if(text == 'Ingresar Mercaderia'){
+            }else if(text == 'Gestionar Mercaderia'){
               this.$router.push({ path: "/bodega/ingresar-mercaderia" });
             }else if(text == 'Movimientos'){
               this.$router.push({ path: "/bodega/movimientos" });
@@ -1843,7 +1845,7 @@
 
         if (typeof (Response) === 'object'){
 
-        fetch("http://localhost:3000/api/certificado/Letter/" + Response._id, {method:'GET',  headers: {'Content-Type': 'application/json'} })
+        fetch("http://143.198.165.86:3000/api/certificado/Letter/" + Response._id, {method:'GET',  headers: {'Content-Type': 'application/json'} })
             .then( (r) => r.json())
             .then( d => {
                 

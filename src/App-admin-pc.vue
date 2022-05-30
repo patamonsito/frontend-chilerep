@@ -1020,7 +1020,19 @@
     </v-alert>
           </v-col>
           
-          <object data="" type="" style="width:100%; height:calc(100vh - 3rem)"></object>
+          <object data="" type="" style="width:50%; height:calc(100vh - 3rem)"></object>
+
+
+
+<v-btn
+      class="ma-2"
+      color="grey"
+      dark
+      @click="dialogCarrito = false"
+    >
+      Cerrar
+</v-btn>
+
 
         </v-row>
 

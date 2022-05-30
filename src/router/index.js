@@ -50,21 +50,6 @@ const routes = [
     component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/bodega/ingresar-mercaderia/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/bodega/ingresar-mercaderia/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/bodega/ingresar-mercaderia/main.vue') : console.log('Pantalla no compatible'))
   },
   {
-    path: '/bodega/movimientos',
-    name: 'movimientos',
-    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/bodega/movimientos/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/bodega/movimientos/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/bodega/movimientos/main.vue') : console.log('Pantalla no compatible'))
-  },
-  {
-    path: '/bodega/buscar-factura',
-    name: 'buscar-factura',
-    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/bodega/buscar-factura/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/bodega/buscar-factura/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/bodega/buscar-factura/main.vue') : console.log('Pantalla no compatible'))
-  },
-  {
-    path: '/bodega/gestion-de-productos',
-    name: 'gestion-de-productos',
-    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/bodega/gestion-de-productos/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/bodega/gestion-de-productos/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/bodega/gestion-de-productos/main.vue') : console.log('Pantalla no compatible'))
-  },
-  {
     path: '/ventas/libro-venta',
     name: 'libro-venta',
     component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/ventas/libro-venta/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/ventas/libro-venta/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/ventas/libro-venta/main.vue') : console.log('Pantalla no compatible'))

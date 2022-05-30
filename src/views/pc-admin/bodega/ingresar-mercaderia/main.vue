@@ -83,10 +83,13 @@
 
 
           </td>
-          <td style="width: 11rem;">
+          <td style="width: 11rem;" v-if="Dato.Entrada == true">
               <v-btn color="primary" class="mr-3" @click="EditarUbicacion(Dato)">
                   <v-icon small dark>mdi-archive-edit</v-icon> Editar
               </v-btn>
+          </td>
+          <td v-else>
+
           </td>
         </tr>
       </tbody>
@@ -940,12 +943,15 @@ import API from '../../../../api.js'
                        e.Descripcion = Product[0].Descripcion,
                        e.PrecioImportadora = Product[0].PrecioImportadora
                        this.PrecioController();
-                       this.ProductosRegistrados.push({
-                           CodigoImportadora: null,
-                           Descripcion: null,
-                           Cantidad: 1,
-                           PrecioImportadora: 0,
-                       })
+                       if(this.ProductosRegistrados[this.ProductosRegistrados.length - 1].Descripcion == null || this.ProductosRegistrados[this.ProductosRegistrados.length - 1].Descripcion == ''){
+                         }else{
+                         this.ProductosRegistrados.push({
+                             CodigoImportadora: null,
+                             Descripcion: null,
+                             Cantidad: 1,
+                             PrecioImportadora: 0,
+                         })
+                       }
                    }else{
                        e.CodigoImportadora = null;
                        e.Descripcion = null;
@@ -964,7 +970,22 @@ import API from '../../../../api.js'
         },
 
         async GetDatos(){
-            this.Datos = await API.GET_REGISTROS();
+            let Res = await API.GET_REGISTROS();
+            Res.Salidas = Res.Salidas.map(Dato => {
+              Dato.Folio = Dato.Registro.Folio
+              Dato.razon_social = Dato.Registro.razon_social
+              Dato.Producto = [ { Descripcion: Dato.Descripcion, Ubicacion: [{ Bodega: null, Fila: null, Columna: null, Nivel: null, Filas: [], Columnas: [], Niveles: [] }] } ]
+              return Dato;
+            })
+            console.log(Res.Salidas)
+            this.Datos = [
+              ...Res.Entradas,
+              ...Res.Salidas
+            ]
+          
+          this.Datos.sort((a, b) => a.createdAt > b.createdAt)
+
+
         },
 
         async GetProveedores(){

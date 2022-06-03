@@ -1,0 +1,69 @@
+{
+    id: Boolean, // los _id activa o desactiva.
+    _id: Boolean,  // los _id activa o desactiva.
+    autoIndex: Boolean, // los _id activa o desactiva, La autoIndexopción está configurada truede forma predeterminada. Puede cambiar este valor predeterminado configurandomongoose.set('autoIndex', false);
+    autoCreate: Boolean, // En mongodb se crean automaticamente los documentos si no existe, esto se puede configurar con esta opcion.
+    bufferCommands: Boolean, // De forma predeterminada, mongoose almacena en búfer los comandos cuando la conexión se interrumpe hasta que el controlador logra volver a conectarse. Para deshabilitar el almacenamiento en búfer, establezca bufferCommands en falso.
+    bufferTimeoutMS: 1000, // Campacidad maxima de tiempo de respuesta
+    capped: 1024, // tamaño maximo de la coleccion permitida en bytes
+    collection: 'string', // Define el nombre de la coleccion para que mongo db no coloque uno por defecto
+    discriminatorKey: 'type', // Cuando define un discriminador , Mongoose agrega una ruta a su esquema que almacena de qué discriminador es una instancia un documento. De forma predeterminada, Mongoose agrega una __truta, pero puede configurar discriminatorKeypara sobrescribir este valor predeterminado.
+    read: 'primaryPreferred', // Permite consultar con alias, ejemplo ProductosSasval => ps
+    shardKey: { tag: 1, name: 1 }, // La shardKeyopción se usa cuando tenemos una arquitectura MongoDB fragmentada . Cada colección fragmentada recibe una clave de fragmento que debe estar presente en todas las operaciones de inserción/actualización. Solo necesitamos establecer esta opción de esquema en la misma clave de fragmento y estaremos listos.
+    strict: Boolean, // Habilita o desabilita poder guardar los registros si tenemos algunos en required.
+    optimisticConcurrency: Boolean, // Impide que se actualice el documento si lo cambiaron recientemente.
+    collation: { locale: 'en_US', strength: 1 }, // Establece una intercalación predeterminada para cada consulta y agregación. Aquí hay una descripción general de intercalaciones para principiantes.
+    timeseries: {
+        timeField: 'timestamp',
+        metaField: 'metadata',
+        granularity: 'hours'
+      }, // Se ocupa para hacer collections temporales que se eliminan despues de cierto tiempo
+    skipVersioning: { dontVersionMe: true }  // Evita el control de versiones por defecto
+    timestamps: { createdAt: 'created_at', updatedAt: 'update_at' } // crea fecha de creacion y actualizacion en la collection
+      timestamps: { currentTime: () => Math.floor(Date.now() / 1000) } // Configuracion de hora
+    selectPopulatedPaths: false, // Para optar por no seleccionar campos completados de forma predeterminada, establezca selectPopulatedPaths en falsesu esquema.
+    storeSubdocValidationError: false, // Para errores heredados diga el error en el schema padre
+
+}
+
+
+//Funciones:
+//path: predetermina como se llamara el "name" junto al dato de guardado
+const schema = new Schema({ name: String });
+schema.path('name').get(function (v) {
+  return v + ' is my name';
+});
+
+//Una variable puede tener 2 validaciones de tipo de dato
+const schema = new Schema({ loc: { type: String, coordinates: [Number] } });
+
+//validaciones personalizadas
+const schema = new Schema({ name: String });
+schema.set('validateBeforeSave', false);
+schema.path('name').validate(function (value) {
+    return value != null;
+});
+
+
+//Crear campo global en los schemas, tambien es posible agregarlo solo a algunos ver documentacion.
+// Add a `meta` property to all schemas
+mongoose.plugin(function myPlugin(schema) {
+    schema.add({ meta: {} });
+  });
+
+// Clases ES6
+class MyClass {
+    myMethod() { return 42; }
+    static myStatic() { return 42; }
+    get myVirtual() { return 42; }
+  }
+  
+  const schema = new mongoose.Schema();
+  schema.loadClass(MyClass);
+  
+  console.log(schema.methods); // { myMethod: [Function: myMethod] }
+  console.log(schema.statics); // { myStatic: [Function: myStatic] }
+  console.log(schema.virtuals); // { myVirtual: VirtualType { ... } }
+
+
+

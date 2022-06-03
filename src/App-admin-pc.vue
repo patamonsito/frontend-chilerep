@@ -195,61 +195,14 @@
             >
               Seleccione Tipo de Documento.
             </v-alert>
-            <v-radio-group
-              v-model="TipoDocumento"
-              :rules="TipoDocumentoRules"
-              row
-              @change="radius()"
-          >
-            <v-col cols="2">
-              <v-radio
-                label="Boleta"
-                color="primary"
-                value="Boleta"
-                required
-              ></v-radio>
-            </v-col>
-            <v-col cols="2">
-              <v-radio
-                label="Factura"
-                color="warning"
-                value="Factura"
-                required
-              ></v-radio>
-            </v-col>
-            <v-col cols="2">
-              <v-radio
-                label="Guia Despacho"
-                color="indigo"
-                value="Guia Despacho"
-                required
-              ></v-radio>
-            </v-col>
-            <v-col cols="2">
-              <v-radio
-                label="Abono"
-                color="red"
-                value="Abono"
-                required
-              ></v-radio>
-            </v-col>
-            <v-col cols="2">
-              <v-radio
-                label="Cotización"
-                color="green"
-                value="Cotización"
-                required
-              ></v-radio>
-            </v-col>
-            <v-col cols="2">
-              <v-radio
-                label="Orden de Compra"
-                color="primary"
-                value="Orden de Compra"
-                required
-              ></v-radio>
-            </v-col>
-            </v-radio-group>
+                <v-select
+                  v-model="TipoDocumento"
+                  :items="['Boleta', 'Factura', 'Abono']"
+                  label="Seleccione un tipo de Documento"
+                  prepend-icon="mdi-cash"
+                  persistent-hint
+                  single-line
+                  dense></v-select>
           </v-col>
 
 
@@ -318,7 +271,7 @@
           </div>
 
           <!-- Cliente Natural -->
-          <div v-if="TipoDocumento == 'Factura' || TipoDocumento == 'Boleta' || TipoDocumento == 'Abono' || TipoDocumento == 'Orden de Compra'">
+          <div v-if="TipoDocumento == 'Boleta' || TipoDocumento == 'Abono' || TipoDocumento == 'Orden de Compra'">
             <v-alert
               shaped
               dense
@@ -1182,6 +1135,7 @@
         //Datos Documentos
         EntregaSeleccionada: "",
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10), // Fecha de Transferencia
+        Empresa: {},
         RutEmpresa: '',
         TipoDocumento: '',
         RazonSocialEmpresa: "",
@@ -1315,14 +1269,15 @@
                     { title: 'Gestionar Proovedores' },
                   ],
                 },
-                // {
-                //   action: 'mdi-cash-register',
-                //   title: 'Ventas',
-                //   items: [
-                //     { title: 'Libro Venta' },
-                //     { title: 'Guia Despacho' },
-                //   ],
-                // },
+                {
+                  rol: ["Vendedor", "Finanzas", "Director", "Administrador"],
+                  action: 'mdi-cash-register',
+                  title: 'Ventas',
+                  items: [
+                    { title: 'Libro Venta' },
+                    // { title: 'Guia Despacho' },
+                  ],
+                },
                 // {
                 //   action: 'mdi-rocket-launch',
                 //   title: 'Ecommerce',
@@ -1534,6 +1489,8 @@
       if (ValidarRut != "Invalido") {
         this.RazonSocialEmpresa = ValidarRut.razon_social;
         this.rutEmpresaInvalido = false;
+        this.CorreoEmpresa = ValidarRut?.email ? ValidarRut?.email : ValidarRut?.config_email_intercambio_user ? ValidarRut?.config_email_intercambio_user :'sin@correo.com';
+        this.Empresa = ValidarRut;
         this.Loader = false;
       } else {
         this.RazonSocialEmpresa = "";
@@ -1820,44 +1777,50 @@
         this.CarritoLoader = true;
 
         var Documento = {
-                    EntregaSeleccionada: this.EntregaSeleccionada,
-                    FechaEntrega: this.date,
-                    RutEmpresa: this.RutEmpresa,
-                    TipoDocumento: this.TipoDocumento,
-                    RazonSocialEmpresa: this.RazonSocialEmpresa,
-                    CajaSeleccionada: this.CajaSeleccionada,
-                    CuentaBancariaSeleccionada: this.CuentaBancariaSeleccionada,
-                    Monto: this.Monto,
-                    Titular: this.Titular,
-                    CorreoEmpresa: this.CorreoEmpresa,
-                    OrdenCompra: this.OrdenCompra,
-                    InformacionPago: this.InformacionPago,
-                    Observaciones: this.Observaciones,
-                    Rut: this.Rut,
-                    Nombres: this.Nombres,
-                    Apellidos: this.Apellidos,
-                    Telefono: this.Telefono,
-                    RegionSeleccionada: this.RegionSeleccionada,
-                    ComunaSeleccionada: this.ComunaSeleccionada,
-                    Calle: this.Calle,
-                    Numero: this.Numero,
-                    Departamento: this.Departamento,
-                    CorreoCliente: this.CorreoCliente,
-                    AgenciaSeleccionada: this.AgenciaSeleccionada,
-                    MetodoPagoSeleccionado: this.MetodoPagoSeleccionado,
-                    Usuario: this.Usuario.Nombre + ' ' + this.Usuario.Apellido,
-                    Neto: Math.round((this.PrecioTotal / 1.19)),
-                    Iva: this.PrecioTotal - Math.round((this.PrecioTotal / 1.19)),
-                    PrecioTotal: this.PrecioTotal,
-                    Carrito: this.Carrito
-                  }
+          //Empresa
+          ComunaEmpresa: this.Empresa?.comuna_glosa || '',
+          GiroEmpresa: this.Empresa?.giro || '',
+          DireccionEmpresa: this.Empresa?.direccion ||'',
+          EntregaSeleccionada: this.EntregaSeleccionada,
+          FechaEntrega: this.date,
+          RutEmpresa: this.RutEmpresa,
+          TipoDocumento: this.TipoDocumento,
+          RazonSocialEmpresa: this.RazonSocialEmpresa,
+          CajaSeleccionada: this.CajaSeleccionada,
+          CuentaBancariaSeleccionada: this.CuentaBancariaSeleccionada,
+          Monto: this.Monto,
+          Titular: this.Titular,
+          CorreoEmpresa: this.CorreoEmpresa,
+          OrdenCompra: this.OrdenCompra,
+          InformacionPago: this.InformacionPago,
+          Observaciones: this.Observaciones,
+          Rut: this.Rut,
+          Nombres: this.Nombres,
+          Apellidos: this.Apellidos,
+          Telefono: this.Telefono,
+          RegionSeleccionada: this.RegionSeleccionada,
+          ComunaSeleccionada: this.ComunaSeleccionada,
+          Calle: this.Calle,
+          Numero: this.Numero,
+          Departamento: this.Departamento,
+          CorreoCliente: this.CorreoCliente,
+          AgenciaSeleccionada: this.AgenciaSeleccionada,
+          MetodoPagoSeleccionado: this.MetodoPagoSeleccionado,
+          Usuario: this.Usuario.Nombre + ' ' + this.Usuario.Apellido,
+          Neto: Math.round((this.PrecioTotal / 1.19)),
+          Iva: this.PrecioTotal - Math.round((this.PrecioTotal / 1.19)),
+          PrecioTotal: this.PrecioTotal,
+          Carrito: this.Carrito
+        }
 
 
         let Response = await API.POST_EMITIR_DOCUMENTO(Documento)
 
         if (typeof (Response) === 'object'){
 
-        fetch("http://143.198.165.86:3000/api/certificado/Letter/" + Response._id, {method:'GET',  headers: {'Content-Type': 'application/json'} })
+        console.log(Response)
+
+        fetch("http://localhost:3000/api/certificado/Letter/" + Response._id + "/" + Response.TipoDocumento, {method:'GET',  headers: {'Content-Type': 'application/json'} })
             .then( (r) => r.json())
             .then( d => {
                 

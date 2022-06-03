@@ -2,11 +2,11 @@
 1) Boton de cerrar al generar el documento
     [x] Editar app-pc-admin
 2) Disminuir Stock
-    [ ] Ir a la funcion modificar registro y stock
+    [x] Ir a la funcion modificar registro y stock
 3) Facturar
-    [ ] Controller Factura
+    [x] Controller Factura
 2) Abonos
-    [ ] Controller Abono
+    [x] Controller Abono
 4) Libro venta para registro
     [ ] Frontend del Modulo Ventas
     [ ] API SII

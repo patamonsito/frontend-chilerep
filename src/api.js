@@ -237,6 +237,12 @@ export default class API {
         return res.data;
     }
 
+    //Libro Compra
+    static async GET_DOCUMENTOS(){
+        const res = await axios.get(url+ '/obtener-documentos');
+        return res.data;
+    }
+
     //PROVEEDORES
 
     static async GET_PROVEEDORES(){

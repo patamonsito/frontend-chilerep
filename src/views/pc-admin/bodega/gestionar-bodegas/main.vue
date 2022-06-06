@@ -59,7 +59,7 @@
           v-for="Bodega in Bodegas"
           :key="Bodega._id"
         >
-          <td>{{ Bodega.Sucursales.Nombre }}</td>
+          <td>{{ Bodega.Sucursal }}</td>
           <td>{{ Bodega.Bodega }}</td>
           <td>{{ Bodega.FilaDesde }} - {{ Bodega.FilaHasta }}</td>
           <td>{{ Bodega.ColumnaDesde }} - {{ Bodega.ColumnaHasta }}</td>

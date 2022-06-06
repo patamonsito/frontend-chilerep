@@ -416,9 +416,8 @@
                 </v-col>
               </v-row>
           </div>
-
           <!-- Efectivo -->
-          <div v-if="MetodoPagoSeleccionado == 'Efectivo'">
+          <div v-if="MetodoPagoSeleccionado == 'Efectivo' || MetodoPagoSeleccionado == 'Transferencia y Efectivo' || MetodoPagoSeleccionado == 'Transbank y Efectivo'">
             <v-alert
               shaped
               dense
@@ -445,7 +444,7 @@
                   <v-text-field
                   label="Monto en Efectivo"
                   :rules="MontoRules"
-                  v-model="Monto"
+                  v-model="MontoCaja"
                   prepend-icon="mdi-cash-100"
                   placeholder="Ingrese Monto en Efectivo"
                   >
@@ -453,9 +452,8 @@
                </v-col>
               </v-row>
           </div>
-
           <!-- Transferencia -->
-          <div v-if="MetodoPagoSeleccionado == 'Transferencia'">
+          <div v-if="MetodoPagoSeleccionado == 'Transferencia' || MetodoPagoSeleccionado == 'Transferencia y Efectivo' ||  MetodoPagoSeleccionado == 'Transbank y Transferencia'">
             <v-alert
               shaped
               dense
@@ -528,7 +526,7 @@
                     <v-text-field
                     label="Monto Transferido"
                     :rules="MontoRules"
-                    v-model="Monto"
+                    v-model="MontoTransferido"
                     prepend-icon="mdi-cash-100"
                     placeholder="Monto Transferido"
                     >
@@ -555,6 +553,31 @@
                     v-model="OrdenCompra"
                     prepend-icon="mdi-cash-100"
                     placeholder="Ingrese Numero de Orden"
+                    >
+                    </v-text-field>
+                </v-col>
+            </v-row>
+          </div>
+
+
+          <!-- Transbank -->
+          <div v-if="MetodoPagoSeleccionado == 'Transbank y Efectivo' || MetodoPagoSeleccionado == 'Transbank y Transferencia'">
+            <v-alert
+              shaped
+              dense
+              dark
+              color="grey"
+            >
+              Información de Pago con {{ MetodoPagoSeleccionado }}
+            </v-alert>
+            <v-row>
+                <v-col cols="12">
+                    <v-text-field
+                    label="Orden de Compra"
+                    :rules="OrdenCompraRules"
+                    v-model="MontoTransbank"
+                    prepend-icon="mdi-card-bulleted"
+                    placeholder="Monto en Transbank"
                     >
                     </v-text-field>
                 </v-col>
@@ -953,7 +976,7 @@
       :disabled="loading"
       color="primary"
       @click="GenerarDocumento()"
-      v-if="TipoDocumento != ''"
+      v-if="TipoDocumento != null"
     >
       Generar {{ TipoDocumento }}
 </v-btn>
@@ -973,7 +996,7 @@
     </v-alert>
           </v-col>
           
-          <object data="" type="" style="width:50%; height:calc(100vh - 3rem)"></object>
+          <object data='' type='' style="width:50%; height:calc(100vh - 3rem)"></object>
 
 
 
@@ -1048,7 +1071,7 @@
             outlined
             type="error"
             class="aling-left"
-            v-if="alert != ''" style="text-align: left;"
+            v-if="alert != null" style="text-align: left;"
           >
           <strong>{{ alert }}</strong>
           </v-alert>
@@ -1133,32 +1156,35 @@
         SnackbarAlert: 'Recuerda mantener el distanciamiento social y uso de mascarilla obligatorio.',
         SnackbarColor: 'color: #389da3',
         //Datos Documentos
-        EntregaSeleccionada: "",
+        EntregaSeleccionada: null,
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10), // Fecha de Transferencia
         Empresa: {},
-        RutEmpresa: '',
-        TipoDocumento: '',
-        RazonSocialEmpresa: "",
-        CajaSeleccionada: "",
-        CuentaBancariaSeleccionada: "",
-        Monto: "",
-        Titular: "",
-        CorreoEmpresa: "",
-        OrdenCompra: "",
-        InformacionPago: "",
+        RutEmpresa: null,
+        TipoDocumento: null,
+        RazonSocialEmpresa: null,
+        CajaSeleccionada: null,
+        CuentaBancariaSeleccionada: null,
+        Monto: null,
+        MontoTransferido: null,
+        MontoCaja: null,
+        MontoTransbank: null,
+        Titular: null,
+        CorreoEmpresa: null,
+        OrdenCompra: null,
+        InformacionPago: null,
         Observaciones: "Sin Observaciones.",
-        Rut: "",
-        Nombres: "",
-        Apellidos: "",
+        Rut: null,
+        Nombres: null,
+        Apellidos: null,
         Telefono: "+56",
-        RegionSeleccionada: "",
-        ComunaSeleccionada: "",
-        Calle: "",
-        Numero: "",
-        Departamento: "",
-        Correo: "",
-        AgenciaSeleccionada: "",
-        MetodoPago: "",
+        RegionSeleccionada: null,
+        ComunaSeleccionada: null,
+        Calle: null,
+        Numero: null,
+        Departamento: null,
+        Correo: null,
+        AgenciaSeleccionada: null,
+        MetodoPago: null,
         //Fecha de transferencias
         menu: false,
         modal: false,
@@ -1168,7 +1194,7 @@
         loading: false,
         CarritoLoader: false,
         dialogCarrito: false,
-        CodigoCarrito: '',
+        CodigoCarrito: null,
         Login: false,
         TipoDocumentoRules: [(v) => !!v || "Tipo de Documento es Requerido"],
         //forumario
@@ -1188,18 +1214,18 @@
         Loader: false,
         loaderCliente: false,
         //Factura datos
-        RutEmpresa: "",
-        MetodoPagoSeleccionado: "",
+        RutEmpresa: null,
+        MetodoPagoSeleccionado: null,
         RutEmpresaRules: [
           (v) => !!v || "Ingrese un rut valido",
           (v) => (v && v.length > 7) || "Rut Invalido",
         ],
         MetodoPagoRules:  [(v) => !!v || "Seleccione un Metodo de Pago"],
-        MetodoPagos: ["Transferencia", "Efectivo", "Transbank", "Webpay", "Personalizado"],
+        MetodoPagos: ["Transferencia", "Efectivo", "Transbank", "Webpay", "Transferencia y Efectivo", "Transbank y Efectivo", "Transbank y Transferencia", "Personalizado"],
         CuentasBancarias: ["Santander", "Banco Estado"],
         CuentaBancariaRules: [(v) => !!v || "Seleccione una Cuenta Bancaria"],
         RazonSocialEmpresaRules: [(v) => !!v || "Ingrese una razon social"],
-        Cajas: ["Av. Ejercito Libertador 62"],
+        Cajas: ["Caja Ejercito 62"],
         CajaRules: [(v) => !!v || "Seleccione una caja"],
         MontoRules: [(v) => !!v || "Ingrese un Monto"],
         TitularRules:  [(v) => !!v || "Ingrese el titular de la transferencia"],
@@ -1224,14 +1250,14 @@
         DepartamentoRules: [],
         CorreoRules: [(v) => !!v || "Ingrese su Correo",
          v => /.+@.+\..+/.test(v) || 'Correo Invalido',],
-        CorreoCliente: "",
+        CorreoCliente: null,
         CorreoClienteRules: [(v) => !!v || "Ingrese su Correo",
          v => /.+@.+\..+/.test(v) || 'Correo Invalido',],
         AgenciaRules: [(v) => !!v || "Seleccione agencia de su preferencia"],
         //Metodo de pago
         MetodoPagoRules: [(v) => !!v || "Seleccione metodo de pago"],
         //Otros
-        alert: '',
+        alert: null,
         cards: ['Today', 'Yesterday'],
         drawer: null,
         items: [
@@ -1330,12 +1356,12 @@
                 //   ],
                 // },
               ],
-        UsuarioLogin: "",
+        UsuarioLogin: null,
         UsuarioLoginRules: [(v) => !!v || "Ingrese su Usuario"],
-        Correo: "",
+        Correo: null,
         CorreoRules: [(v) => !!v || "Ingrese su Correo",
          v => /.+@.+\..+/.test(v) || 'Correo Invalido',],
-        Contraseña: "",
+        Contraseña: null,
         ContraseñaRules: [(v) => !!v || "Ingrese su Contraseña"],
         //Default datas
         Overlay: true,
@@ -1359,8 +1385,8 @@
           useGrouping: true,
           separator: '.',
           decimal: ',',
-          prefix: '',
-          suffix: ''
+          prefix: null,
+          suffix: null
         }
       }),
       
@@ -1421,7 +1447,7 @@
 
             this.spinnerCantidad = false;
             
-            this.RepuestoSeleccionado = '';
+            this.RepuestoSeleccionado = null;
             
             console.log('Se agrego al carrito.')
             return 'Se agrego al carrito.'
@@ -1438,7 +1464,7 @@
 
             await this.getCarrito()
 
-            this.RepuestoSeleccionado = '';
+            this.RepuestoSeleccionado = null;
                
             this.spinnerCantidad = false;
             this.CarritoLoader = false;
@@ -1469,83 +1495,6 @@
           },
 
 
-    async Format() {
-      if (
-        this.RutEmpresa == "" ||
-        this.RutEmpresa == null ||
-        this.RutEmpresa == undefined
-      ) {
-        return true;
-      }
-      this.RutEmpresa = this.formatRUT(this.RutEmpresa);
-
-      this.Loader = true;
-
-      //Verificar rut empresa
-      var ValidarRut = await API.POST_RUTEMPRESA(
-        this.RutEmpresa.replaceAll(".", "")
-      );
-
-      if (ValidarRut != "Invalido") {
-        this.RazonSocialEmpresa = ValidarRut.razon_social;
-        this.rutEmpresaInvalido = false;
-        this.CorreoEmpresa = ValidarRut?.email ? ValidarRut?.email : ValidarRut?.config_email_intercambio_user ? ValidarRut?.config_email_intercambio_user :'sin@correo.com';
-        this.Empresa = ValidarRut;
-        this.Loader = false;
-      } else {
-        this.RazonSocialEmpresa = "";
-        this.RutEmpresa = "";
-        this.CorreoEmpresa = "";
-        this.rutEmpresaInvalido = true;
-        this.Loader = false;
-        return true;
-      }
-    },
-
-    
-    async FormatearRut(){
-        this.Rut = this.formatRUT(this.Rut);
-        let validar = this.validarRUN(this.Rut)
-
-        if(validar == false){
-            this.rutClienteInvalido = true;
-            this.Rut = '';
-        }else if(this.TipoDocumento == 'Cotización' ){
-            this.loaderCliente = true;
-            this.rutClienteInvalido = false;
-        }else{
-            this.loaderCliente = true;
-            this.rutClienteInvalido = false;
-            var res = await API.GET_CLIENT(this.Rut)
-            console.log(res)
-            if(res.data){
-            this.Nombres = res.data.nombres
-            this.Apellidos = res.data.apellidoPrimario + ' ' + res.data.apellidoSecundario
-            this.loaderCliente = false;
-            return true;
-            }
-            if(res == 'ERROR'){
-              this.Rut = ''
-              this.rutClienteInvalido = true
-              this.loaderCliente = false;
-              return true;
-            }
-
-            this.Nombres = res.Nombres
-            this.Apellidos = res.Apellidos
-            this.CorreoCliente = res.Correo
-            this.Telefono = res.Telefono
-            this.loaderCliente = false;
-            this.Titular = res.Nombres + ' ' + res.Apellidos
-            this.RegionSeleccionada = res.RegionSeleccionada
-            this.ComunaSeleccionada = res.ComunaSeleccionada
-            this.Calle = res.Calle
-            this.Numero = res.Numero
-            this.Departamento = res.Departamento
-            this.CorreoCliente = res.Correo
-            this.AgenciaSeleccionada = res.AgenciaSeleccionada
-        }
-    },
 
     formatRUT(rut) {
       var actual = rut.replace(/^0+/, "");
@@ -1572,9 +1521,89 @@
       return rutPuntos;
     },
 
+
+    async Format() {
+      if (
+        this.RutEmpresa == "" ||
+        this.RutEmpresa == null ||
+        this.RutEmpresa == undefined
+      ) {
+        return true;
+      }
+      this.RutEmpresa = this.formatRUT(this.RutEmpresa);
+
+      this.Loader = true;
+
+      //Verificar rut empresa
+      var ValidarRut = await API.POST_RUTEMPRESA(
+        this.RutEmpresa.replaceAll(".", '')
+      );
+
+      if (ValidarRut != "Invalido") {
+        this.RazonSocialEmpresa = ValidarRut.razon_social;
+        this.rutEmpresaInvalido = false;
+        this.CorreoEmpresa = ValidarRut?.email ? ValidarRut?.email : ValidarRut?.config_email_intercambio_user ? ValidarRut?.config_email_intercambio_user :'sin@correo.com';
+        this.Empresa = ValidarRut;
+        this.Loader = false;
+      } else {
+        this.RazonSocialEmpresa = null;
+        this.RutEmpresa = null;
+        this.CorreoEmpresa = null;
+        this.rutEmpresaInvalido = true;
+        this.Loader = false;
+        return true;
+      }
+    },
+
+    
+    async FormatearRut(){
+        this.Rut = this.formatRUT(this.Rut);
+        let validar = this.validarRUN(this.Rut)
+
+        if(validar == false){
+            this.rutClienteInvalido = true;
+            this.Rut = null;
+        }else if(this.TipoDocumento == 'Cotización' ){
+            this.loaderCliente = true;
+            this.rutClienteInvalido = false;
+        }else{
+            this.loaderCliente = true;
+            this.rutClienteInvalido = false;
+            var res = await API.GET_CLIENT(this.Rut)
+            console.log(res)
+            if(res.data){
+            this.Nombres = res.data.nombres
+            this.Apellidos = res.data.apellidoPrimario + ' ' + res.data.apellidoSecundario
+            this.loaderCliente = false;
+            return true;
+            }
+            if(res == 'ERROR'){
+              this.Rut = null
+              this.rutClienteInvalido = true
+              this.loaderCliente = false;
+              return true;
+            }
+
+            this.Nombres = res.Nombres
+            this.Apellidos = res.Apellidos
+            this.CorreoCliente = res.Correo
+            this.Telefono = res.Telefono
+            this.loaderCliente = false;
+            this.Titular = res.Nombres + ' ' + res.Apellidos
+            this.RegionSeleccionada = res.RegionSeleccionada
+            this.ComunaSeleccionada = res.ComunaSeleccionada
+            this.Calle = res.Calle
+            this.Numero = res.Numero
+            this.Departamento = res.Departamento
+            this.CorreoCliente = res.Correo
+            this.AgenciaSeleccionada = res.AgenciaSeleccionada
+        }
+    },
+
+
     validarRUN(rut) {
       if (rut) {
-        let rutCompleto = rut.replace("‐", "-").replace(/\./g, "");
+        let rutCompleto = rut.replace("‐", "-").replace(/\./g, '');
         if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test(rutCompleto)) {
           return false;
         }
@@ -1680,25 +1709,25 @@
         },
 
           async radius() {
-            this.EntregaSeleccionada = "";
-            this.RutEmpresa = "";
-            this.RazonSocialEmpresa = "";
+            this.EntregaSeleccionada = null;
+            this.RutEmpresa = null;
+            this.RazonSocialEmpresa = null;
             this.Monto = this.PrecioTotal;
-            this.Titular = "";
-            this.CorreoEmpresa = "";
-            this.OrdenCompra = "";
-            this.InformacionPago = "";
-            this.Rut = "";
-            this.Nombres = "";
-            this.Apellidos = "";
-            this.Telefono = "";
-            this.RegionSeleccionada = "";
-            this.ComunaSeleccionada = "";
-            this.Departamento = "";
-            this.CorreoCliente = "";
-            this.CuentaBancariaSeleccionada = "";
-            this.CajaSeleccionada = "";
-            this.MetodoPagoSeleccionado = "";
+            this.Titular = null;
+            this.CorreoEmpresa = null;
+            this.OrdenCompra = null;
+            this.InformacionPago = null;
+            this.Rut = null;
+            this.Nombres = null;
+            this.Apellidos = null;
+            this.Telefono = null;
+            this.RegionSeleccionada = null;
+            this.ComunaSeleccionada = null;
+            this.Departamento = null;
+            this.CorreoCliente = null;
+            this.CuentaBancariaSeleccionada = null;
+            this.CajaSeleccionada = null;
+            this.MetodoPagoSeleccionado = null;
             this.$refs.formCarrito.resetValidation()
 
           },
@@ -1708,10 +1737,10 @@
             if(text == 'Salir'){
                 await API.DELETE_SESSION();
                 this.Usuario = [];
-                this.UsuarioLogin = '';
-                this.Correo = '';
-                this.Contraseña = '';
-                this.alert = '';
+                this.UsuarioLogin = null;
+                this.Correo = null;
+                this.Contraseña = null;
+                this.alert = null;
                 this.Login = false;
             }else if(text == 'Inicio'){
               this.$router.push({ path: "/" });
@@ -1778,9 +1807,9 @@
 
         var Documento = {
           //Empresa
-          ComunaEmpresa: this.Empresa?.comuna_glosa || '',
-          GiroEmpresa: this.Empresa?.giro || '',
-          DireccionEmpresa: this.Empresa?.direccion ||'',
+          ComunaEmpresa: this.Empresa?.comuna_glosa || null,
+          GiroEmpresa: this.Empresa?.giro || null,
+          DireccionEmpresa: this.Empresa?.direccion ||null,
           EntregaSeleccionada: this.EntregaSeleccionada,
           FechaEntrega: this.date,
           RutEmpresa: this.RutEmpresa,
@@ -1810,7 +1839,10 @@
           Neto: Math.round((this.PrecioTotal / 1.19)),
           Iva: this.PrecioTotal - Math.round((this.PrecioTotal / 1.19)),
           PrecioTotal: this.PrecioTotal,
-          Carrito: this.Carrito
+          Carrito: this.Carrito,
+          MontoTransferido: this.MontoTransferido,
+          MontoCaja: this.MontoCaja,
+          MontoTransbank: this.MontoTransbank
         }
 
 

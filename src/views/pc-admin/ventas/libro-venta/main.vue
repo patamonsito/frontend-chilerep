@@ -55,7 +55,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>FACTURA ELECTRÓNICA</td>
+                                    <td>FACTURA</td>
                                     <td>{{ Facturas.length }}</td>
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalFacturas / 1.19))}}</div></td>
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalFacturas - (TotalFacturas / 1.19)))}}</div></td>
@@ -63,7 +63,7 @@
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalFacturasOff))}}</div></td>
                                 </tr>
                                 <tr>
-                                    <td>BOLETA ELECTRÓNICA</td>
+                                    <td>BOLETA</td>
                                     <td>{{ Boletas.length }}</td>
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalBoletas / 1.19))}}</div></td>
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalBoletas - (TotalBoletas / 1.19)))}}</div></td>
@@ -71,7 +71,7 @@
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalBoletasOff))}}</div></td>
                                 </tr>
                                 <tr>
-                                    <td>NOTA DE CREDITO ELECTRÓNICA</td>
+                                    <td>NOTA DE CREDITO</td>
                                     <td>{{ NotaCredito.length }}</td>
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalNotaCredito / 1.19))}}</div></td>
                                     <td><div align="left">$ {{FormatearPrecio(Math.round(TotalNotaCredito - (TotalNotaCredito / 1.19)))}}</div></td>
@@ -169,6 +169,190 @@
         </v-row>
         
 
+    <!-- Lista de ventas  -->
+        <v-row>
+            <v-col cols="12">
+            <v-card>                                           
+                <v-tabs
+                  v-model="tabDos"
+                  background-color="blue-grey darken-4"
+                  centered
+                  dark
+                  icons-and-text
+                >
+                  <v-tabs-slider></v-tabs-slider>
+                  <v-tab href="#tabdos-1">
+                    Documentos
+                    <v-icon>mdi-cash</v-icon>
+                  </v-tab>
+
+                  <v-tab href="#tabdos-2">
+                    Boletas
+                    <v-icon>mdi-account-cash</v-icon>
+                  </v-tab>
+
+                  <v-tab href="#tabdos-3">
+                    Facturas
+                    <v-icon>mdi-sitemap-outline</v-icon>
+                  </v-tab>
+                  <v-tab href="#tabdos-4">
+                    Guias Despacho
+                    <v-icon>mdi-sitemap-outline</v-icon>
+                  </v-tab>
+                  <v-tab href="#tabdos-5">
+                    Nota Credito
+                    <v-icon>mdi-sitemap-outline</v-icon>
+                  </v-tab>
+                  <v-tab href="#tabdos-6">
+                    Abonos
+                    <v-icon>mdi-sitemap-outline</v-icon>
+                  </v-tab>
+                </v-tabs>
+
+                <v-tabs-items v-model="tabDos">
+                  <v-tab-item
+                    v-for="e in 6"
+                    :key="e"
+                    :value="'tabdos-' + e"
+                  >
+                    <v-card flat>
+                      <v-card-text v-if="e == 1">
+                          <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Documento</td>
+                                    <td>Razon Social</td>
+                                    <td>Total</td>
+                                    <td>Vendedor</td>
+                                    <td>MetodoPago</td>
+                                    <td>Entrega</td>
+                                    <td>Estado</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Documento, e in Documentos" :key="e">
+                                    <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                    <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                    <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                    <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                    <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                    <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                    <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                    <td>{{ Documento.estado }}</td>
+                                    <td>
+                                        <v-menu offset-y>
+                                          <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                          class="ma-1"
+                                          outlined
+                                          fab
+                                          small
+                                          color="grey"
+                                          v-bind="attrs"
+                                          v-on="on"
+                                        >
+                                          <v-icon>mdi-dots-horizontal</v-icon>
+                                        </v-btn>
+                                          </template>
+                                          <v-list>
+                                            <v-list-item link>
+                                              <v-list-item-title @click="VerDetalles(Documento.receptor, Documento.dte, Documento.folio)">Ver Detalles</v-list-item-title>
+                                            </v-list-item>
+                                            <v-list-item link>
+                                              <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                            </v-list-item>
+                                            <v-list-item link>
+                                              <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                            </v-list-item>
+                                          </v-list>
+                                        </v-menu>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
+                      </v-card-text>
+                      <v-card-text v-if="e == 2">
+                          <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Documento</td>
+                                    <td>Razon Social</td>
+                                    <td>Total</td>
+                                    <td>Vendedor</td>
+                                    <td>MetodoPago</td>
+                                    <td>Entrega</td>
+                                    <td>Estado</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Documento, e in Documentos" :key="e">
+                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                        <td>{{ Documento.estado }}</td>
+                                        <td>
+                                            <v-menu offset-y>
+                                              <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                              class="ma-1"
+                                              outlined
+                                              fab
+                                              small
+                                              color="grey"
+                                              v-bind="attrs"
+                                              v-on="on"
+                                            >
+                                              <v-icon>mdi-dots-horizontal</v-icon>
+                                            </v-btn>
+                                              </template>
+                                              <v-list>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="VerDetalles(Documento.receptor, Documento.dte, Documento.folio)">Ver Detalles</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                                </v-list-item>
+                                              </v-list>
+                                            </v-menu>
+                                        </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
+                      </v-card-text>
+                      <v-card-text v-if="e == 3">
+                          <p>3</p>
+                      </v-card-text>
+                      <v-card-text v-if="e == 4">
+                          <p>4</p>
+                      </v-card-text>
+                      <v-card-text v-if="e == 5">
+                          <p>5</p>
+                      </v-card-text>
+                      <v-card-text v-if="e == 6">
+                          <p>6</p>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
+                </v-tabs-items>
+            </v-card>
+            </v-col>
+        </v-row>
+
     </div>
 </template>
 
@@ -181,7 +365,9 @@ import API from '../../../../api.js'
     //Variables
     data: () => ({
         tab: 1,
+        tabDos: 1,
         //DTE S.I.I.
+        Documentos: [],
         Boletas: [],
         Facturas: [],
         NotaCredito: [],
@@ -196,6 +382,7 @@ import API from '../../../../api.js'
         //Vendedores
         Vendedores: [],
         //Offline
+        DocumentosOff: [],
         BoletasOff: [],
         FacturasOff: [],
         NotaCreditoOff: [],
@@ -231,6 +418,22 @@ import API from '../../../../api.js'
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
+
+        //Opciones de los DTE
+        // VerDetalles(Receptor, Dte, Folio){
+
+        // },
+        
+        RealizarNotaCredito(Receptor, Dte, Folio){
+        
+        },
+        
+        Imprimir(Receptor, Dte, Folio, Formato){
+        
+        },
+
+
+        //Formato de Numeros
         FormatearPrecio (number) {
             const exp = /(\d)(?=(\d{3})+(?!\d))/g;
             const rep = '$1.';
@@ -245,6 +448,7 @@ import API from '../../../../api.js'
     async created(){
         let Res  = await API.GET_DOCUMENTOS();
         let data = Res.data;
+
 
         //SEPARAR DOCUMENTOS API DTE
         for (var i = 0; i < data.length; i++) {
@@ -327,7 +531,7 @@ import API from '../../../../api.js'
         });
 
      // Unir Documentos
-        let Documents = [
+        let DocumentosOff = [
         ...this.BoletasOff,
         ...this.FacturasOff,
         ...this.GuiaDespachoOff,
@@ -335,20 +539,22 @@ import API from '../../../../api.js'
         ...this.Abonos
         ]
 
+        this.DocumentosOff = DocumentosOff;
+
         //ASIGNAR TOTALES A VENDEDORES SEGUN DOCUMENTO
         this.Vendedores.map(e => {
-            for(let i = 0; i < Documents.length; i++){
-                if(e.Usuario == Documents[i].Usuario){
-                    if(Documents[i].TipoDocumento == 'Boleta'){
-                        e.TotalBoletas = e.TotalBoletas + Documents[i].PrecioTotal;
-                    }else if(Documents[i].TipoDocumento == 'Factura'){
-                        e.TotalFacturas = e.TotalFacturas + Documents[i].PrecioTotal;
-                    }else if(Documents[i].TipoDocumento == 'Nota Credito'){
-                        e.TotalNotaCredito = e.TotalNotaCredito + Documents[i].PrecioTotal;
-                    }else if(Documents[i].TipoDocumento == 'Guia Despacho'){
-                        e.TotalGuiaDespacho = e.TotalGuiaDespacho + Documents[i].PrecioTotal;
-                    }else if(Documents[i].TipoDocumento == 'Abono'){
-                        e.TotalAbonos = e.TotalAbonos + Documents[i].PrecioTotal;
+            for(let i = 0; i < DocumentosOff.length; i++){
+                if(e.Usuario == DocumentosOff[i].Usuario){
+                    if(DocumentosOff[i].TipoDocumento == 'Boleta'){
+                        e.TotalBoletas = e.TotalBoletas + DocumentosOff[i].PrecioTotal;
+                    }else if(DocumentosOff[i].TipoDocumento == 'Factura'){
+                        e.TotalFacturas = e.TotalFacturas + DocumentosOff[i].PrecioTotal;
+                    }else if(DocumentosOff[i].TipoDocumento == 'Nota Credito'){
+                        e.TotalNotaCredito = e.TotalNotaCredito + DocumentosOff[i].PrecioTotal;
+                    }else if(DocumentosOff[i].TipoDocumento == 'Guia Despacho'){
+                        e.TotalGuiaDespacho = e.TotalGuiaDespacho + DocumentosOff[i].PrecioTotal;
+                    }else if(DocumentosOff[i].TipoDocumento == 'Abono'){
+                        e.TotalAbonos = e.TotalAbonos + DocumentosOff[i].PrecioTotal;
                     }
                     e.TotalDte = e.TotalDte + 1;
                 }
@@ -364,49 +570,181 @@ import API from '../../../../api.js'
 
 
         this.MetodosPago.map(e => {
-            for(let i = 0; i < Documents.length; i++){ 
+            for(let i = 0; i < DocumentosOff.length; i++){ 
 
-                if(Documents[i].MetodoPagoSeleccionado == "Transferencia y Efectivo"){
+                if(DocumentosOff[i].MetodoPagoSeleccionado == "Transferencia y Efectivo"){
 
-                    if(e.MetodoPago == Documents[i].CuentaBancariaSeleccionada){
-                        e.Monto = e.Monto + Documents[i].MontoTransferido
+                    if(e.MetodoPago == DocumentosOff[i].CuentaBancariaSeleccionada){
+                        e.Monto = e.Monto + DocumentosOff[i].MontoTransferido
                     }
 
-                    if(e.MetodoPago == Documents[i].CajaSeleccionada){
-                        e.Monto = e.Monto + Documents[i].MontoCaja
+                    if(e.MetodoPago == DocumentosOff[i].CajaSeleccionada){
+                        e.Monto = e.Monto + DocumentosOff[i].MontoCaja
                     }
 
-                }else if(Documents[i].MetodoPagoSeleccionado == "Transbank y Efectivo"){
+                }else if(DocumentosOff[i].MetodoPagoSeleccionado == "Transbank y Efectivo"){
 
                     if(e.MetodoPago == "Transbank"){
-                        e.Monto = e.Monto + Documents[i].MontoTransbank
+                        e.Monto = e.Monto + DocumentosOff[i].MontoTransbank
                     }
 
-                    if(e.MetodoPago == Documents[i].CajaSeleccionada){
-                        e.Monto = e.Monto + Documents[i].MontoCaja
+                    if(e.MetodoPago == DocumentosOff[i].CajaSeleccionada){
+                        e.Monto = e.Monto + DocumentosOff[i].MontoCaja
                     }
 
-                }else if(Documents[i].MetodoPagoSeleccionado == "Transbank y Transferencia"){
+                }else if(DocumentosOff[i].MetodoPagoSeleccionado == "Transbank y Transferencia"){
 
                     if(e.MetodoPago == "Transbank"){
-                        e.Monto = e.Monto + Documents[i].MontoTransbank
+                        e.Monto = e.Monto + DocumentosOff[i].MontoTransbank
                     }
 
-                    if(e.MetodoPago == Documents[i].CuentaBancariaSeleccionada){
-                        e.Monto = e.Monto + Documents[i].MontoTransferido
+                    if(e.MetodoPago == DocumentosOff[i].CuentaBancariaSeleccionada){
+                        e.Monto = e.Monto + DocumentosOff[i].MontoTransferido
                     }
 
-                }else if(e.MetodoPago == Documents[i].CajaSeleccionada || e.MetodoPago == Documents[i].CuentaBancariaSeleccionada || e.MetodoPago == Documents[i].MetodoPagoSeleccionado){
-                      e.Monto = e.Monto + Documents[i].PrecioTotal;
+                }else if(e.MetodoPago == DocumentosOff[i].CajaSeleccionada || e.MetodoPago == DocumentosOff[i].CuentaBancariaSeleccionada || e.MetodoPago == DocumentosOff[i].MetodoPagoSeleccionado){
+                      e.Monto = e.Monto + DocumentosOff[i].PrecioTotal;
                 }
 
             }
         })
 
 
-        console.log(this.MetodosPago)
 
 
+        let AllDocument = Res.data.map( e => {
+        
+            for(var i = 0; i < DocumentosOff.length; i++){ 
+                if(e.receptor == DocumentosOff[i].Receptor && e.dte == DocumentosOff[i].Dte && e.folio == DocumentosOff[i].Folio){
+                    console.log('Ejecuto')
+                    e.GiroEmpresa = DocumentosOff[i]?.GiroEmpresa || '';
+                    e.DireccionEmpresa = DocumentosOff[i]?.DireccionEmpresa || '';
+                    e.ComunaEmpresa = DocumentosOff[i]?.ComunaEmpresa || '';
+                    e.EntregaSeleccionada = DocumentosOff[i]?.EntregaSeleccionada || '';
+                    e.FechaEntrega = DocumentosOff[i]?.FechaEntrega || '';
+                    e.RutEmpresa = DocumentosOff[i]?.RutEmpresa || '';
+                    e.TipoDocumento = DocumentosOff[i]?.TipoDocumento || '';
+                    e.RazonSocialEmpresa = DocumentosOff[i]?.RazonSocialEmpresa || '';
+                    e.CajaSeleccionada = DocumentosOff[i]?.CajaSeleccionada || '';
+                    e.CuentaBancariaSeleccionada = DocumentosOff[i]?.CuentaBancariaSeleccionada || '';
+                    e.MontoTransferido = DocumentosOff[i]?.MontoTransferido || '';
+                    e.MontoCaja = DocumentosOff[i]?.MontoCaja || '';
+                    e.MontoTransbank = DocumentosOff[i]?.MontoTransbank || '';
+                    e.Titular = DocumentosOff[i]?.Titular || '';
+                    e.CorreoEmpresa = DocumentosOff[i]?.CorreoEmpresa || '';
+                    e.OrdenCompra = DocumentosOff[i]?.OrdenCompra || '';
+                    e.InformacionPago = DocumentosOff[i]?.InformacionPago || '';
+                    e.Observaciones = DocumentosOff[i]?.Observaciones || '';
+                    e.Rut = DocumentosOff[i]?.Rut || '';
+                    e.Nombres = DocumentosOff[i]?.Nombres || '';
+                    e.Apellidos = DocumentosOff[i]?.Apellidos || '';
+                    e.Telefono = DocumentosOff[i]?.Telefono || '';
+                    e.RegionSeleccionada = DocumentosOff[i]?.RegionSeleccionada || '';
+                    e.ComunaSeleccionada = DocumentosOff[i]?.ComunaSeleccionada || '';
+                    e.Calle = DocumentosOff[i]?.Calle || '';
+                    e.Numero = DocumentosOff[i]?.Numero || '';
+                    e.Departamento = DocumentosOff[i]?.Departamento || '';
+                    e.CorreoCliente = DocumentosOff[i]?.CorreoCliente || '';
+                    e.AgenciaSeleccionada = DocumentosOff[i]?.AgenciaSeleccionada || '';
+                    e.MetodoPagoSeleccionado = DocumentosOff[i]?.MetodoPagoSeleccionado || '';
+                    e.Usuario = DocumentosOff[i]?.Usuario || '';
+                    e.Neto = DocumentosOff[i]?.Neto || '';
+                    e.Iva = DocumentosOff[i]?.Iva || '';
+                    e.PrecioTotal = DocumentosOff[i]?.PrecioTotal || '';
+                    e.Carrito = DocumentosOff[i]?.Carrito || '';
+                    e.Detalles = DocumentosOff[i]?.Detalles || '';
+                    e.Receptor = DocumentosOff[i]?.Receptor || '';
+                    e.Dte = DocumentosOff[i]?.Dte || '';
+                    e.Codigo = DocumentosOff[i]?.Codigo || '';
+                    e.Temporal = DocumentosOff[i]?.Temporal || '';
+                }
+            }   
+                
+            if(e?.Usuario){
+                e.Offline = false;
+                return e;
+            }else{
+                e.Offline = true;
+                return e;
+            }
+
+
+        })
+
+
+        let FormatAbonos = Res.DocAbonos.map(e => {
+            e.tipo = 'Abono';
+            e.estado = e.Estado || 'Disponible';
+            e.folio = e.Folio ? e.Folio : '0';
+            e.razon_social = e.Nombres + ' ' + e.Apellidos;
+            e.receptor = e.Rut.replaceAll('.', '');
+            e.total = e.PrecioTotal;
+            e.fecha = e.createdAt.split('T')[0] ? e.createdAt.split('T')[0] : '0000-00-00';
+            return e;
+        }) 
+
+
+        let AddDocOffline = DocumentosOff.filter( e => {
+            // Res.data
+            for(var i = 0; i < Res.data.length; i++){             
+                if(e.Receptor == Res.data[i].receptor && e.Dte == Res.data[i].dte && e.Folio == Res.data[i].folio){
+                    e.Existe = true
+                }
+            }
+
+            if(!e.Existe && e.TipoDocumento != 'Abono'){
+                e.tipo = e.TipoDocumento + ' Offline';
+                e.estado = e.Estado || 'Offline';
+                e.folio = e.Folio ? e.Folio : '0';
+                e.razon_social = e.Dte == 33 ?  e.RazonSocialEmpresa : e.Nombres + ' ' + e.Apellidos;
+                e.receptor = e.Rut || e.RutEmpresa || 'SIN RUT';
+                e.total = e.PrecioTotal;
+                e.fecha = e.createdAt.split('T')[0] ? e.createdAt.split('T')[0] : '0000-00-00';
+                return e;
+            }
+        })
+
+
+        AllDocument = [
+            ...AllDocument,
+            ...FormatAbonos,
+            ...AddDocOffline
+        ]
+
+        this.Boletas = AllDocument.filter(e => {
+            if(Documento.tipo == 'Boleta electrónica' || Documento.tipo == 'Boleta'){
+                return e;
+            }
+        })
+
+        this.Facturas = AllDocument.filter(e => {
+            if(Documento.tipo == 'Factura electrónica' || Documento.tipo == 'Factura'){
+                return e;
+            }
+        })
+
+        this.GuiaDespacho = AllDocument.filter(e => {
+            if(Documento.tipo == 'Guía de Despacho Electrónica' || Documento.tipo == 'Guía de Despacho' || Documento.tipo == 'Guía Despacho'){
+                return e;
+            }
+        })
+
+        this.NotaCredito = AllDocument.filter(e => {
+            if(Documento.tipo == 'Nota de Crédito Electrónica' || Documento.tipo == 'Nota de Crédito' || Documento.tipo == 'Nota Crédito'){
+                return e;
+            }
+        })
+
+        this.NotaCredito = AllDocument.filter(e => {
+            if(Documento.tipo == 'Abono' || Documento.tipo == 'Abono Electrónico'){
+                return e;
+            }
+        })
+
+
+
+
+        this.Documentos = AllDocument;
 
     },
 

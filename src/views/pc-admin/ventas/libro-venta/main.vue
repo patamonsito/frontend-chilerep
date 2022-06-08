@@ -6,6 +6,7 @@
         <h4>Libro Ventas</h4>
         <div class="subtitle-1 mt-3 mb-3 text--secondary">Lista de documentos emitidos.</div>
         <v-divider></v-divider>
+        <div v-if="LoaderMain == false">
         <v-row>
             <v-col cols="12">
             <v-card>                                           
@@ -89,10 +90,10 @@
                                         <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletas + TotalFacturas - TotalNotaCredito)  - ((TotalBoletas + TotalFacturas - TotalNotaCredito) / 1.19))) }}</div>
                                     </td>
                                     <td width="15%" class="texto">
-                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletas + TotalFacturas - TotalNotaCredito))) }}</div>
+                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletas + TotalFacturas - TotalNotaCredito))) }} (ERP)</div>
                                     </td>
                                     <td width="15%" class="texto">
-                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletasOff + TotalFacturasOff - TotalNotaCreditoOff))) }}</div>
+                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletasOff + TotalFacturasOff - TotalNotaCreditoOff))) }}<br>$ {{ FormatearPrecio(Math.round((CantidadTotalErpMasSii))) }} (S.I.I. + ERP)</div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -167,7 +168,57 @@
             </v-card>
             </v-col>
         </v-row>
-        
+
+    <!-- Filtros -->
+
+        <div class="row">
+            <v-col
+      cols="12"
+      sm="6"
+      md="4"
+    >
+      <v-dialog
+        ref="dialog"
+        v-model="modalPicker"
+        :return-value.sync="dateFilter"
+        persistent
+        width="290px"
+        height="auto"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="dateFilter"
+            label="Filtrar por fechas"
+            prepend-icon="mdi-calendar"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="dateFilter"
+          range
+        >
+          <v-btn
+            text
+            color="primary"
+            @click="modalPicker = false"
+          >
+            Cancelar
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="FilterDateRange()"
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-dialog>
+    </v-col>
+
+        </div>
+
 
     <!-- Lista de ventas  -->
         <v-row>
@@ -207,11 +258,15 @@
                     Abonos
                     <v-icon>mdi-sitemap-outline</v-icon>
                   </v-tab>
+                  <v-tab href="#tabdos-7">
+                    Offline
+                    <v-icon>mdi-sitemap-outline</v-icon>
+                  </v-tab>
                 </v-tabs>
 
                 <v-tabs-items v-model="tabDos">
                   <v-tab-item
-                    v-for="e in 6"
+                    v-for="e in 7"
                     :key="e"
                     :value="'tabdos-' + e"
                   >
@@ -254,12 +309,12 @@
                                           v-bind="attrs"
                                           v-on="on"
                                         >
-                                          <v-icon>mdi-dots-horizontal</v-icon>
+                                          <v-icon>mdi-dots-vertical</v-icon>
                                         </v-btn>
                                           </template>
                                           <v-list>
                                             <v-list-item link>
-                                              <v-list-item-title @click="VerDetalles(Documento.receptor, Documento.dte, Documento.folio)">Ver Detalles</v-list-item-title>
+                                              <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
                                             </v-list-item>
                                             <v-list-item link>
                                               <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
@@ -292,7 +347,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="Documento, e in Documentos" :key="e">
+                                <tr v-for="Documento, e in Boletas" :key="e">
                                         <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
                                         <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
                                         <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
@@ -313,12 +368,12 @@
                                               v-bind="attrs"
                                               v-on="on"
                                             >
-                                              <v-icon>mdi-dots-horizontal</v-icon>
+                                              <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                               </template>
                                               <v-list>
                                                 <v-list-item link>
-                                                  <v-list-item-title @click="VerDetalles(Documento.receptor, Documento.dte, Documento.folio)">Ver Detalles</v-list-item-title>
+                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
                                                 </v-list-item>
                                                 <v-list-item link>
                                                   <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
@@ -335,16 +390,299 @@
                         </v-simple-table>
                       </v-card-text>
                       <v-card-text v-if="e == 3">
-                          <p>3</p>
+                          <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Documento</td>
+                                    <td>Razon Social</td>
+                                    <td>Total</td>
+                                    <td>Vendedor</td>
+                                    <td>MetodoPago</td>
+                                    <td>Entrega</td>
+                                    <td>Estado</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Documento, e in Facturas" :key="e">
+                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                        <td>{{ Documento.estado }}</td>
+                                        <td>
+                                            <v-menu offset-y>
+                                              <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                              class="ma-1"
+                                              outlined
+                                              fab
+                                              small
+                                              color="grey"
+                                              v-bind="attrs"
+                                              v-on="on"
+                                            >
+                                              <v-icon>mdi-dots-vertical</v-icon>
+                                            </v-btn>
+                                              </template>
+                                              <v-list>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                                </v-list-item>
+                                              </v-list>
+                                            </v-menu>
+                                        </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
                       </v-card-text>
                       <v-card-text v-if="e == 4">
-                          <p>4</p>
+                          <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Documento</td>
+                                    <td>Razon Social</td>
+                                    <td>Total</td>
+                                    <td>Vendedor</td>
+                                    <td>MetodoPago</td>
+                                    <td>Entrega</td>
+                                    <td>Estado</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Documento, e in GuiaDespacho" :key="e">
+                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                        <td>{{ Documento.estado }}</td>
+                                        <td>
+                                            <v-menu offset-y>
+                                              <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                              class="ma-1"
+                                              outlined
+                                              fab
+                                              small
+                                              color="grey"
+                                              v-bind="attrs"
+                                              v-on="on"
+                                            >
+                                              <v-icon>mdi-dots-vertical</v-icon>
+                                            </v-btn>
+                                              </template>
+                                              <v-list>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                                </v-list-item>
+                                              </v-list>
+                                            </v-menu>
+                                        </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
                       </v-card-text>
                       <v-card-text v-if="e == 5">
-                          <p>5</p>
+                          <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Documento</td>
+                                    <td>Razon Social</td>
+                                    <td>Total</td>
+                                    <td>Vendedor</td>
+                                    <td>MetodoPago</td>
+                                    <td>Entrega</td>
+                                    <td>Estado</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Documento, e in NotaCredito" :key="e">
+                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                        <td>{{ Documento.estado }}</td>
+                                        <td>
+                                            <v-menu offset-y>
+                                              <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                              class="ma-1"
+                                              outlined
+                                              fab
+                                              small
+                                              color="grey"
+                                              v-bind="attrs"
+                                              v-on="on"
+                                            >
+                                              <v-icon>mdi-dots-vertical</v-icon>
+                                            </v-btn>
+                                              </template>
+                                              <v-list>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                                </v-list-item>
+                                              </v-list>
+                                            </v-menu>
+                                        </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
                       </v-card-text>
                       <v-card-text v-if="e == 6">
-                          <p>6</p>
+                          <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Documento</td>
+                                    <td>Razon Social</td>
+                                    <td>Total</td>
+                                    <td>Vendedor</td>
+                                    <td>MetodoPago</td>
+                                    <td>Entrega</td>
+                                    <td>Estado</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Documento, e in Abonos" :key="e">
+                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                        <td>{{ Documento.estado }}</td>
+                                        <td>
+                                            <v-menu offset-y>
+                                              <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                              class="ma-1"
+                                              outlined
+                                              fab
+                                              small
+                                              color="grey"
+                                              v-bind="attrs"
+                                              v-on="on"
+                                            >
+                                              <v-icon>mdi-dots-vertical</v-icon>
+                                            </v-btn>
+                                              </template>
+                                              <v-list>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                                </v-list-item>
+                                              </v-list>
+                                            </v-menu>
+                                        </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
+                      </v-card-text>
+                      <v-card-text v-if="e == 7">
+                          <v-simple-table>
+                            <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <td>Fecha</td>
+                                    <td>Documento</td>
+                                    <td>Razon Social</td>
+                                    <td>Total</td>
+                                    <td>Vendedor</td>
+                                    <td>MetodoPago</td>
+                                    <td>Entrega</td>
+                                    <td>Estado</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Documento, e in DocumentosOff" :key="e">
+                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                        <td>{{ Documento.estado }}</td>
+                                        <td>
+                                            <v-menu offset-y>
+                                              <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                              class="ma-1"
+                                              outlined
+                                              fab
+                                              small
+                                              color="grey"
+                                              v-bind="attrs"
+                                              v-on="on"
+                                            >
+                                              <v-icon>mdi-dots-vertical</v-icon>
+                                            </v-btn>
+                                              </template>
+                                              <v-list>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                                </v-list-item>
+                                                <v-list-item link>
+                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                                </v-list-item>
+                                              </v-list>
+                                            </v-menu>
+                                        </td>
+                                </tr>
+                            </tbody>
+                            </template>
+                        </v-simple-table>
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
@@ -353,6 +691,121 @@
             </v-col>
         </v-row>
 
+    <!-- Dialogs  -->
+
+    <v-row>
+
+            <v-dialog
+              v-model="ModalVerDetalles"
+              scrollable
+              max-width="1200px"
+             v-if="ModalVerDetalles == true">
+              <v-card>
+                <v-card-title>{{ DocumentoSeleccionado.tipo.dte_tipo }} #{{ DocumentoSeleccionado.folio}}</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                
+                <v-row style="margin-top: 1rem">
+                    <v-col cols="6">
+                       <v-text-field
+                         label="Cliente"
+                         placeholder="Placeholder"
+                         :value="DocumentoSeleccionado.datos_dte.Encabezado.Receptor.RUTRecep + ' ' + DocumentoSeleccionado.datos_dte.Encabezado.Receptor.RznSocRecep "
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+                       
+                       <v-text-field
+                         label="Fecha y Hora"
+                         placeholder="Placeholder"
+                         :value="DocumentoSeleccionado.fecha_hora_creacion"
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                        <v-text-field
+                          label="Vendedor"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.extra.dte.Encabezado.Emisor.CdgVendedor"
+                         :disabled="true"
+                          outlined
+                        ></v-text-field>
+
+                        <v-text-field
+                          label="Observaciones"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.extra.dte.Encabezado.IdDoc.TermPagoGlosa"
+                          :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                    <v-simple-table style="border: 1px solid lightgray;">
+                        <template v-slot:default>
+                            <thead style="background-color: darkblue; color: white;font-size: 1rem;">
+                                <th style="text-align: center">Nº</th>
+                                <th style="padding-left: 1rem">Descripcion</th>
+                                <th style="text-align: center">Cant.</th>
+                                <th style="text-align: center">Precio</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Detalle, i in DocumentoSeleccionado.detalle" :key="i">
+                                    <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td>{{Detalle.NmbItem}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.QtyItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.PrcItem))}}</td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                        <v-row>
+                            <v-col cols="6"></v-col>
+                            <v-col cols="6">
+                                <v-simple-table>
+                                  <template v-slot:default>
+                                    <tbody>
+                                      <tr>
+                                        <td style="font-weight: bold">Neto</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.neto)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Iva</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.iva)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Total</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.total)}} $</td>
+                                      </tr>
+                                    </tbody>
+                                  </template>
+                                </v-simple-table>
+                            </v-col>
+                        </v-row>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions style="justify-content: right;">
+                  <v-btn
+                    color="black"
+                    class="pa-2"
+                    dark
+                    text
+                    @click="ModalVerDetalles = false"
+                  >
+                    Cerrar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+    </v-row>
+
+
+        </div>
+        <div v-else>
+            <div class="center">
+                <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+            </div>
+        </div>
     </div>
 </template>
 
@@ -366,6 +819,13 @@ import API from '../../../../api.js'
     data: () => ({
         tab: 1,
         tabDos: 1,
+        LoaderMain: true,
+        //Filter
+        modalPicker: false,
+        dateFilter: '',
+        //Ver detalles modal
+        ModalVerDetalles: false,
+        DocumentoSeleccionado: null,
         //DTE S.I.I.
         Documentos: [],
         Boletas: [],
@@ -374,6 +834,7 @@ import API from '../../../../api.js'
         GuiaDespacho: [],
         Rechazados: [],
         //Totales DTE
+        CantidadTotalErpMasSii: 0,
         TotalBoletas: 0,
         TotalFacturas: 0,
         TotalAbonos: 0,
@@ -420,18 +881,40 @@ import API from '../../../../api.js'
 
 
         //Opciones de los DTE
-        // VerDetalles(Receptor, Dte, Folio){
+        async VerDetalles(Documento){
+            if(Documento?._id){
+                this.DocumentoSeleccionado = Documento;
+                this.ModalVerDetalles = true;
+            }else{
+                let GetDocumento = await API.POST_DOCUMENTO(Documento)
+                this.DocumentoSeleccionado = GetDocumento;
+                this.ModalVerDetalles = true;
+            }
+        },
 
-        // },
+
         
         RealizarNotaCredito(Receptor, Dte, Folio){
-        
+            console.log(Receptor, Dte, Folio)
         },
         
         Imprimir(Receptor, Dte, Folio, Formato){
-        
+            console.log(Receptor, Dte, Folio, Formato)
         },
 
+        async FilterDateRange(){
+            if(this.dateFilter[0] == '' || this.dateFilter[1] == '' || this.dateFilter.length < 2){
+                return this.modalPicker = false;
+            };
+
+            this.dateFilter.sort(function(a,b){return new Date(a).getTime() - new Date(b).getTime()});
+            this.$refs.dialog.save(this.dateFilter)
+            //Comenzo Api
+            this.LoaderMain = true;
+            this.modalPicker = false;
+            let Res = await API.POST_DOCUMENTOS(this.dateFilter);
+            this.Init(Res);
+        },
 
         //Formato de Numeros
         FormatearPrecio (number) {
@@ -440,13 +923,45 @@ import API from '../../../../api.js'
             let arr = number.toString().split(',');
             arr[0] = arr[0].replace(exp,rep);
             return arr[1] ? arr.join(','): arr[0];
-          }
+          },
 
-    },
+        Init(Res){
+            
 
-    //Apis
-    async created(){
-        let Res  = await API.GET_DOCUMENTOS();
+
+        //VALORES POR DEFECTOS
+        this.tab = 1;
+        this.tabDos = 1;
+        this.modalPicker = false;
+        this.dateFilter = '';
+        this.Documentos = [];
+        this.Boletas = [];
+        this.Facturas = [];
+        this.NotaCredito = [];
+        this.GuiaDespacho = [];
+        this.Rechazados = [];
+        this.CantidadTotalErpMasSii = 0;
+        this.TotalBoletas = 0;
+        this.TotalFacturas = 0;
+        this.TotalAbonos = 0;
+        this.TotalNotaCredito = 0;
+        this.TotalGuiaDespacho = 0;
+        this.Vendedores = [];
+        this.DocumentosOff = [];
+        this.BoletasOff = [];
+        this.FacturasOff = [];
+        this.NotaCreditoOff = [];
+        this.GuiaDespachoOff = [];
+        this.RechazadosOff = [];
+        this.Abonos = [];
+        this.TotalAbonos = 0;
+        this.TotalBoletasOff = 0;
+        this.TotalFacturasOff = 0;
+        this.TotalNotaCreditoOff = 0;
+        this.TotalGuiaDespachoOff = 0;
+        this.MetodosPago = [];
+
+
         let data = Res.data;
 
 
@@ -472,6 +987,7 @@ import API from '../../../../api.js'
         
         this.Facturas.map(e => {
             this.TotalFacturas = this.TotalFacturas + e.total;
+            console.log(e.total)
         })
 
         this.GuiaDespacho.map(e => {
@@ -616,7 +1132,7 @@ import API from '../../../../api.js'
         
             for(var i = 0; i < DocumentosOff.length; i++){ 
                 if(e.receptor == DocumentosOff[i].Receptor && e.dte == DocumentosOff[i].Dte && e.folio == DocumentosOff[i].Folio){
-                    console.log('Ejecuto')
+                    e._id = DocumentosOff[i]?._id || 'Offline';
                     e.GiroEmpresa = DocumentosOff[i]?.GiroEmpresa || '';
                     e.DireccionEmpresa = DocumentosOff[i]?.DireccionEmpresa || '';
                     e.ComunaEmpresa = DocumentosOff[i]?.ComunaEmpresa || '';
@@ -712,40 +1228,69 @@ import API from '../../../../api.js'
         ]
 
         this.Boletas = AllDocument.filter(e => {
-            if(Documento.tipo == 'Boleta electrónica' || Documento.tipo == 'Boleta'){
+            if(e.tipo == 'Boleta electrónica' || e.tipo == 'Boleta'){
                 return e;
             }
         })
 
         this.Facturas = AllDocument.filter(e => {
-            if(Documento.tipo == 'Factura electrónica' || Documento.tipo == 'Factura'){
+            if(e.tipo == 'Factura electrónica' || e.tipo == 'Factura'){
                 return e;
             }
         })
 
         this.GuiaDespacho = AllDocument.filter(e => {
-            if(Documento.tipo == 'Guía de Despacho Electrónica' || Documento.tipo == 'Guía de Despacho' || Documento.tipo == 'Guía Despacho'){
+            if(e.tipo == 'Guía de Despacho Electrónica' || e.tipo == 'Guía de Despacho' || e.tipo == 'Guía Despacho'){
                 return e;
             }
         })
 
         this.NotaCredito = AllDocument.filter(e => {
-            if(Documento.tipo == 'Nota de Crédito Electrónica' || Documento.tipo == 'Nota de Crédito' || Documento.tipo == 'Nota Crédito'){
+            if(e.tipo == 'Nota de Crédito Electrónica' || e.tipo == 'Nota de Crédito' || e.tipo == 'Nota Crédito'){
                 return e;
             }
         })
 
-        this.NotaCredito = AllDocument.filter(e => {
-            if(Documento.tipo == 'Abono' || Documento.tipo == 'Abono Electrónico'){
+        this.Abonos = AllDocument.filter(e => {
+            if(e.tipo == 'Abono' || e.tipo == 'Abono Electrónico'){
                 return e;
             }
         })
 
 
+        this.DocumentosOff = AllDocument.filter(e => {
+            if(e.estado == 'Offline'){
+                return e;
+            }
+        })
 
+        let CantidadErpMasSii = Math.round(this.TotalBoletasOff + this.TotalFacturasOff - this.TotalNotaCreditoOff);
+        
+
+                if(CantidadErpMasSii != 0){
+                    for(let i = 0; i < AllDocument.length; i++){ 
+                            if(!AllDocument[i].Usuario && AllDocument[i].tipo == 'Factura electrónica' || !AllDocument[i].Usuario && AllDocument[i].tipo == 'Boleta electrónica'){
+                                CantidadErpMasSii = CantidadErpMasSii + Math.round(AllDocument[i].total);
+                            }
+                    }
+                }else{
+                    CantidadErpMasSii = (this.TotalBoletas + this.TotalFacturas) - this.TotalNotaCredito;
+                }
+
+        this.CantidadTotalErpMasSii = CantidadErpMasSii;
 
         this.Documentos = AllDocument;
+        this.LoaderMain = false;
+        }
 
+
+
+    },
+
+    //Apis
+    async created(){
+        let Res  = await API.GET_DOCUMENTOS();
+        this.Init(Res);
     },
 
     //WindowsOnready

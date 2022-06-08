@@ -243,6 +243,17 @@ export default class API {
         return res.data;
     }
 
+    static async POST_DOCUMENTO(Documento){
+        const res = await axios.post(url+ '/obtener-documento', { Documento } );
+        return res.data;
+    }
+
+
+    static async POST_DOCUMENTOS(dateFilter){
+        const res = await axios.post(url+ '/obtener-documentos', { dateFilter } );
+        return res.data;
+    }
+
     //PROVEEDORES
 
     static async GET_PROVEEDORES(){

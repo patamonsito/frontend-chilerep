@@ -254,8 +254,14 @@ export default class API {
         return res.data;
     }
 
-    //PROVEEDORES
 
+    //NOTA DE CREDITO
+    static async POST_NOTACREDITO(Documento){
+        const res = await axios.post(url+ '/realizar-nota-credito', { Documento } );
+        return res.data;
+    }
+
+    //PROVEEDORES
     static async GET_PROVEEDORES(){
         const res = await axios.get(url+ '/get-proveedores');
         return res.data;

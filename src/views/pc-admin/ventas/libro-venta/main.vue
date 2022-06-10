@@ -90,10 +90,10 @@
                                         <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletas + TotalFacturas - TotalNotaCredito)  - ((TotalBoletas + TotalFacturas - TotalNotaCredito) / 1.19))) }}</div>
                                     </td>
                                     <td width="15%" class="texto">
-                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletas + TotalFacturas - TotalNotaCredito))) }} (ERP)</div>
+                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletas + TotalFacturas - TotalNotaCredito))) }}</div>
                                     </td>
                                     <td width="15%" class="texto">
-                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletasOff + TotalFacturasOff - TotalNotaCreditoOff))) }}<br>$ {{ FormatearPrecio(Math.round((CantidadTotalErpMasSii))) }} (S.I.I. + ERP)</div>
+                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletasOff + TotalFacturasOff - TotalNotaCreditoOff))) }} (ERP)<br>$ {{ FormatearPrecio(Math.round((CantidadTotalErpMasSii))) }} (S.I.I. + ERP)</div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -216,7 +216,6 @@
         </v-date-picker>
       </v-dialog>
     </v-col>
-
         </div>
 
 
@@ -237,24 +236,24 @@
                     <v-icon>mdi-cash</v-icon>
                   </v-tab>
 
-                  <v-tab href="#tabdos-2">
+                  <v-tab href="#tabdos-2" v-show="Boletas.length != 0">
                     Boletas
                     <v-icon>mdi-account-cash</v-icon>
                   </v-tab>
 
-                  <v-tab href="#tabdos-3">
+                  <v-tab href="#tabdos-3" v-show="Facturas.length != 0">
                     Facturas
                     <v-icon>mdi-sitemap-outline</v-icon>
                   </v-tab>
-                  <v-tab href="#tabdos-4">
+                  <v-tab href="#tabdos-4" v-show="GuiaDespacho.length != 0">
                     Guias Despacho
                     <v-icon>mdi-sitemap-outline</v-icon>
                   </v-tab>
-                  <v-tab href="#tabdos-5">
+                  <v-tab href="#tabdos-5" v-show="NotaCredito.length != 0">
                     Nota Credito
                     <v-icon>mdi-sitemap-outline</v-icon>
                   </v-tab>
-                  <v-tab href="#tabdos-6">
+                  <v-tab href="#tabdos-6" v-show="Abonos.length != 0">
                     Abonos
                     <v-icon>mdi-sitemap-outline</v-icon>
                   </v-tab>
@@ -313,18 +312,21 @@
                                         </v-btn>
                                           </template>
                                           <v-list>
-                                            <v-list-item link>
-                                              <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
+                                            <v-list-item link @click="VerDetalles(Documento)">
+                                              <v-list-item-title>Ver Detalles</v-list-item-title>
                                             </v-list-item>
-                                            <v-list-item link>
-                                              <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
+                                            <v-list-item link @click="RealizarNotaCredito(Documento)">
+                                              <v-list-item-title>Nota de Credito</v-list-item-title>
                                             </v-list-item>
-                                            <v-list-item link>
-                                              <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
+                                            <v-list-item link @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">
+                                              <v-list-item-title>Imprimir Letter</v-list-item-title>
                                             </v-list-item>
                                           </v-list>
                                         </v-menu>
                                     </td>
+                                </tr>
+                                <tr v-if="Documentos.length == 0">
+                                    <td colspan="9" class="center">No hay Documentos emitidos.</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -371,19 +373,22 @@
                                               <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                               </template>
-                                              <v-list>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
-                                                </v-list-item>
-                                              </v-list>
+                                                <v-list>
+                                                  <v-list-item link @click="VerDetalles(Documento)">
+                                                    <v-list-item-title>Ver Detalles</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="RealizarNotaCredito(Documento)">
+                                                    <v-list-item-title>Nota de Credito</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">
+                                                    <v-list-item-title>Imprimir Letter</v-list-item-title>
+                                                  </v-list-item>
+                                                </v-list>
                                             </v-menu>
                                         </td>
+                                </tr>
+                                <tr v-if="Boletas.length == 0">
+                                    <td colspan="9" class="center">No hay Boletas emitidas.</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -430,19 +435,22 @@
                                               <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                               </template>
-                                              <v-list>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
-                                                </v-list-item>
-                                              </v-list>
+                                                <v-list>
+                                                  <v-list-item link @click="VerDetalles(Documento)">
+                                                    <v-list-item-title>Ver Detalles</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="RealizarNotaCredito(Documento)">
+                                                    <v-list-item-title>Nota de Credito</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">
+                                                    <v-list-item-title>Imprimir Letter</v-list-item-title>
+                                                  </v-list-item>
+                                                </v-list>
                                             </v-menu>
                                         </td>
+                                </tr>
+                                <tr v-if="Facturas.length == 0">
+                                    <td colspan="9" class="center">No hay Facturas emitidas.</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -489,19 +497,22 @@
                                               <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                               </template>
-                                              <v-list>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
-                                                </v-list-item>
-                                              </v-list>
+                                                <v-list>
+                                                  <v-list-item link @click="VerDetalles(Documento)">
+                                                    <v-list-item-title>Ver Detalles</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="RealizarNotaCredito(Documento)">
+                                                    <v-list-item-title>Nota de Credito</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">
+                                                    <v-list-item-title>Imprimir Letter</v-list-item-title>
+                                                  </v-list-item>
+                                                </v-list>
                                             </v-menu>
                                         </td>
+                                </tr>
+                                <tr v-if="GuiaDespacho.length == 0">
+                                    <td colspan="9" class="center">No hay Guías de Despacho emitidas.</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -548,19 +559,22 @@
                                               <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                               </template>
-                                              <v-list>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
-                                                </v-list-item>
-                                              </v-list>
+                                                <v-list>
+                                                  <v-list-item link @click="VerDetalles(Documento)">
+                                                    <v-list-item-title>Ver Detalles</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="RealizarNotaCredito(Documento)">
+                                                    <v-list-item-title>Nota de Credito</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">
+                                                    <v-list-item-title>Imprimir Letter</v-list-item-title>
+                                                  </v-list-item>
+                                                </v-list>
                                             </v-menu>
                                         </td>
+                                </tr>
+                                <tr v-if="NotaCredito.length == 0">
+                                    <td colspan="9" class="center">No hay Notas de Créditos emitidos.</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -607,19 +621,22 @@
                                               <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                               </template>
-                                              <v-list>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
-                                                </v-list-item>
-                                              </v-list>
+                                                <v-list>
+                                                  <v-list-item link @click="VerDetalles(Documento)">
+                                                    <v-list-item-title>Ver Detalles</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="RealizarNotaCredito(Documento)">
+                                                    <v-list-item-title>Nota de Credito</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">
+                                                    <v-list-item-title>Imprimir Letter</v-list-item-title>
+                                                  </v-list-item>
+                                                </v-list>
                                             </v-menu>
                                         </td>
+                                </tr>
+                                <tr v-if="Abonos.length == 0">
+                                    <td colspan="9" class="center">No hay Abonos emitidos.</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -666,19 +683,22 @@
                                               <v-icon>mdi-dots-vertical</v-icon>
                                             </v-btn>
                                               </template>
-                                              <v-list>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="VerDetalles(Documento)">Ver Detalles</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="RealizarNotaCredito(Documento.receptor, Documento.dte, Documento.folio)">Nota de Credito</v-list-item-title>
-                                                </v-list-item>
-                                                <v-list-item link>
-                                                  <v-list-item-title @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">Imprimir Letter</v-list-item-title>
-                                                </v-list-item>
-                                              </v-list>
+                                                <v-list>
+                                                  <v-list-item link @click="VerDetalles(Documento)">
+                                                    <v-list-item-title>Ver Detalles</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="RealizarNotaCredito(Documento)">
+                                                    <v-list-item-title>Nota de Credito</v-list-item-title>
+                                                  </v-list-item>
+                                                  <v-list-item link @click="Imprimir(Documento.receptor, Documento.dte, Documento.folio, 'Letter')">
+                                                    <v-list-item-title>Imprimir Letter</v-list-item-title>
+                                                  </v-list-item>
+                                                </v-list>
                                             </v-menu>
                                         </td>
+                                </tr>
+                                <tr v-if="DocumentosOff.length == 0">
+                                    <td colspan="9" class="center">No hay Documentos Offline emitidos.</td>
                                 </tr>
                             </tbody>
                             </template>
@@ -694,18 +714,18 @@
     <!-- Dialogs  -->
 
     <v-row>
-
+            <!-- Venta SII  -->
             <v-dialog
               v-model="ModalVerDetalles"
               scrollable
               max-width="1200px"
-             v-if="ModalVerDetalles == true">
-              <v-card>
+             >
+              <v-card v-if="ModalVerDetalles == true && DocumentoSeleccionado.tipo ? true : false">
                 <v-card-title>{{ DocumentoSeleccionado.tipo.dte_tipo }} #{{ DocumentoSeleccionado.folio}}</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
                 
-                <v-row style="margin-top: 1rem">
+                <v-row style="margin-top: 1rem; text-shadow: 0 0 darkblue !important;">
                     <v-col cols="6">
                        <v-text-field
                          label="Cliente"
@@ -714,6 +734,16 @@
                          :disabled="true"
                          outlined
                        ></v-text-field>
+
+                        <v-text-field
+                          label="Vendedor"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.extra.dte.Encabezado.Emisor.CdgVendedor"
+                         :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
                        
                        <v-text-field
                          label="Fecha y Hora"
@@ -722,15 +752,6 @@
                          :disabled="true"
                          outlined
                        ></v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field
-                          label="Vendedor"
-                          placeholder="Placeholder"
-                          :value="DocumentoSeleccionado.extra.dte.Encabezado.Emisor.CdgVendedor"
-                         :disabled="true"
-                          outlined
-                        ></v-text-field>
 
                         <v-text-field
                           label="Observaciones"
@@ -748,6 +769,9 @@
                                 <th style="padding-left: 1rem">Descripcion</th>
                                 <th style="text-align: center">Cant.</th>
                                 <th style="text-align: center">Precio</th>
+                                <th style="text-align: center">Neto</th>
+                                <th style="text-align: center">Iva</th>
+                                <th style="text-align: center">Total</th>
                             </thead>
                             <tbody>
                                 <tr v-for="Detalle, i in DocumentoSeleccionado.detalle" :key="i">
@@ -755,6 +779,9 @@
                                     <td>{{Detalle.NmbItem}}</td>
                                     <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.QtyItem))}}</td>
                                     <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.PrcItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.NetoItem)))}}</td> <!-- Neto -->
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.IvaItem)))}}</td> <!-- Iva -->
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Math.round(Detalle.MontoItem)))}}</td>
                                 </tr>
                             </tbody>
                         </template>
@@ -796,7 +823,498 @@
                   </v-btn>
                 </v-card-actions>
               </v-card>
+              <v-card v-else>
+                <div class="center">
+                    <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+                </div>
+              </v-card>
             </v-dialog>
+
+
+            <!-- Venta ERP  -->
+            <v-dialog
+              v-model="ModalVerDetallesOff"
+              scrollable
+              max-width="1200px"
+              v-if="ModalVerDetallesOff == true"
+             >
+              <v-card>
+                <v-card-title>{{ DocumentoSeleccionado.TipoDocumento }} #{{ DocumentoSeleccionado.Folio || 0}}</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                
+                <v-row style="margin-top: 1rem; text-shadow: 0 0 darkblue !important;">
+                    <v-col cols="6">
+                       <v-text-field
+                         label="Cliente"
+                         placeholder="Cliente"
+                         :value="DocumentoSeleccionado.Nombres ? DocumentoSeleccionado.Nombres + ' ' +  DocumentoSeleccionado.Apellidos : DocumentoSeleccionado.RazonSocialEmpresa"
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+
+                       <v-text-field
+                         label="Entrega"
+                         placeholder="Entrega"
+                         :value="DocumentoSeleccionado.EntregaSeleccionada"
+                         :disabled="true"
+                         outlined
+                        v-if="DocumentoSeleccionado.EntregaSeleccionada"></v-text-field>
+
+
+                       <v-text-field
+                          label="Vendedor"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.Usuario"
+                         :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                       <v-text-field
+                         label="Fecha y Hora"
+                         placeholder="Fecha"
+                         :value="DocumentoSeleccionado.createdAt.split('T')[0] ? DocumentoSeleccionado.createdAt.split('T')[0] : '0000-00-00'"
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+
+                       <v-text-field
+                         label="Telefono"
+                         placeholder="Telefono"
+                         :value="DocumentoSeleccionado.Telefono"
+                         :disabled="true"
+                         outlined
+                        v-if="DocumentoSeleccionado.Telefono"></v-text-field>
+
+                        <v-text-field
+                          label="Observaciones y Pago"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.Observaciones"
+                          :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+
+                <div v-if="DocumentoSeleccionado.MetodoPagoSeleccionado == 'Transferencia' || DocumentoSeleccionado.MetodoPagoSeleccionado == 'Transferencia y Efectivo' || DocumentoSeleccionado.MetodoPagoSeleccionado == 'Transbank y Transferencia'">
+                <v-divider></v-divider>
+                    <v-row style="text-shadow: 0 0 darkblue !important;">
+                        <v-col cols="12">
+                            <spam>Datos de Pago</spam>
+                        </v-col>
+                        <v-col cols="6">
+
+                            <v-text-field
+                               label="Pago"
+                               placeholder="Pago"
+                               :value="DocumentoSeleccionado.MetodoPagoSeleccionado"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                            <v-text-field
+                               label="Titular"
+                               placeholder="Titular"
+                               :value="DocumentoSeleccionado.Titular"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field
+                               label="Cuenta Bancaria"
+                               placeholder="Cuenta Bancaria"
+                               :value="DocumentoSeleccionado.CuentaBancariaSeleccionada"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                            <v-text-field
+                               label="Monto"
+                               placeholder="Monto"
+                               :value="DocumentoSeleccionado.MontoTransferido || DocumentoSeleccionado.Monto"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                    </v-row>
+                    
+
+                </div>
+
+               <div v-if="DocumentoSeleccionado.MetodoPagoSeleccionado == 'Efectivo' || DocumentoSeleccionado.MetodoPagoSeleccionado == 'Transferencia y Efectivo' || DocumentoSeleccionado.MetodoPagoSeleccionado == 'Transbank y Efectivo'">
+                <v-divider></v-divider>
+                    <v-row style="text-shadow: 0 0 darkblue !important;">
+                        <v-col cols="12">
+                            <spam>Datos de Pago</spam>
+                        </v-col>
+                        <v-col cols="6">
+
+                            <v-text-field
+                               label="Caja"
+                               placeholder="Caja"
+                               :value="DocumentoSeleccionado.CajaSeleccionada"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field
+                               label="Monto"
+                               placeholder="Monto"
+                               :value="DocumentoSeleccionado.MontoCaja"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                    </v-row>
+                    
+
+                </div>
+
+               <div v-if="DocumentoSeleccionado.MetodoPagoSeleccionado == 'Personalizado'">
+                <v-divider></v-divider>
+                    <v-row style="text-shadow: 0 0 darkblue !important;">
+                        <v-col cols="12">
+                            <spam>Pago Personalizado</spam>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field
+                               label="Información del Pago"
+                               placeholder="Información del Pago"
+                               :value="DocumentoSeleccionado.InformacionPago"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                    </v-row>
+                    
+
+                </div>
+
+               <div v-if="DocumentoSeleccionado.MetodoPagoSeleccionado == 'Webpay'">
+                <v-divider></v-divider>
+                    <v-row style="text-shadow: 0 0 darkblue !important;">
+                        <v-col cols="12">
+                            <spam>Pago Webpay</spam>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field
+                               label="Orden de Compra"
+                               placeholder="Orden de Compra"
+                               :value="DocumentoSeleccionado.OrdenCompra"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                    </v-row>
+                    
+
+                </div>
+
+
+
+                <div v-if="DocumentoSeleccionado.EntregaSeleccionada == 'Delivery Santiago'">
+                <v-divider></v-divider>
+                    <v-row style="text-shadow: 0 0 darkblue !important;">
+                        <v-col cols="12">
+                            <spam>Datos Delivery</spam>
+                        </v-col>
+                        <v-col cols="6">
+
+                            <v-text-field
+                               label="Calle"
+                               placeholder="Calle"
+                               :value="DocumentoSeleccionado.Calle"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                            <v-text-field
+                               label="Departamento"
+                               placeholder="Departamento"
+                               :value="DocumentoSeleccionado.Departamento"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field
+                               label="Comuna"
+                               placeholder="Comuna"
+                               :value="DocumentoSeleccionado.ComunaSeleccionada"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                            <v-text-field
+                               label="Numero"
+                               placeholder="Numero"
+                               :value="DocumentoSeleccionado.Numero"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                    </v-row>
+                    
+
+                </div>
+
+
+                <div v-if="DocumentoSeleccionado.EntregaSeleccionada == 'Envío a región'">
+                <v-divider></v-divider>
+                    <v-row style="text-shadow: 0 0 darkblue !important;">
+                        <v-col cols="12">
+                            <spam>Datos de Envio</spam>
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field
+                               label="Region"
+                               placeholder="Region"
+                               :value="DocumentoSeleccionado.RegionSeleccionada"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                            <v-text-field
+                               label="Calle"
+                               placeholder="Calle"
+                               :value="DocumentoSeleccionado.Calle"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                            <v-text-field
+                               label="Departamento"
+                               placeholder="Departamento"
+                               :value="DocumentoSeleccionado.Departamento"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                        <v-col cols="6">
+                            <v-text-field
+                               label="Comuna"
+                               placeholder="Comuna"
+                               :value="DocumentoSeleccionado.ComunaSeleccionada"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                            <v-text-field
+                               label="Numero"
+                               placeholder="Numero"
+                               :value="DocumentoSeleccionado.Numero"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                             
+                            <v-text-field
+                               label="Agencia"
+                               placeholder="Agencia"
+                               :value="DocumentoSeleccionado.AgenciaSeleccionada"
+                              :disabled="true"
+                               outlined
+                             ></v-text-field>
+
+                        </v-col>
+                    </v-row>
+                    
+
+                </div>
+
+
+
+                    <v-simple-table style="border: 1px solid lightgray;">
+                        <template v-slot:default>
+                            <thead style="background-color: darkblue; color: white;font-size: 1rem;">
+                                <th style="text-align: center">Nº</th>
+                                <th style="padding-left: 1rem">Descripcion</th>
+                                <th style="text-align: center">Cant.</th>
+                                <th style="text-align: center">Precio</th>
+                                <th style="text-align: center">Neto</th>
+                                <th style="text-align: center">Iva</th>
+                                <th style="text-align: center">Total</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Detalle, i in DocumentoSeleccionado.Detalles" :key="i">
+                                    <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td>{{Detalle.NmbItem}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.QtyItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.PrcItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.NetoItem)))}}</td> <!-- Neto -->
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.IvaItem)))}}</td> <!-- Iva -->
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Math.round(Detalle.MontoItem)))}}</td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                        <v-row>
+                            <v-col cols="6"></v-col>
+                            <v-col cols="6">
+                                <v-simple-table>
+                                  <template v-slot:default>
+                                    <tbody>
+                                      <tr>
+                                        <td style="font-weight: bold">Neto</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.Neto)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Iva</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.Iva)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Total</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.PrecioTotal)}} $</td>
+                                      </tr>
+                                    </tbody>
+                                  </template>
+                                </v-simple-table>
+                            </v-col>
+                        </v-row>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions style="justify-content: right;">
+                  <v-btn
+                    color="black"
+                    class="pa-2"
+                    dark
+                    text
+                    @click="ModalVerDetallesOff = false"
+                  >
+                    Cerrar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+
+            <!-- NOTA CREDITO  -->
+            <v-dialog
+              v-model="ModalNotaCredito"
+              scrollable
+              max-width="1200px"
+              v-if="ModalNotaCredito == true"
+             >
+              <v-card v-if="ModalNotaCredito == true && DocumentoSeleccionado.tipo ? true : false">
+                <v-card-title>{{ DocumentoSeleccionado.tipo.dte_tipo }} #{{ DocumentoSeleccionado.folio || 0}}</v-card-title>
+                <v-divider></v-divider>
+                <v-card-text>
+                
+                <v-row style="margin-top: 1rem;">
+                    <v-col cols="6">
+                        <v-select
+                          :items="SelectNotaCredito"
+                          label="Seleccione Motivo"
+                        ></v-select>
+                    </v-col>
+                    <v-col cols="6">
+                        <v-text-field
+                           label="Explique la Razon"
+                           placeholder="Porque se emite esta nota de credito"
+                         ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-divider></v-divider>
+
+                    <v-simple-table style="border: 1px solid lightgray;">
+                        <template v-slot:default>
+                            <thead style="background-color: darkblue; color: white;font-size: 1rem;">
+                                <th style="text-align: center">Nº</th>
+                                <th style="padding-left: 1rem">Descripcion</th>
+                                <th style="text-align: center">Cant.</th>
+                                <th style="text-align: center">Precio</th>
+                                <th style="text-align: center">Neto</th>
+                                <th style="text-align: center">Iva</th>
+                                <th style="text-align: center">Total</th>
+                                <th style="text-align: center" v-if="DocumentoSeleccionado.detalle.length > 1">Eliminar</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Detalle, i in DocumentoSeleccionado.detalle" :key="i">
+                                    <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td>{{Detalle.NmbItem}}</td>
+                                    <td style="text-align: center">
+                                        <v-text-field
+                                           label="Cant."
+                                           placeholder="Cantidad"
+                                           v-model="Detalle.QtyItem"
+                                           @keyup="TotalDocumentoSeleccionado()"
+                                         ></v-text-field>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <v-text-field
+                                           label="Monto"
+                                           placeholder="EditarMonto"
+                                           v-model="Detalle.PrcItem"
+                                           @keyup="TotalDocumentoSeleccionado()"></v-text-field></td>
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.NetoItem)))}}</td> <!-- Neto -->
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.IvaItem)))}}</td> <!-- Iva -->
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Math.round(Detalle.MontoItem)))}}</td>
+                                    <td style="text-align: center" v-if="DocumentoSeleccionado.detalle.length > 1">
+                                        <v-btn color="error" @click="EliminarItem(Detalle.NroLinDet)">
+                                            <v-icon small dark>mdi-archive-remove</v-icon>
+                                        </v-btn>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                        <v-row>
+                            <v-col cols="6"></v-col>
+                            <v-col cols="6">
+                                <v-simple-table>
+                                  <template v-slot:default>
+                                    <tbody>
+                                      <tr>
+                                        <td style="font-weight: bold">Neto</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(Math.round((DocumentoSeleccionado.total / 1.19)))}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Iva</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(Math.round(DocumentoSeleccionado.total - Math.round((DocumentoSeleccionado.total / 1.19))) )}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Total</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.total)}} $</td>
+                                      </tr>
+                                    </tbody>
+                                  </template>
+                                </v-simple-table>
+                            </v-col>
+                        </v-row>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions style="justify-content: right;">
+                  <v-btn
+                    color="black"
+                    class="pa-2"
+                    dark
+                    text
+                    @click="ModalNotaCredito = false"
+                  >
+                    Cerrar
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+              <v-card v-else>
+                <div class="center">
+                    <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+                </div>
+              </v-card>
+            </v-dialog>
+
+
+
     </v-row>
 
 
@@ -804,6 +1322,10 @@
         <div v-else>
             <div class="center">
                 <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+            </div>
+
+            <div class="center" v-if="Retry == true">
+                <p>Fallo al consultar en el S.I.I. Reintentando...</p>
             </div>
         </div>
     </div>
@@ -826,6 +1348,8 @@ import API from '../../../../api.js'
         //Ver detalles modal
         ModalVerDetalles: false,
         DocumentoSeleccionado: null,
+        ModalVerDetallesOff: false,
+        ModalNotaCredito: false,
         //DTE S.I.I.
         Documentos: [],
         Boletas: [],
@@ -857,7 +1381,11 @@ import API from '../../../../api.js'
         TotalNotaCreditoOff: 0,
         TotalGuiaDespachoOff: 0,
         //Formas de Pago
-        MetodosPago: []
+        MetodosPago: [],
+        //Nota Credito
+        SelectNotaCredito: ["Anular Documento", "Correccion de Monto", "Correccion de Texto"],
+        //Error al solicitar los datos
+        Retry: false,
     }),
     components: {
     },
@@ -879,36 +1407,133 @@ import API from '../../../../api.js'
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
-
-        //Opciones de los DTE
-        async VerDetalles(Documento){
+        async RealizarNotaCredito(Documento){
+            this.DocumentoSeleccionado = {}
             if(Documento?._id){
                 this.DocumentoSeleccionado = Documento;
-                this.ModalVerDetalles = true;
+                this.ModalNotaCredito = true;
             }else{
-                let GetDocumento = await API.POST_DOCUMENTO(Documento)
+                this.ModalNotaCredito = true;
+                let GetDocumento = await API.POST_DOCUMENTO(Documento);
                 this.DocumentoSeleccionado = GetDocumento;
-                this.ModalVerDetalles = true;
+                if(this.DocumentoSeleccionado.tipo.codigo == 33){
+                    this.DocumentoSeleccionado.detalle.map(e => {
+                        e.PrcItem = (Math.round(parseInt(e.PrcItem) * 1.19)).toString();
+                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19)).toString();
+                        e.IvaItem = (Math.round(parseInt(e.PrcItem)) - Math.round((Math.round(parseInt(e.PrcItem)) / 1.19)) * parseInt(e.QtyItem)).toString()
+                    })
+                }else{
+                    this.DocumentoSeleccionado.detalle.map(e => {
+                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19)).toString();
+                        e.IvaItem = (Math.round(parseInt(e.PrcItem)) - Math.round((Math.round(parseInt(e.PrcItem)) / 1.19)) * parseInt(e.QtyItem)).toString()
+                    })
+
+                }
             }
         },
 
+        TotalDocumentoSeleccionado(){
+            let MontoTotal = 0;
+            this.DocumentoSeleccionado.detalle.map( e => {
+               e.QtyItem = e.QtyItem < 1 ? 1 : e.QtyItem;
+               if(this.DocumentoSeleccionado.tipo.codigo == 33){
+                   e.MontoItem = (parseInt(e.PrcItem) * parseInt(e.QtyItem)).toString();
+                   e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19) * parseInt(e.QtyItem)).toString();
+                   e.IvaItem = ((Math.round(parseInt(e.PrcItem)) - Math.round((e.PrcItem / 1.19))) * parseInt(e.QtyItem)).toString();
+                   e.MontoItem = ((parseInt(e.NetoItem) + parseInt(e.IvaItem)) * parseInt(e.QtyItem)).toString();
+                   MontoTotal = MontoTotal + parseInt(e.MontoItem);
+               }else{
+                   e.MontoItem = (parseInt(e.PrcItem) * parseInt(e.QtyItem)).toString();
+                   e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19) * parseInt(e.QtyItem)).toString();
+                   e.IvaItem = ((Math.round(parseInt(e.PrcItem)) - Math.round((e.PrcItem / 1.19))) * parseInt(e.QtyItem)).toString();
+                   MontoTotal = MontoTotal + parseInt(e.MontoItem);
+               }
+            });
+
+            if(this.DocumentoSeleccionado.tipo.codigo == 33){
+                this.DocumentoSeleccionado.total = (MontoTotal).toString();
+                this.DocumentoSeleccionado.iva = (Math.round((MontoTotal / 1.19))).toString();
+                this.DocumentoSeleccionado.neto = (MontoTotal - Math.round((MontoTotal / 1.19))).toString();
+            }else{                
+                this.DocumentoSeleccionado.total = (MontoTotal).toString();
+                this.DocumentoSeleccionado.iva = (Math.round((MontoTotal / 1.19))).toString();
+                this.DocumentoSeleccionado.neto = (MontoTotal - Math.round((MontoTotal / 1.19))).toString();
+            }
+        },
+
+        EliminarItem(key){
+            this.DocumentoSeleccionado.detalle = this.DocumentoSeleccionado.detalle.filter(e => {
+                if(e.NroLinDet != key){
+                    return e;
+                }
+            });
+            this.TotalDocumentoSeleccionado()
+        },
+
+        //Opciones de los DTE
+        async VerDetalles(Documento){
+            this.DocumentoSeleccionado = {}
+            if(Documento?._id){
+                this.DocumentoSeleccionado = Documento;
+                this.ModalVerDetallesOff = true;
+            }else{
+                this.ModalVerDetalles = true;
+                let GetDocumento = await API.POST_DOCUMENTO(Documento);
+                if(typeof(GetDocumento?.extra?.dte) === 'undefined'){
+                    
+                    GetDocumento = {
+                        ...GetDocumento,
+                        extra: {
+                            dte: {
+                                Encabezado: {
+                                    Emisor: {
+                                        CdgVendedor: 'N/A'
+                                    },
+                                    IdDoc: {
+                                        TermPagoGlosa: 'N/A'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                this.DocumentoSeleccionado = GetDocumento;
+
+                if(this.DocumentoSeleccionado.tipo.codigo == 33){
+                    this.DocumentoSeleccionado.detalle.map(e => {
+                        e.PrcItem = (Math.round(parseInt(e.PrcItem) * 1.19)).toString();
+                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19)).toString();
+                        e.IvaItem = (Math.round(parseInt(e.PrcItem)) - Math.round((Math.round(parseInt(e.PrcItem)) / 1.19)) * parseInt(e.QtyItem)).toString()
+                        console.log(e.NetoItem, e.IvaItem, e.QtyItem)
+                        e.MontoItem = ((parseInt(e.NetoItem) + parseInt(e.IvaItem)) * parseInt(e.QtyItem)).toString();
+                        console.log(e.MontoItem)
+                    })
+                }else{
+                    this.DocumentoSeleccionado.detalle.map(e => {
+                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19)).toString();
+                        e.IvaItem = (Math.round(parseInt(e.PrcItem)) - Math.round((Math.round(parseInt(e.PrcItem)) / 1.19)) * parseInt(e.QtyItem)).toString()
+                    })
+
+                }
+
+            }
+        },
 
         
-        RealizarNotaCredito(Receptor, Dte, Folio){
-            console.log(Receptor, Dte, Folio)
-        },
-        
         Imprimir(Receptor, Dte, Folio, Formato){
-            console.log(Receptor, Dte, Folio, Formato)
+
         },
 
         async FilterDateRange(){
-            if(this.dateFilter[0] == '' || this.dateFilter[1] == '' || this.dateFilter.length < 2){
+            if(this.dateFilter[0] == '' || this.dateFilter[1] == '' || this.dateFilter.length == 0){
                 return this.modalPicker = false;
             };
+            
+            this.dateFilter = this.dateFilter.length == 1 ?  [this.dateFilter[0], this.dateFilter[0]] : this.dateFilter;
 
             this.dateFilter.sort(function(a,b){return new Date(a).getTime() - new Date(b).getTime()});
             this.$refs.dialog.save(this.dateFilter)
+
             //Comenzo Api
             this.LoaderMain = true;
             this.modalPicker = false;
@@ -925,8 +1550,12 @@ import API from '../../../../api.js'
             return arr[1] ? arr.join(','): arr[0];
           },
 
-        Init(Res){
-            
+        async Init(Res){
+            if(Res?.code == "ETIMEDOUT"){
+                this.Retry = true;
+                let Renew = this.dateFilter == '' || this.dateFilter == null ? await API.POST_DOCUMENTOS(this.dateFilter) : await API.GET_DOCUMENTOS();
+                return this.Init(Renew);
+            }
 
 
         //VALORES POR DEFECTOS
@@ -962,7 +1591,8 @@ import API from '../../../../api.js'
         this.MetodosPago = [];
 
 
-        let data = Res.data;
+        //Existen ventas S.i.i.
+        let data = typeof(Res.data) === 'string' ? [] : Res.data;
 
 
         //SEPARAR DOCUMENTOS API DTE
@@ -987,7 +1617,6 @@ import API from '../../../../api.js'
         
         this.Facturas.map(e => {
             this.TotalFacturas = this.TotalFacturas + e.total;
-            console.log(e.total)
         })
 
         this.GuiaDespacho.map(e => {
@@ -1009,7 +1638,7 @@ import API from '../../../../api.js'
 
         
         // TOTALES OFFLINE DTE
-        Res?.DocBoletas.map(e => {
+        Res?.DocBoletas?.map(e => {
             this.TotalBoletasOff =  this.TotalBoletasOff + e.PrecioTotal
         })
 
@@ -1128,7 +1757,7 @@ import API from '../../../../api.js'
 
 
 
-        let AllDocument = Res.data.map( e => {
+        let AllDocument = typeof(Res.data) !== 'string' ? Res?.data?.map( e => {
         
             for(var i = 0; i < DocumentosOff.length; i++){ 
                 if(e.receptor == DocumentosOff[i].Receptor && e.dte == DocumentosOff[i].Dte && e.folio == DocumentosOff[i].Folio){
@@ -1173,6 +1802,7 @@ import API from '../../../../api.js'
                     e.Dte = DocumentosOff[i]?.Dte || '';
                     e.Codigo = DocumentosOff[i]?.Codigo || '';
                     e.Temporal = DocumentosOff[i]?.Temporal || '';
+                    e.createdAt = DocumentosOff[i]?.createdAt || '0000-00-00T';
                 }
             }   
                 
@@ -1185,7 +1815,7 @@ import API from '../../../../api.js'
             }
 
 
-        })
+        }) : DocumentosOff;
 
 
         let FormatAbonos = Res.DocAbonos.map(e => {
@@ -1246,7 +1876,7 @@ import API from '../../../../api.js'
         })
 
         this.NotaCredito = AllDocument.filter(e => {
-            if(e.tipo == 'Nota de Crédito Electrónica' || e.tipo == 'Nota de Crédito' || e.tipo == 'Nota Crédito'){
+            if(e.tipo == 'Nota de crédito electrónica' || e.tipo == 'Nota de Crédito' || e.tipo == 'Nota Crédito'){
                 return e;
             }
         })
@@ -1281,6 +1911,7 @@ import API from '../../../../api.js'
 
         this.Documentos = AllDocument;
         this.LoaderMain = false;
+
         }
 
 

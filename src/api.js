@@ -255,6 +255,12 @@ export default class API {
     }
 
 
+    //API IMPORTADORA
+    static async POST_API_IMPORTADORA(Buscar){
+        const res = await axios.post(url+ '/products/api-importadora', { Buscar } );
+        return res.data;
+    }
+
     //NOTA DE CREDITO
     static async POST_NOTACREDITO(Documento){
         const res = await axios.post(url+ '/realizar-nota-credito', { Documento } );

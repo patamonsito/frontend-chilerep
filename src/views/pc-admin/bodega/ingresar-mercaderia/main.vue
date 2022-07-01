@@ -58,7 +58,8 @@
                     <th class="text-left">Codigo</th>
                     <th class="text-left">Descripcion</th>
                     <th class="text-left">Cantidad</th>
-                    <th class="text-left">Ubicación</th>
+                    <th class="text-left">Stock</th>
+                    <th class="text-left">Ubicaciónes</th>
                     <th class="text-left">Acción</th>
                   </tr>
                 </thead>
@@ -79,17 +80,18 @@
                     <td style="width: 5rem">{{ Dato.CodigoImportadora }}</td>
                     <td style="width: auto">{{ Dato.Producto.Descripcion }}</td>
                     <td v-if="Dato.Entrada == true" style="width: 7rem">
-                      {{ Dato.Producto.Bodega }} {{ "+" + Dato.Cantidad }}
+                      {{ Dato.CantidadTotal }} {{ "+" + Dato.Cantidad }} 
                       <v-icon color="green">
                         mdi-arrow-up-bold-box-outline
                       </v-icon>
                     </td>
                     <td v-else style="width: 7rem">
-                      {{ Dato.Producto.Bodega }} {{ "-" + Dato.Cantidad }}
+                      {{ Dato.CantidadTotal }} {{ "-" + Dato.Cantidad }}
                       <v-icon color="red">
                         mdi-arrow-down-bold-box-outline
                       </v-icon>
                     </td>
+                    <td>{{ Dato.Producto.Bodega }}</td>
                     <td
                       v-if="Dato.Producto.Ubicacion[0].Columna == null"
                       style="width: 9rem"

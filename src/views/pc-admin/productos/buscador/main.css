@@ -1,4 +1,4 @@
-.center {
+  .center {
     text-align: center;
     justify-content: center;
     justify-self: center;
@@ -6,6 +6,26 @@
     text-align: -webkit-center;
   }
   
+  table{
+    font-family: 'roboto';
+    color: black;
+    width: 100%;
+  }
+
+  tr{
+    border: 1px solid lightgray;
+  }
+
+  th{
+    background-color: black;
+    color: white;
+    padding: 0.3rem;
+  }
+
+  td{
+    padding: 0.2rem;
+  }
+
   .spinner {
     border: 4px solid rgba(0, 0, 0, 0.1);
     min-width: 36px;

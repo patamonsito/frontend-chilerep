@@ -93,7 +93,7 @@
                                         <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletas + TotalFacturas - TotalNotaCredito))) }}</div>
                                     </td>
                                     <td width="15%" class="texto">
-                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletasOff + TotalFacturasOff - TotalNotaCreditoOff))) }} (ERP)<br>$ {{ FormatearPrecio(Math.round((CantidadTotalErpMasSii))) }} (S.I.I. + ERP)</div>
+                                        <div align="left">$ {{ FormatearPrecio(Math.round((TotalBoletasOff + TotalFacturasOff - TotalNotaCreditoOff))) }} (ERP)<br>$ {{ FormatearPrecio(Math.round((TotalBoletasOff + TotalFacturasOff - TotalNotaCreditoOff) + CantidadTotalErpMasSii)) }} (ERP + S.I.I)</div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -287,9 +287,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="Documento, e in Documentos" :key="e">
+                                <tr v-for="Documento, e in Documentos" :key="e" :style="Documento.NotaCreditoRef.length != 0? 'background-color: lightgray' : ''">
                                     <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
-                                    <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                    <td v-if="Documento.NotaCreditoRef.length == 0">{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                    <td v-else>Ref. Nota de Credito {{ Documento.tipo[0] }}#{{ Documento.folio }}</td>                                  
                                     <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
                                     <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
                                     <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
@@ -349,15 +350,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="Documento, e in Boletas" :key="e">
-                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
-                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
-                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
-                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
-                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
-                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
-                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
-                                        <td>{{ Documento.estado }}</td>
+                                <tr v-for="Documento, e in Boletas" :key="e" :style="Documento.NotaCreditoRef.length != 0? 'background-color: lightgray' : ''">
+                                    <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                    <td v-if="Documento.NotaCreditoRef.length == 0">{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                    <td v-else>Ref. Nota de Credito {{ Documento.tipo[0] }}#{{ Documento.folio }}</td>                                  
+                                    <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                    <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                    <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                    <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                    <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                    <td>{{ Documento.estado }}</td>
                                         <td>
                                             <v-menu offset-y>
                                               <template v-slot:activator="{ on, attrs }">
@@ -411,15 +413,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="Documento, e in Facturas" :key="e">
-                                        <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
-                                        <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
-                                        <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
-                                        <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
-                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
-                                        <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
-                                        <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
-                                        <td>{{ Documento.estado }}</td>
+                                <tr v-for="Documento, e in Facturas" :key="e" :style="Documento.NotaCreditoRef.length != 0? 'background-color: lightgray' : ''">
+                                    <td>{{ Documento.fecha.split('-').reverse().join('/') ? Documento.fecha.split('-').reverse().join('/') : 'N/A' }}</td>
+                                    <td v-if="Documento.NotaCreditoRef.length == 0">{{ Documento.tipo }} #{{ Documento.folio }}</td>
+                                    <td v-else>Ref. Nota de Credito {{ Documento.tipo[0] }}#{{ Documento.folio }}</td>                                  
+                                    <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
+                                    <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
+                                    <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                    <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
+                                    <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
+                                    <td>{{ Documento.estado }}</td>
                                         <td>
                                             <v-menu offset-y>
                                               <template v-slot:activator="{ on, attrs }">
@@ -664,7 +667,7 @@
                                         <td>{{ Documento.tipo }} #{{ Documento.folio }}</td>
                                         <td>{{ FormatearPrecio(Documento.receptor) }} - {{ Documento.razon_social }}</td>
                                         <td>$ {{ FormatearPrecio(Math.round(Documento.total)) }}</td>
-                                        <td>{{ Documento.Usuario?  Documento.Usuario : 'S.I.I.' }}</td>
+                                        <td>{{ Documento.Usuario?  Documento.Usuario : Documento.datos_dte.Encabezado.Emisor.CdgVendedor ? Documento.datos_dte.Encabezado.Emisor.CdgVendedor : 'S.I.I.' }}</td>
                                         <td>{{ Documento.MetodoPagoSeleccionado == 'Transferencia' ?  Documento.CuentaBancariaSeleccionada : Documento.MetodoPagoSeleccionado == 'Efectivo'? Documento.CajaSeleccionada : Documento.MetodoPagoSeleccionado ?  Documento.MetodoPagoSeleccionado : 'N/A' }}</td>
                                         <td>{{ Documento.EntregaSeleccionada ? Documento.EntregaSeleccionada : 'N/A' }}</td>
                                         <td>{{ Documento.estado }}</td>
@@ -723,7 +726,7 @@
               <v-card v-if="ModalVerDetalles == true && DocumentoSeleccionado.tipo ? true : false">
                 <v-card-title>{{ DocumentoSeleccionado.tipo.dte_tipo }} #{{ DocumentoSeleccionado.folio}}</v-card-title>
                 <v-divider></v-divider>
-                <v-card-text>
+                <v-card-text v-if="DocumentoSeleccionado.dte != 61">
                 
                 <v-row style="margin-top: 1rem; text-shadow: 0 0 darkblue !important;">
                     <v-col cols="6">
@@ -766,6 +769,7 @@
                         <template v-slot:default>
                             <thead style="background-color: darkblue; color: white;font-size: 1rem;">
                                 <th style="text-align: center">Nº</th>
+                                <th style="text-align: center">Codigo</th>
                                 <th style="padding-left: 1rem">Descripcion</th>
                                 <th style="text-align: center">Cant.</th>
                                 <th style="text-align: center">Precio</th>
@@ -776,6 +780,7 @@
                             <tbody>
                                 <tr v-for="Detalle, i in DocumentoSeleccionado.detalle" :key="i">
                                     <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td style="text-align: center">{{Detalle.CdgItem.VlrCodigo}}</td>
                                     <td>{{Detalle.NmbItem}}</td>
                                     <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.QtyItem))}}</td>
                                     <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.PrcItem))}}</td>
@@ -810,6 +815,115 @@
                             </v-col>
                         </v-row>
                 </v-card-text>
+
+                <v-card-text v-else>
+                <v-row style="margin-top: 1rem; text-shadow: 0 0 darkblue !important;">
+
+
+
+                    <!-- e._id = DocumentosOff[i]?._id || 'Offline';
+                    e.Receptor = DocumentosOff[i]?.receptor ||'';
+                    e.Dte = 'Nota de Credito Electronica';
+                    e.Factura = DocumentosOff[i]?.Factura ||'';
+                    e.CodeNotaCredito = DocumentosOff[i]?.CodeNotaCredito ||'';
+                    e.RazonNotaCredito = DocumentosOff[i]?.RazonNotaCredito ||'';
+                    e.dte = DocumentosOff[i]?.dte ||'';
+                    e.datos_dte = DocumentosOff[i]?.datos_dte ||'';
+                    e.Folio = DocumentosOff[i]?.folio ||'';
+                    e.Iva = DocumentosOff[i]?.iva ||'';
+                    e.Neto = DocumentosOff[i]?.neto ||'';
+                    e.Total = DocumentosOff[i]?.total ||'';
+                    e.createdAt = DocumentosOff[i]?.createdAt || '0000-00-00T'; -->
+
+
+                    <v-col cols="6">
+                       <v-text-field
+                         label="Cliente"
+                         placeholder="Cliente"
+                         :value="DocumentoSeleccionado.Receptor.contribuyente"
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+
+
+                       <v-text-field
+                          label="Vendedor"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.datos_dte.Encabezado.Emisor.CdgVendedor"
+                         :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                       <v-text-field
+                         label="Fecha y Hora"
+                         placeholder="Fecha"
+                         :value="DocumentoSeleccionado.createdAt.split('T')[0] ? DocumentoSeleccionado.createdAt.split('T')[0] : '0000-00-00'"
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+
+                        <v-text-field
+                          label="Motivo"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.RazonNotaCredito"
+                          :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                    <v-simple-table style="border: 1px solid lightgray;">
+                        <template v-slot:default>
+                            <thead style="background-color: darkblue; color: white;font-size: 1rem;">
+                                <th style="text-align: center">Nº</th>
+                                <th style="text-align: center">Codigo</th>
+                                <th style="padding-left: 1rem">Descripcion</th>
+                                <th style="text-align: center">Cant.</th>
+                                <th style="text-align: center">Precio</th>
+                                <th style="text-align: center">Neto</th>
+                                <th style="text-align: center">Iva</th>
+                                <th style="text-align: center">Total</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Detalle, i in DocumentoSeleccionado.detalle" :key="i">
+                                    <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td style="text-align: center">{{Detalle.CdgItem.VlrCodigo}}</td>
+                                    <td>{{Detalle.NmbItem}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.QtyItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.PrcItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.NetoItem)))}}</td> <!-- Neto -->
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.IvaItem)))}}</td> <!-- Iva -->
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Math.round(Detalle.MontoItem)))}}</td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                        <v-row>
+                            <v-col cols="6"></v-col>
+                            <v-col cols="6">
+                                <v-simple-table>
+                                  <template v-slot:default>
+                                    <tbody>
+                                      <tr>
+                                        <td style="font-weight: bold">Neto</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.neto)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Iva</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.iva)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Total</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.total)}} $</td>
+                                      </tr>
+                                    </tbody>
+                                  </template>
+                                </v-simple-table>
+                            </v-col>
+                        </v-row>
+               
+                </v-card-text>
+
                 <v-divider></v-divider>
                 <v-card-actions style="justify-content: right;">
                   <v-btn
@@ -839,9 +953,9 @@
               v-if="ModalVerDetallesOff == true"
              >
               <v-card>
-                <v-card-title>{{ DocumentoSeleccionado.TipoDocumento }} #{{ DocumentoSeleccionado.Folio || 0}}</v-card-title>
+                <v-card-title>{{ DocumentoSeleccionado.TipoDocumento ||'Nota de Credito'}} #{{ DocumentoSeleccionado.Folio || DocumentoSeleccionado.folio || 0}}</v-card-title>
                 <v-divider></v-divider>
-                <v-card-text>
+                <v-card-text v-if="DocumentoSeleccionado.Dte != 'Nota de Credito Electronica'">
                 
                 <v-row style="margin-top: 1rem; text-shadow: 0 0 darkblue !important;">
                     <v-col cols="6">
@@ -1140,6 +1254,7 @@
                         <template v-slot:default>
                             <thead style="background-color: darkblue; color: white;font-size: 1rem;">
                                 <th style="text-align: center">Nº</th>
+                                <th style="text-align: center">Codigo</th>
                                 <th style="padding-left: 1rem">Descripcion</th>
                                 <th style="text-align: center">Cant.</th>
                                 <th style="text-align: center">Precio</th>
@@ -1150,11 +1265,12 @@
                             <tbody>
                                 <tr v-for="Detalle, i in DocumentoSeleccionado.Detalles" :key="i">
                                     <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td style="text-align: center">{{Detalle.CdgItem.VlrCodigo}}</td>
                                     <td>{{Detalle.NmbItem}}</td>
                                     <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.QtyItem))}}</td>
                                     <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.PrcItem))}}</td>
-                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.NetoItem)))}}</td> <!-- Neto -->
-                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.IvaItem)))}}</td> <!-- Iva -->
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round((parseInt(Detalle.PrcItem) / 1.19) * Detalle.QtyItem))}}</td> <!-- Iva -->
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round((parseInt(Detalle.PrcItem) - (parseInt(Detalle.PrcItem) / 1.19)) * Detalle.QtyItem))}}</td> <!-- Neto -->
                                     <td style="text-align: center">{{FormatearPrecio(parseInt(Math.round(Detalle.MontoItem)))}}</td>
                                 </tr>
                             </tbody>
@@ -1184,6 +1300,114 @@
                             </v-col>
                         </v-row>
                 </v-card-text>
+                
+                <v-card-text v-else>
+                <v-row style="margin-top: 1rem; text-shadow: 0 0 darkblue !important;">
+
+
+
+                    <!-- e._id = DocumentosOff[i]?._id || 'Offline';
+                    e.Receptor = DocumentosOff[i]?.receptor ||'';
+                    e.Dte = 'Nota de Credito Electronica';
+                    e.Factura = DocumentosOff[i]?.Factura ||'';
+                    e.CodeNotaCredito = DocumentosOff[i]?.CodeNotaCredito ||'';
+                    e.RazonNotaCredito = DocumentosOff[i]?.RazonNotaCredito ||'';
+                    e.dte = DocumentosOff[i]?.dte ||'';
+                    e.datos_dte = DocumentosOff[i]?.datos_dte ||'';
+                    e.Folio = DocumentosOff[i]?.folio ||'';
+                    e.Iva = DocumentosOff[i]?.iva ||'';
+                    e.Neto = DocumentosOff[i]?.neto ||'';
+                    e.Total = DocumentosOff[i]?.total ||'';
+                    e.createdAt = DocumentosOff[i]?.createdAt || '0000-00-00T'; -->
+
+
+                    <v-col cols="6">
+                       <v-text-field
+                         label="Cliente"
+                         placeholder="Cliente"
+                         :value="DocumentoSeleccionado.Receptor.contribuyente"
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+
+
+                       <v-text-field
+                          label="Vendedor"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.datos_dte.Encabezado.Emisor.CdgVendedor"
+                         :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                    <v-col cols="6">
+                       <v-text-field
+                         label="Fecha y Hora"
+                         placeholder="Fecha"
+                         :value="DocumentoSeleccionado.createdAt.split('T')[0] ? DocumentoSeleccionado.createdAt.split('T')[0] : '0000-00-00'"
+                         :disabled="true"
+                         outlined
+                       ></v-text-field>
+
+                        <v-text-field
+                          label="Motivo"
+                          placeholder="Placeholder"
+                          :value="DocumentoSeleccionado.RazonNotaCredito"
+                          :disabled="true"
+                          outlined
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+               
+                    <v-simple-table style="border: 1px solid lightgray;">
+                        <template v-slot:default>
+                            <thead style="background-color: darkblue; color: white;font-size: 1rem;">
+                                <th style="text-align: center">Nº</th>
+                                <th style="text-align: center">Codigo</th>
+                                <th style="padding-left: 1rem">Descripcion</th>
+                                <th style="text-align: center">Cant.</th>
+                                <th style="text-align: center">Precio</th>
+                                <th style="text-align: center">Neto</th>
+                                <th style="text-align: center">Iva</th>
+                                <th style="text-align: center">Total</th>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Detalle, i in DocumentoSeleccionado.datos_dte.Detalle" :key="i">
+                                    <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td style="text-align: center">{{Detalle.CdgItem.VlrCodigo}}</td>
+                                    <td>{{Detalle.NmbItem}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.QtyItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Detalle.PrcItem))}}</td>
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(parseInt(Detalle.PrcItem) * Detalle.QtyItem))}}</td> <!-- Iva -->
+                                    <td style="text-align: center">{{FormatearPrecio(Math.round(((parseInt(Detalle.PrcItem) * 1.19) - ((parseInt(Detalle.PrcItem) * 1.19) / 1.19)) * Detalle.QtyItem))}}</td> <!-- Neto -->
+                                    <td style="text-align: center">{{FormatearPrecio(parseInt(Math.round(Detalle.MontoItem)))}}</td>
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                        <v-row>
+                            <v-col cols="6"></v-col>
+                            <v-col cols="6">
+                                <v-simple-table>
+                                  <template v-slot:default>
+                                    <tbody>
+                                      <tr>
+                                        <td style="font-weight: bold">Neto</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.Neto)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Iva</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.Iva)}} $</td>
+                                      </tr>
+                                      <tr>
+                                        <td style="font-weight: bold">Total</td>
+                                        <td colspan="2" class="text-nowrap" style="text-align: end;">{{FormatearPrecio(DocumentoSeleccionado.Total)}} $</td>
+                                      </tr>
+                                    </tbody>
+                                  </template>
+                                </v-simple-table>
+                            </v-col>
+                        </v-row>
+                </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions style="justify-content: right;">
                   <v-btn
@@ -1206,22 +1430,33 @@
               max-width="1200px"
               v-if="ModalNotaCredito == true"
              >
-              <v-card v-if="ModalNotaCredito == true && DocumentoSeleccionado.tipo ? true : false">
+              <v-card v-if="ModalNotaCredito == true && LoaderNotaCredito == false && NotaCreditoReady == false">
                 <v-card-title>{{ DocumentoSeleccionado.tipo.dte_tipo }} #{{ DocumentoSeleccionado.folio || 0}}</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
                 
+                <v-alert class="mt-2" dense outlined type="error" v-if="AlertNotaCredito != ''">
+                  <strong
+                    > {{ AlertNotaCredito }}</strong
+                  >
+                </v-alert>
+
+
+
                 <v-row style="margin-top: 1rem;">
                     <v-col cols="6">
                         <v-select
                           :items="SelectNotaCredito"
                           label="Seleccione Motivo"
+                          v-model="CodeNotaCredito"
+                          @change="VerificarNotaCredito()"
                         ></v-select>
                     </v-col>
                     <v-col cols="6">
                         <v-text-field
                            label="Explique la Razon"
                            placeholder="Porque se emite esta nota de credito"
+                          v-model="RazonNotaCredito"
                          ></v-text-field>
                     </v-col>
                 </v-row>
@@ -1231,6 +1466,7 @@
                         <template v-slot:default>
                             <thead style="background-color: darkblue; color: white;font-size: 1rem;">
                                 <th style="text-align: center">Nº</th>
+                                <th style="text-align: center">Codigo</th>
                                 <th style="padding-left: 1rem">Descripcion</th>
                                 <th style="text-align: center">Cant.</th>
                                 <th style="text-align: center">Precio</th>
@@ -1242,6 +1478,7 @@
                             <tbody>
                                 <tr v-for="Detalle, i in DocumentoSeleccionado.detalle" :key="i">
                                     <td style="text-align: center">{{Detalle.NroLinDet}}</td>
+                                    <td style="text-align: center">{{Detalle.CdgItem.VlrCodigo}}</td>
                                     <td>{{Detalle.NmbItem}}</td>
                                     <td style="text-align: center">
                                         <v-text-field
@@ -1296,6 +1533,15 @@
                 <v-divider></v-divider>
                 <v-card-actions style="justify-content: right;">
                   <v-btn
+                    color="success"
+                    class="pa-2"
+                    dark
+                    text
+                    @click="EnviarNotaCredito()"
+                  >
+                    Realizar Nota de Credito
+                  </v-btn>
+                  <v-btn
                     color="black"
                     class="pa-2"
                     dark
@@ -1305,6 +1551,17 @@
                     Cerrar
                   </v-btn>
                 </v-card-actions>
+              </v-card>
+              <v-card v-else-if="LoaderNotaCredito == false && NotaCreditoReady == true">
+                <v-col cols="12">
+                    <v-alert
+                      dense
+                      text
+                      type="success"
+                    >
+                      Nota de Credito Realizada con exito!
+                    </v-alert>
+                </v-col>
               </v-card>
               <v-card v-else>
                 <div class="center">
@@ -1350,6 +1607,9 @@ import API from '../../../../api.js'
         DocumentoSeleccionado: null,
         ModalVerDetallesOff: false,
         ModalNotaCredito: false,
+        //Campos nota de credito
+        CodeNotaCredito: '',
+        RazonNotaCredito: '',
         //DTE S.I.I.
         Documentos: [],
         Boletas: [],
@@ -1383,6 +1643,9 @@ import API from '../../../../api.js'
         //Formas de Pago
         MetodosPago: [],
         //Nota Credito
+        NotaCreditoReady: false,
+        LoaderNotaCredito: false,
+        AlertNotaCredito: '',
         SelectNotaCredito: ["Anular Documento", "Correccion de Monto", "Correccion de Texto"],
         //Error al solicitar los datos
         Retry: false,
@@ -1407,27 +1670,68 @@ import API from '../../../../api.js'
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
+        async EnviarNotaCredito(){
+          let CodeNotaCredito = this.CodeNotaCredito == "Anular Documento" ? '1' : this.CodeNotaCredito == "Correccion de Monto"? '3' : '2' 
+          
+          this.LoaderNotaCredito = true;
+          
+          this.DocumentoSeleccionado = {
+            ...this.DocumentoSeleccionado,
+            CodeNotaCredito: CodeNotaCredito,
+            RazonNotaCredito: this.RazonNotaCredito
+          }
+          
+          let Response = await API.POST_NOTACREDITO(this.DocumentoSeleccionado)
+        
+          if(Response.response == 'EXITO'){
+            this.NotaCreditoReady = true;
+            this.LoaderNotaCredito = false;
+            setTimeout(() => {
+              this.ModalNotaCredito = false;
+              this.NotaCreditoReady = false;
+            }, 3000);
+          }else{
+            this.AlertNotaCredito = 'No se pudo realizar la nota de credito por favor contacte con soporte.';
+            setTimeout(() => {
+              this.AlertNotaCredito = '';
+            }, 5000);
+          }
+        
+        },
+
+
         async RealizarNotaCredito(Documento){
             this.DocumentoSeleccionado = {}
-            if(Documento?._id){
+            
+            if(!Documento.estado){
+              return alert('No puedes realizar nota de credito a un documento sin estado en el SII, vuelve a intentarlo mas tarde.')
+            }
+
+            if(Documento?._id && !Documento?.usuario){ // Venta Offline
+                Documento.detalle = Documento.Detalles;
+                console.log(Documento)
                 this.DocumentoSeleccionado = Documento;
                 this.ModalNotaCredito = true;
             }else{
                 this.ModalNotaCredito = true;
+                this.LoaderNotaCredito = true;
                 let GetDocumento = await API.POST_DOCUMENTO(Documento);
                 this.DocumentoSeleccionado = GetDocumento;
                 if(this.DocumentoSeleccionado.tipo.codigo == 33){
                     this.DocumentoSeleccionado.detalle.map(e => {
                         e.PrcItem = (Math.round(parseInt(e.PrcItem) * 1.19)).toString();
-                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19)).toString();
-                        e.IvaItem = (Math.round(parseInt(e.PrcItem)) - Math.round((Math.round(parseInt(e.PrcItem)) / 1.19)) * parseInt(e.QtyItem)).toString()
+                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19 * parseInt(e.QtyItem))).toString();
+                        e.IvaItem = (Math.round(parseInt(e.PrcItem) - (parseInt(e.PrcItem) / 1.19) * parseInt(e.QtyItem))).toString();
+                        e.MontoItem = (parseInt(e.NetoItem) + parseInt(e.IvaItem)).toString();
                     })
+                    
+                this.LoaderNotaCredito = false;
                 }else{
                     this.DocumentoSeleccionado.detalle.map(e => {
-                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19)).toString();
-                        e.IvaItem = (Math.round(parseInt(e.PrcItem)) - Math.round((Math.round(parseInt(e.PrcItem)) / 1.19)) * parseInt(e.QtyItem)).toString()
+                        e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19 * parseInt(e.QtyItem))).toString();
+                        e.IvaItem = (Math.round((parseInt(e.PrcItem) - (parseInt(e.PrcItem) / 1.19)) * parseInt(e.QtyItem))).toString()
                     })
-
+                  this.LoaderNotaCredito = false;
                 }
             }
         },
@@ -1438,14 +1742,14 @@ import API from '../../../../api.js'
                e.QtyItem = e.QtyItem < 1 ? 1 : e.QtyItem;
                if(this.DocumentoSeleccionado.tipo.codigo == 33){
                    e.MontoItem = (parseInt(e.PrcItem) * parseInt(e.QtyItem)).toString();
-                   e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19) * parseInt(e.QtyItem)).toString();
-                   e.IvaItem = ((Math.round(parseInt(e.PrcItem)) - Math.round((e.PrcItem / 1.19))) * parseInt(e.QtyItem)).toString();
+                   e.NetoItem = (Math.round((parseInt(e.PrcItem) / 1.19) * parseInt(e.QtyItem))).toString();
+                   e.IvaItem = (Math.round((parseInt(e.PrcItem) - (e.PrcItem / 1.19)) * parseInt(e.QtyItem))).toString();
                    e.MontoItem = ((parseInt(e.NetoItem) + parseInt(e.IvaItem)) * parseInt(e.QtyItem)).toString();
                    MontoTotal = MontoTotal + parseInt(e.MontoItem);
                }else{
                    e.MontoItem = (parseInt(e.PrcItem) * parseInt(e.QtyItem)).toString();
-                   e.NetoItem = (Math.round(parseInt(e.PrcItem) / 1.19) * parseInt(e.QtyItem)).toString();
-                   e.IvaItem = ((Math.round(parseInt(e.PrcItem)) - Math.round((e.PrcItem / 1.19))) * parseInt(e.QtyItem)).toString();
+                   e.NetoItem = (Math.round((parseInt(e.PrcItem) / 1.19) * parseInt(e.QtyItem))).toString();
+                   e.IvaItem = (Math.round((parseInt(e.PrcItem) - (e.PrcItem / 1.19)) * parseInt(e.QtyItem))).toString();
                    MontoTotal = MontoTotal + parseInt(e.MontoItem);
                }
             });
@@ -1453,11 +1757,11 @@ import API from '../../../../api.js'
             if(this.DocumentoSeleccionado.tipo.codigo == 33){
                 this.DocumentoSeleccionado.total = (MontoTotal).toString();
                 this.DocumentoSeleccionado.iva = (Math.round((MontoTotal / 1.19))).toString();
-                this.DocumentoSeleccionado.neto = (MontoTotal - Math.round((MontoTotal / 1.19))).toString();
+                this.DocumentoSeleccionado.neto = (Math.round(MontoTotal - (MontoTotal / 1.19))).toString();
             }else{                
                 this.DocumentoSeleccionado.total = (MontoTotal).toString();
                 this.DocumentoSeleccionado.iva = (Math.round((MontoTotal / 1.19))).toString();
-                this.DocumentoSeleccionado.neto = (MontoTotal - Math.round((MontoTotal / 1.19))).toString();
+                this.DocumentoSeleccionado.neto = (Math.round(MontoTotal - (MontoTotal / 1.19))).toString();
             }
         },
 
@@ -1474,6 +1778,7 @@ import API from '../../../../api.js'
         async VerDetalles(Documento){
             this.DocumentoSeleccionado = {}
             if(Documento?._id){
+                console.log(Documento)
                 this.DocumentoSeleccionado = Documento;
                 this.ModalVerDetallesOff = true;
             }else{
@@ -1519,6 +1824,13 @@ import API from '../../../../api.js'
             }
         },
 
+        VerificarNotaCredito(){
+
+          if(this.CodeNotaCredito == 'Anular Documento'){
+            this.RazonNotaCredito = 'DEVOLUCIÓN MERCADERíA'
+          }
+
+        },
         
         Imprimir(Receptor, Dte, Folio, Formato){
 
@@ -1633,7 +1945,7 @@ import API from '../../../../api.js'
         this.BoletasOff = Res?.DocBoletas ? Res?.DocBoletas : [];
         this.FacturasOff = Res?.DocFacturas ? Res?.DocFacturas : [];
         this.GuiaDespachoOff = Res?.DocGuiaDespacho ? Res?.DocGuiaDespacho : [];
-        this.NotaCreditoOff = Res?.DocNotaCredito ? Res?.DocNotaCredito : [];
+        this.NotaCreditoOff = Res?.DocNotaCreditos ? Res?.DocNotaCreditos : [];
         this.Abonos = Res?.DocAbonos ? Res?.DocAbonos : [];
 
         
@@ -1653,8 +1965,8 @@ import API from '../../../../api.js'
 
         })
 
-        Res?.DocNotaCredito?.map(e => {
-            this.TotalNotaCreditoOff =  this.TotalNotaCreditoOff + e.PrecioTotal
+        Res?.DocNotaCreditos?.map(e => {
+            this.TotalNotaCreditoOff =  this.TotalNotaCreditoOff + e.total
         })
 
         Res?.DocAbonos?.map(e => {
@@ -1684,18 +1996,21 @@ import API from '../../../../api.js'
         ...this.Abonos
         ]
 
+        console.log(this.NotaCreditoOff)
+
         this.DocumentosOff = DocumentosOff;
 
         //ASIGNAR TOTALES A VENDEDORES SEGUN DOCUMENTO
         this.Vendedores.map(e => {
             for(let i = 0; i < DocumentosOff.length; i++){
-                if(e.Usuario == DocumentosOff[i].Usuario){
+                if(e.Usuario == DocumentosOff[i].Usuario || e.Usuario.toLowerCase() == DocumentosOff[i]?.datos_dte?.Encabezado?.Emisor?.CdgVendedor.toLowerCase()){
                     if(DocumentosOff[i].TipoDocumento == 'Boleta'){
                         e.TotalBoletas = e.TotalBoletas + DocumentosOff[i].PrecioTotal;
                     }else if(DocumentosOff[i].TipoDocumento == 'Factura'){
                         e.TotalFacturas = e.TotalFacturas + DocumentosOff[i].PrecioTotal;
-                    }else if(DocumentosOff[i].TipoDocumento == 'Nota Credito'){
-                        e.TotalNotaCredito = e.TotalNotaCredito + DocumentosOff[i].PrecioTotal;
+                    }else if(DocumentosOff[i].TipoDocumento == 'Nota Credito' ||  DocumentosOff[i].Dte == 61){
+                      console.log(DocumentosOff[i])
+                        e.TotalNotaCredito = e.TotalNotaCredito + DocumentosOff[i].total;
                     }else if(DocumentosOff[i].TipoDocumento == 'Guia Despacho'){
                         e.TotalGuiaDespacho = e.TotalGuiaDespacho + DocumentosOff[i].PrecioTotal;
                     }else if(DocumentosOff[i].TipoDocumento == 'Abono'){
@@ -1758,9 +2073,38 @@ import API from '../../../../api.js'
 
 
         let AllDocument = typeof(Res.data) !== 'string' ? Res?.data?.map( e => {
+          e.NotaCreditoRef = []
         
             for(var i = 0; i < DocumentosOff.length; i++){ 
                 if(e.receptor == DocumentosOff[i].Receptor && e.dte == DocumentosOff[i].Dte && e.folio == DocumentosOff[i].Folio){
+                   if(e.dte == 61){
+                    e._id = DocumentosOff[i]?._id || 'Offline';
+                    e.Receptor = DocumentosOff[i]?.receptor ||'';
+                    e.Dte = 'Nota de crédito electrónica';
+                    e.Factura = DocumentosOff[i]?.Factura ||'';
+                    e.CodeNotaCredito = DocumentosOff[i]?.CodeNotaCredito ||'';
+                    e.RazonNotaCredito = DocumentosOff[i]?.RazonNotaCredito ||'';
+                    e.dte = DocumentosOff[i]?.dte ||'';
+                    e.datos_dte = DocumentosOff[i]?.datos_dte ||'';
+                    e.Usuario = e.datos_dte.Encabezado.Emisor.CdgVendedor;
+                    console.log(DocumentosOff[i], 'rescatar')
+                      console.log(e, 'here');
+                    if(e.datos_dte.Detalle.length == null){
+                        e.datos_dte.Detalle = [e.datos_dte.Detalle]
+
+                        e.datos_dte.Detalle.map(a => {
+                          a.MontoItem = Math.round((parseInt(a.PrcItem) * parseInt(a.QtyItem)) * 1.19)
+                        })
+                    }
+
+                    e.Folio = DocumentosOff[i]?.folio ||'';
+                    e.NotaCreditoRef = [];
+                    e.Iva = DocumentosOff[i]?.iva ||'';
+                    e.Neto = DocumentosOff[i]?.neto ||'';
+                    e.Total = DocumentosOff[i]?.total ||'';
+                    e.createdAt = DocumentosOff[i]?.createdAt || '0000-00-00T';
+                   }else{
+                    e.NotaCreditoRef = DocumentosOff[i].NotaCreditoRef;
                     e._id = DocumentosOff[i]?._id || 'Offline';
                     e.GiroEmpresa = DocumentosOff[i]?.GiroEmpresa || '';
                     e.DireccionEmpresa = DocumentosOff[i]?.DireccionEmpresa || '';
@@ -1803,6 +2147,12 @@ import API from '../../../../api.js'
                     e.Codigo = DocumentosOff[i]?.Codigo || '';
                     e.Temporal = DocumentosOff[i]?.Temporal || '';
                     e.createdAt = DocumentosOff[i]?.createdAt || '0000-00-00T';
+                  
+                     if(e.folio == 458){
+                       console.log(e, 'este2')
+                     }
+                  }
+
                 }
             }   
                 
@@ -1832,8 +2182,8 @@ import API from '../../../../api.js'
 
         let AddDocOffline = DocumentosOff.filter( e => {
             // Res.data
-            for(var i = 0; i < Res.data.length; i++){             
-                if(e.Receptor == Res.data[i].receptor && e.Dte == Res.data[i].dte && e.Folio == Res.data[i].folio){
+            for(var i = 0; i < Res.data.length; i++){ 
+                if(e.Receptor == Res.data[i].receptor && e.Dte == Res.data[i].dte && e.Folio == Res.data[i].folio || e._id == Res.data[i]._id ){
                     e.Existe = true
                 }
             }
@@ -1908,6 +2258,9 @@ import API from '../../../../api.js'
                 }
 
         this.CantidadTotalErpMasSii = CantidadErpMasSii;
+
+        console.log(AllDocument)
+
 
         this.Documentos = AllDocument;
         this.LoaderMain = false;

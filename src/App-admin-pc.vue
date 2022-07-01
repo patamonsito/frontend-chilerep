@@ -955,7 +955,7 @@
       class="ma-2"
       color="grey"
       dark
-      @click="dialogCarrito = false"
+      @click="CerrarCarrito()"
     >
       Cerrar
 </v-btn>
@@ -1004,7 +1004,7 @@
       class="ma-2"
       color="grey"
       dark
-      @click="dialogCarrito = false"
+      @click="CerrarCarrito()"
     >
       Cerrar
 </v-btn>
@@ -1274,7 +1274,7 @@
                   action: 'mdi-car-door',
                   title: 'Productos',
                   items: [
-                    // { title: 'Buscador' },
+                    { title: 'Buscador' },
                     { title: 'Modelo' },
                     { title: 'Linea' },
                     // { title: 'Marca' },
@@ -1391,6 +1391,44 @@
       }),
       
       methods: {
+
+        async CerrarCarrito(){
+            this.dialogCarrito = false    
+            this.EntregaSeleccionada = null,
+            this.date = (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10), // Fecha de Transferencia
+            this.Empresa = {},
+            this.RutEmpresa = null;
+            this.TipoDocumento = null;
+            this.RazonSocialEmpresa = null;
+            this.CajaSeleccionada = null;
+            this.CuentaBancariaSeleccionada = null;
+            this.Monto = null;
+            this.MontoTransferido = null;
+            this.MontoCaja = null;
+            this.MontoTransbank = null;
+            this.Titular = null;
+            this.CorreoEmpresa = null;
+            this.OrdenCompra = null;
+            this.InformacionPago = null;
+            this.Observaciones = "Sin Observaciones.",
+            this.Rut = null;
+            this.Nombres = null;
+            this.Apellidos = null;
+            this.Telefono = "+56",
+            this.RegionSeleccionada = null;
+            this.ComunaSeleccionada = null;
+            this.Calle = null;
+            this.Numero = null;
+            this.Departamento = null;
+            this.Correo = null;
+            this.AgenciaSeleccionada = null;
+            this.MetodoPago = null;
+            this.DteEnviado = false;
+            this.CarritoLoader = false;
+
+            this.$refs.formCarrito.resetValidation()
+
+        },
 
         async VaciarCarrito(){
           this.CarritoLoader = true;
@@ -1752,6 +1790,8 @@
               this.$router.push({ path: "/dev/gestionar-imagenes" });
             }else if(text == 'Modelo'){
               this.$router.push({ path: "/productos/catalogo" });
+            }else if(text == 'Buscador'){
+              this.$router.push({ path: "/productos/buscador" });
             }else if(text == 'Marca'){
               this.$router.push({ path: "/productos/marca" });
             }else if(text == 'Linea'){

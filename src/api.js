@@ -261,6 +261,17 @@ export default class API {
         return res.data;
     }
 
+    //API IMPORTADORA
+    static async POST_REFAX_AUTH(){
+        const res = await axios.post(url+ '/auth-refax');
+        return res.data;
+    }
+
+    static async POST_APLICACIONESM(Aplicacion){
+        const res = await axios.post(url+ '/aplicaciones-m', { Aplicacion } );
+        return res.data;
+    }
+
     //NOTA DE CREDITO
     static async POST_NOTACREDITO(Documento){
         const res = await axios.post(url+ '/realizar-nota-credito', { Documento } );

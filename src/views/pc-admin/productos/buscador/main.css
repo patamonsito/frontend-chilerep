@@ -8,7 +8,6 @@
   
   table{
     font-family: 'roboto';
-    color: black;
     width: 100%;
   }
 
@@ -17,7 +16,6 @@
   }
 
   th{
-    background-color: black;
     color: white;
     padding: 0.3rem;
   }

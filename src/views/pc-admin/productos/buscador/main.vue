@@ -54,11 +54,15 @@
       <v-tab href="#tab-4" v-if="Mannheim.length != 0">
         Mannheim
       </v-tab>
+
+      <v-tab href="#tab-5" v-if="Noriega.length != 0">
+        Noriega
+      </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="i in 4"
+        v-for="i in 5"
         :key="i"
         :value="'tab-' + i"
       >
@@ -383,6 +387,85 @@
   </v-simple-table>
 
             </v-card-text>
+            <v-card-text v-if="i == 5">
+                
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Codigo
+          </th>
+          <th class="text-left">
+            Marca
+          </th>
+          <th class="text-left">
+            Modelo
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Origen
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Stock
+          </th>
+          <th class="text-left">
+            Acción
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in Noriega"
+          :key="i"
+        >
+          <td>{{ Producto.Sku }}</td>
+          <td>{{ Producto.Marca }}</td>
+          <td v-if="Producto.Modelo != '' && Producto.Modelo" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
+          <td v-else></td>
+          <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
+          <td>{{ Producto.Origen }}</td>
+          <td>{{ Producto.Precio }}</td>
+          <td>{{ Producto.Stock }}</td>
+          <td v-if="Producto.Stock != ''">
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+         <td v-else></td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+            </v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -474,6 +557,7 @@ import API from '../../../../api.js'
         Alsacia: [],
         Bicimoto: [],
         Mannheim: [],
+        Noriega: [],
         Msg: 'Realice una busqueda para empezar.',
         ProductoMannheim: {},
         Solicitud: '',
@@ -538,13 +622,14 @@ import API from '../../../../api.js'
             this.Alsacia = Datos.Alsacia[0];
             this.Bicimoto = Datos.Bicimoto;
             this.Mannheim = Datos.Mannheim;
+            this.Noriega = Datos.Noriega;
 
             if(this.Bicimoto[0].Descripcion == ''){
                 this.Bicimoto = [];
             }
 
 
-            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length;
+            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'

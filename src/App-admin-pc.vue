@@ -1892,7 +1892,7 @@
 
         console.log(Response)
 
-        fetch("http://localhost:3000/api/certificado/Letter/" + Response._id + "/" + Response.TipoDocumento, {method:'GET',  headers: {'Content-Type': 'application/json'} })
+        fetch("http://143.198.165.86:3000/api/certificado/Letter/" + Response._id + "/" + Response.TipoDocumento, {method:'GET',  headers: {'Content-Type': 'application/json'} })
             .then( (r) => r.json())
             .then( d => {
                 

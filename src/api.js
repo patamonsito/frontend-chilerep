@@ -1,7 +1,11 @@
 
 import axios from 'axios';
-// const url = 'http://143.198.165.86:3000/api';
-const url = '/api';
+console.log(process.env.NODE_ENV)
+if(process.env.NODE_ENV == 'development'){
+    const url = '/api';
+}else{
+    const url = 'http://143.198.165.86:3000/api';
+}
 
 export default class API {
     //Login Admin

@@ -26,7 +26,7 @@
 
     <div v-else-if="Loader == true">
         <div class="center">
-            <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
         </div>
     </div>
 

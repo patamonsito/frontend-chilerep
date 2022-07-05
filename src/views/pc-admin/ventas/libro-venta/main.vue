@@ -939,7 +939,7 @@
               </v-card>
               <v-card v-else>
                 <div class="center">
-                    <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+                    <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
                 </div>
               </v-card>
             </v-dialog>
@@ -1565,7 +1565,7 @@
               </v-card>
               <v-card v-else>
                 <div class="center">
-                    <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+                    <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
                 </div>
               </v-card>
             </v-dialog>
@@ -1578,7 +1578,7 @@
         </div>
         <div v-else>
             <div class="center">
-                <img src="http://localhost:3000/etc/loader.gif" alt="Cargando...">
+                <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
             </div>
 
             <div class="center" v-if="Retry == true">

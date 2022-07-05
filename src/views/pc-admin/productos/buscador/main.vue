@@ -627,7 +627,9 @@ import API from '../../../../api.js'
             this.Mannheim = Datos.Mannheim;
             this.Noriega = Datos.Noriega;
 
-            if(this.Bicimoto[0].Descripcion == ''){
+            console.log(process.env.NODE_ENV)
+
+            if(this.Bicimoto[0].Descripcion == '' || process.env.NODE_ENV == 'production'){
                 this.Bicimoto = [];
             }
 

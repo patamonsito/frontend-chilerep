@@ -638,7 +638,7 @@ import API from '../../../../api.js'
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
         CrearProducto(Producto){
-          
+
         },
 
         async VerAplicacionesM(Producto){
@@ -676,8 +676,6 @@ import API from '../../../../api.js'
             this.Mannheim = Datos.Mannheim;
             this.Noriega = Datos.Noriega;
 
-            console.log(process.env.NODE_ENV)
-
             if(this.Bicimoto[0].Descripcion == '' || process.env.NODE_ENV == 'production'){
                 this.Bicimoto = [];
             }
@@ -688,6 +686,8 @@ import API from '../../../../api.js'
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'
             }
+
+            this.tab = null;
 
             this.Loader = false;
 

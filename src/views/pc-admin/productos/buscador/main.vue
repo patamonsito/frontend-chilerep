@@ -426,7 +426,7 @@
         >
           <td>{{ Producto.Sku }}</td>
           <td>{{ Producto.Marca }}</td>
-          <td v-if="Producto.Modelo != '' && Producto.Modelo" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
+          <td v-if="Producto.Modelo != '' && Producto.Modelo" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['Año'] }}</td>
           <td v-else></td>
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.Origen }}</td>
@@ -472,7 +472,7 @@
     </div>
 
 
-    <!-- Modal -->
+    <!-- Modal Aplicaciones-->
 
         <v-dialog
       v-model="dialogMannheim"
@@ -539,6 +539,51 @@
     </v-dialog>
         
 
+
+<!-- Modal Crear Producto -->
+    <v-dialog
+      v-model="dialogCrearProducto"
+      width="1300"
+    >
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+          Crear Nuevo Producto
+        </v-card-title>
+
+        <v-card-text v-if="tab == 1">
+
+        </v-card-text>
+
+        <v-card-text v-if="tab == 2">
+
+        </v-card-text>
+
+        <v-card-text v-if="tab == 3">
+
+        </v-card-text>
+
+        <v-card-text v-if="tab == 4">
+
+        </v-card-text>
+
+        <v-card-text v-if="tab == 5">
+
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn
+            color="secondary"
+            text
+            @click="dialogCrearProducto = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     </div>
 </template>
 
@@ -591,6 +636,10 @@ import API from '../../../../api.js'
     // funciones 
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
+
+        CrearProducto(Producto){
+          
+        },
 
         async VerAplicacionesM(Producto){
             

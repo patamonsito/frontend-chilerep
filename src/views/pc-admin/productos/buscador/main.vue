@@ -559,7 +559,10 @@ import API from '../../../../api.js'
         Mannheim: [],
         Noriega: [],
         Msg: 'Realice una busqueda para empezar.',
-        ProductoMannheim: {},
+        ProductoMannheim: {
+          Descripcion: '',
+          Oem: ''
+        },
         Solicitud: '',
         rules: [
         value => !!value || 'Este campo es requirido para buscar.',

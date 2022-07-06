@@ -699,12 +699,14 @@ import API from '../../../../api.js'
               await API.POST_REFAX_AUTH();
               await API.POST_BICIMOTO_AUTH();
               await API.POST_NORIEGA_AUTH();
+            
+              this.Proceso = 'Buscando en refax...';
+            
+              Refax = await API.POST_API_REFAX(this.Solicitud);
             }
 
 
-            this.Proceso = 'Buscando en refax...';
 
-            Refax = await API.POST_API_REFAX(this.Solicitud);
 
             Refax[0].pop();
             Refax[0].pop();

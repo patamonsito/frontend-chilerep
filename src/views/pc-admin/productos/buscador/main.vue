@@ -18,6 +18,20 @@
         
                 <v-divider></v-divider>
 
+
+
+            <v-col cols="12" v-if="Proceso != ''">
+              <v-alert class="mt-2 mb-2 center"
+              dense
+              outlined
+              type="success"
+              >
+                 <strong>{{ Proceso }}</strong>
+              </v-alert>
+            </v-col>
+
+
+
     <div style="margin-top: 1rem" v-if="Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == '' && Loader == false"> 
         
         <p class="center" style="margin-top: 1rem">{{Msg}}</p>
@@ -596,6 +610,8 @@ import API from '../../../../api.js'
     //Variables
     data: () => ({
         Loader: true,
+        Proceso: '',
+        dialogCrearProducto: false,
         dialogMannheim: false,
         AplicacionesM: [],
         Refax: [],
@@ -660,32 +676,98 @@ import API from '../../../../api.js'
         },
 
         async Buscar(){
+
             if(this.Solicitud == ''){
-                return alert('No puedes realizar una busqueda vacia.')
+              return alert('No puedes realizar una busqueda vacia.')
             }
 
             this.Loader = true;
-            let Datos = await API.POST_API_IMPORTADORA(this.Solicitud)
 
-            Datos.Refax[0].pop();
-            Datos.Refax[0].pop();
 
-            this.Refax = Datos.Refax[0];
-            this.Alsacia = Datos.Alsacia[0];
-            this.Bicimoto = Datos.Bicimoto;
-            this.Mannheim = Datos.Mannheim;
-            this.Noriega = Datos.Noriega;
+            this.Refax = [];
+            this.Alsacia = [];
+            this.Bicimoto = [];
+            this.Mannheim = [];
+            this.Noriega = [];
 
-            if(this.Bicimoto[0].Descripcion == '' || process.env.NODE_ENV == 'production'){
-                this.Bicimoto = [];
+            this.Proceso = 'Buscando en refax...';
+
+            let Refax = await API.POST_API_REFAX(this.Solicitud);
+
+            if(Refax == 'Error al iniciar sesion'){
+              this.Proceso = 'Actualizando Acceso a las importadoras...';
+              await API.POST_REFAX_AUTH();
+              await API.POST_BICIMOTO_AUTH();
+              await API.POST_NORIEGA_AUTH();
             }
 
+
+            this.Proceso = 'Buscando en refax...';
+
+            Refax = await API.POST_API_REFAX(this.Solicitud);
+
+            Refax[0].pop();
+            Refax[0].pop();
+
+            this.Refax = Refax[0];
+
+            if(this.Refax.length != 0){
+              this.Loader = false;
+            }
+
+            
+            this.Proceso = 'Buscando en alsacia...';
+
+            let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
+
+            this.Alsacia = Alsacia[0];
+            
+            if(this.Alsacia.length != 0){
+              this.Loader = false;
+            }
+            
+            this.Proceso = 'Buscando en bicimoto...';
+
+            let Bicimoto = await API.POST_API_BICIMOTO(this.Solicitud);
+            
+            if(Bicimoto[0].Descripcion == '' || process.env.NODE_ENV == 'production'){
+                Bicimoto = [];
+            }
+
+            this.Bicimoto = Bicimoto;
+
+            if(this.Bicimoto.length != 0){
+              this.Loader = false;
+            }
+
+            this.Proceso = 'Buscando en mannheim...';
+
+            let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
+            
+            this.Mannheim = Mannheim;
+
+            if(this.Mannheim.length != 0){
+              this.Loader = false;
+            }
+
+            this.Proceso = 'Buscando en noriega...';
+
+            let Noriega = await API.POST_API_NORIEGA(this.Solicitud);
+            
+            this.Noriega = Noriega;
+
+            if(this.Noriega.length != 0){
+              this.Loader = false;
+            }
 
             var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'
             }
+
+            
+            this.Proceso = '';
 
             this.tab = null;
 

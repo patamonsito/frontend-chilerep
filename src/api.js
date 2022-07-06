@@ -256,7 +256,7 @@ export default class API {
         const res = await axios.post(url+ '/obtener-documentos', { dateFilter } );
         return res.data;
     }
-
+    
 
     //API IMPORTADORA
     static async POST_API_IMPORTADORA(Buscar){
@@ -264,11 +264,48 @@ export default class API {
         return res.data;
     }
 
+    static async POST_API_REFAX(Buscar){
+        const res = await axios.post(url+ '/api-refax', { Buscar } );
+        return res.data;
+    }
+    
+    static async POST_API_BICIMOTO(Buscar){
+        const res = await axios.post(url+ '/api-bicimoto', { Buscar } );
+        return res.data;
+    }
+    static async POST_API_MANNHEIM(Buscar){
+        const res = await axios.post(url+ '/api-mannheim', { Buscar } );
+        return res.data;
+    }
+    static async POST_API_ALSACIA(Buscar){
+        const res = await axios.post(url+ '/api-alsacia', { Buscar } );
+        return res.data;
+    }
+    static async POST_API_NORIEGA(Buscar){
+        const res = await axios.post(url+ '/api-noriega', { Buscar } );
+        return res.data;
+    }
+
+
     //API IMPORTADORA
     static async POST_REFAX_AUTH(){
         const res = await axios.post(url+ '/auth-refax');
         return res.data;
     }
+
+
+    static async POST_BICIMOTO_AUTH(){
+        const res = await axios.post(url+ '/auth-bicimoto');
+        return res.data;
+    }
+
+    static async POST_NORIEGA_AUTH(){
+        const res = await axios.post(url+ '/auth-noriega');
+        return res.data;
+    }
+
+
+
 
     static async POST_APLICACIONESM(Aplicacion){
         const res = await axios.post(url+ '/aplicaciones-m', { Aplicacion } );

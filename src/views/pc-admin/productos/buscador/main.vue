@@ -728,6 +728,8 @@ import API from '../../../../api.js'
               this.Loader = false;
             }
             
+
+            if(process.env.NODE_ENV == 'development'){
             this.Proceso = 'Buscando en bicimoto...';
 
             let Bicimoto = await API.POST_API_BICIMOTO(this.Solicitud);
@@ -740,6 +742,8 @@ import API from '../../../../api.js'
 
             if(this.Bicimoto.length != 0){
               this.Loader = false;
+            }
+
             }
 
             this.Proceso = 'Buscando en mannheim...';

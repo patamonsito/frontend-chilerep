@@ -5,6 +5,13 @@
     <div>
         <h4>Buscar productos en importadora</h4>
         <div class="subtitle-1 mt-3 mb-3 text--secondary">Aqui buscar los productos disponibles en la importadora, usted podra usar el buscador para realizar una busqueda exacta.</div>
+                      <v-alert class="mt-2 mb-2 center"
+              dense
+              outlined
+              type="info"
+              >
+        <strong>Sugerencia de busqueda "Descripcion Marca y Modelo". Ejmeplo: EMPAQUETADURA CULATA CHEVROLET AVEO</strong>
+        </v-alert>
         <v-divider></v-divider>
 
         <v-row>
@@ -12,7 +19,13 @@
                 <v-text-field :rules="rules" v-model="Solicitud" placeholder="Amortiguador Chevrolet Sail 1.4" v-on:keyup.enter="onEnter"></v-text-field>
             </v-col>
             <v-col cols="2">
-                <v-btn color="info" @click="Buscar()">Buscar</v-btn>
+                  <v-checkbox v-model="OcultarAgotados" @change="OcultarAgotados = !OcultarAgotados">
+                    <template v-slot:label>
+                      <div>
+                        Ocultar Agotados
+                      </div>
+                    </template>
+                  </v-checkbox>
             </v-col>
         </v-row>
         
@@ -30,9 +43,7 @@
               </v-alert>
             </v-col>
 
-
-
-    <div style="margin-top: 1rem" v-if="Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == '' && Loader == false"> 
+    <div style="margin-top: 1rem" v-if="Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Loader == false"> 
         
         <p class="center" style="margin-top: 1rem">{{Msg}}</p>
 
@@ -72,11 +83,15 @@
       <v-tab href="#tab-5" v-if="Noriega.length != 0">
         Noriega
       </v-tab>
+      
+      <v-tab href="#tab-6" v-if="CuatroRuedas.length != 0">
+        CuatroRuedas
+      </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="i in 5"
+        v-for="i in 6"
         :key="i"
         :value="'tab-' + i"
       >
@@ -128,7 +143,7 @@
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.MARCA }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.PrecioImportadora }}</td>
+          <td>{{ MargenPrecio(Producto.PrecioImportadora) }}</td>
           <td>{{ Producto.Stock }}</td>
           <td v-if="Producto.Stock == 'DISPONIBLE'">
             <v-menu offset-y>
@@ -211,7 +226,7 @@
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.MARCA }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.Precio }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
           <td>{{ Producto.Stock }}</td>
           <td v-if="Producto.Stock != ''">
             <v-menu offset-y>
@@ -293,7 +308,7 @@
           <td>{{ Producto.Modelo }}</td>
           <td>{{ Producto.Descripcion }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.PrecioImportadora }}</td>
+          <td>{{ MargenPrecio(Producto.PrecioImportadora) }}</td>
           <td>{{ Producto.Stock }}</td>
           <td v-if="Producto.Stock != '0'">
             <v-menu offset-y>
@@ -363,7 +378,7 @@
           <td>{{ Producto.Descripcion }}</td>
           <td>{{ Producto.Fabricante }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.PrecioImportadora }}</td>
+          <td>{{ MargenPrecioMannheim(Producto.PrecioImportadora) }}</td>
           <td>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -444,7 +459,7 @@
           <td v-else></td>
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.Precio }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
           <td>{{ Producto.Stock }}</td>
           <td v-if="Producto.Stock != ''">
             <v-menu offset-y>
@@ -479,6 +494,71 @@
       </tbody>
     </template>
   </v-simple-table>
+            </v-card-text>
+            <v-card-text v-if="i == 6">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Codigo
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Stock
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Acción
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in CuatroRuedas"
+          :key="i"
+        >
+          <td>{{ Producto.Sku }}</td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td>{{ Producto.Stock }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
             </v-card-text>
         </v-card>
       </v-tab-item>
@@ -603,17 +683,22 @@
 
 <script>
 import API from '../../../../api.js'
-// import catalogo from './catalogo.vue';
+import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     export default {
-    name: 'buscar-factura',
+    name: 'api-importadora',
     props: [],
     //Variables
     data: () => ({
         Loader: true,
+        OcultarAgotados: true,
         Proceso: '',
         dialogCrearProducto: false,
         dialogMannheim: false,
         AplicacionesM: [],
+        CuatroRuedas: [],
+        CuatroRuedasByPass: [{
+          Descripcion: ''
+        }],
         Refax: [],
         Alsacia: [],
         Bicimoto: [],
@@ -653,6 +738,31 @@ import API from '../../../../api.js'
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
+        MargenPrecio(Precio){
+
+          Precio = parseInt(Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '')) * 2;
+
+          if(Precio == NaN){
+            return 0;
+          }else{
+            return FormatearPrecio(Precio);
+          }
+
+        },
+
+
+      MargenPrecioMannheim(Precio){
+
+          Precio = Math.round(parseInt(Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '')) * 1.70);
+
+          if(Precio == NaN){
+            return 'Oferta';
+          }else{
+            return FormatearPrecio(Precio);
+          }
+      },
+
+
         CrearProducto(Producto){
 
         },
@@ -689,6 +799,7 @@ import API from '../../../../api.js'
             this.Bicimoto = [];
             this.Mannheim = [];
             this.Noriega = [];
+            this.CuatroRuedas = [];
 
             this.Proceso = 'Buscando en refax...';
 
@@ -697,11 +808,14 @@ import API from '../../../../api.js'
             if(Refax == 'Error al iniciar sesion'){
               this.Proceso = 'Actualizando Acceso a las importadoras...';
               await API.POST_REFAX_AUTH();
-              await API.POST_BICIMOTO_AUTH();
               await API.POST_NORIEGA_AUTH();
+              
+              if(process.env.NODE_ENV == 'development'){
+                  await API.POST_BICIMOTO_AUTH();
+              }
             
               this.Proceso = 'Buscando en refax...';
-            
+
               Refax = await API.POST_API_REFAX(this.Solicitud);
             }
 
@@ -712,6 +826,17 @@ import API from '../../../../api.js'
             Refax[0].pop();
 
             this.Refax = Refax[0];
+
+
+
+            if(this.OcultarAgotados == true){
+              this.Refax = this.Refax.filter(e => {
+                if(e.Stock != '0'){
+                  return e;
+                }
+              })
+            }
+
 
             if(this.Refax.length != 0){
               this.Loader = false;
@@ -724,6 +849,14 @@ import API from '../../../../api.js'
 
             this.Alsacia = Alsacia[0];
             
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != ''){
+                  return e;
+                }
+              })
+            }
+
             if(this.Alsacia.length != 0){
               this.Loader = false;
             }
@@ -739,6 +872,16 @@ import API from '../../../../api.js'
             }
 
             this.Bicimoto = Bicimoto;
+
+
+            if(this.OcultarAgotados == true){
+              this.Bicimoto = this.Bicimoto.filter(e => {
+                if(e.Stock != '0'){
+                  return e;
+                }
+              })
+            }
+
 
             if(this.Bicimoto.length != 0){
               this.Loader = false;
@@ -762,11 +905,45 @@ import API from '../../../../api.js'
             
             this.Noriega = Noriega;
 
+            if(this.OcultarAgotados == true){
+              this.Noriega = this.Noriega.filter(e => {
+                if(e.Stock != ''){
+                  return e;
+                }
+              })
+            }
+
+
             if(this.Noriega.length != 0){
               this.Loader = false;
             }
 
-            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length;
+
+            this.Proceso = 'Buscando en CuatroRuedas...'
+
+            let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
+
+            this.CuatroRuedas = CuatroRuedas;
+
+            if(this.OcultarAgotados == true){
+              this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+                if(e.Stock != 'NO DISPONIBLE'){
+                  return e;
+                }
+              })
+            }
+
+            if(this.CuatroRuedas.length != 0){
+                if(this.CuatroRuedas[0].Descripcion == this.CuatroRuedasByPass[0].Descripcion){
+                  this.CuatroRuedas = [];
+                  this.CuatroRuedasByPass = [{ Descripcion: '' }];
+                }else{
+                  this.CuatroRuedasByPass = this.CuatroRuedas;
+                  this.Loader = false;
+                }
+            }
+
+            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'

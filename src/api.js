@@ -18,6 +18,8 @@ export default class API {
         return res.data;
     }
 
+
+
     static async GET_USER_TOKEN_ADMIN(ip){
         const res = await axios.post(url+ '/user_token_admin', { ip });
         return res.data;
@@ -285,7 +287,12 @@ export default class API {
         const res = await axios.post(url+ '/api-noriega', { Buscar } );
         return res.data;
     }
+  
+    static async POST_API_CUATRORUEDAS(Buscar){
+        const res = await axios.post(url+ '/api-cuatro-ruedas', { Buscar });
+        return res.data;
 
+    }
 
     //API IMPORTADORA
     static async POST_REFAX_AUTH(){

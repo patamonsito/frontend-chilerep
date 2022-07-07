@@ -28,6 +28,9 @@
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0"
   },
+  "proxy": {
+    "/api": "http://143.198.165.86:3000"
+  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

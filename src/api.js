@@ -1,6 +1,6 @@
 
 import axios from 'axios';
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 console.log(process.env.NODE_ENV)
 

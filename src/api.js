@@ -1,5 +1,7 @@
 
 import axios from 'axios';
+axios.defaults.withCredentials = true;
+
 console.log(process.env.NODE_ENV)
 
 const url = process.env.NODE_ENV == 'development' ? '/api' : 'http://143.198.165.86:3000/api'

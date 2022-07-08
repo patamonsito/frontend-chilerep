@@ -15,8 +15,18 @@
         <v-divider></v-divider>
 
         <v-row>
-            <v-col cols="10">
+            <v-col cols="8">
                 <v-text-field :rules="rules" v-model="Solicitud" placeholder="Amortiguador Chevrolet Sail 1.4" v-on:keyup.enter="onEnter"></v-text-field>
+            </v-col>
+            <v-col cols="2" style="align-self: center;margin-top: 0.5rem;">
+                <v-select
+                  v-model="ImportadoraSeleccionada"
+                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas']"
+                  label="Importadora"
+                  prepend-icon="mdi-panorama-sphere"
+                  persistent-hint
+                  single-line
+                  dense></v-select>
             </v-col>
             <v-col cols="2">
                   <v-checkbox v-model="OcultarAgotados" @change="OcultarAgotados = !OcultarAgotados">
@@ -763,6 +773,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     //Variables
     data: () => ({
         Loader: true,
+        ImportadoraSeleccionada: 'Todas',
         OcultarAgotados: true,
         Proceso: '',
         dialogCrearProducto: false,
@@ -876,6 +887,9 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.CuatroRuedas = [];
             this.Chilerepuestos = [];
 
+
+            if(this.ImportadoraSeleccionada == 'Todas'){
+
             this.Proceso = 'Buscando en Bodega...';
 
             this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
@@ -893,7 +907,25 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               this.Proceso = 'Actualizando Acceso a las importadoras...';
               await API.POST_REFAX_AUTH();
               await API.POST_NORIEGA_AUTH();
-              
+
+
+            let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka');
+
+            this.CuatroRuedas = CuatroRuedas;
+
+
+            if(this.OcultarAgotados == true){
+              this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+                if(e.Stock != 'NO DISPONIBLE'){
+                  return e;
+                }
+              })
+            }
+
+
+              this.CuatroRuedasByPass = this.CuatroRuedas;
+
+
               if(process.env.NODE_ENV == 'development'){
                   await API.POST_BICIMOTO_AUTH();
               }
@@ -1020,24 +1052,138 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             if(this.CuatroRuedas.length != 0){
                 if(this.CuatroRuedas[0].Descripcion == this.CuatroRuedasByPass[0].Descripcion){
                   this.CuatroRuedas = [];
-                  this.CuatroRuedasByPass = [{ Descripcion: '' }];
                 }else{
                   this.CuatroRuedasByPass = this.CuatroRuedas;
                   this.Loader = false;
                 }
             }
 
+            }else if(this.ImportadoraSeleccionada == 'Bodega'){
+            
+            this.Proceso = 'Buscando en Bodega...';
+
+            this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
+
+            if(this.Chilerepuestos.length != 0){
+              this.Loader = false;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'Refax'){
+
+            this.Proceso = 'Buscando en refax...';
+
+            let Refax = await API.POST_API_REFAX(this.Solicitud);
+
+
+            Refax[0].pop();
+            Refax[0].pop();
+
+            this.Refax = Refax[0];
+
+            if(this.OcultarAgotados == true){
+              this.Refax = this.Refax.filter(e => {
+                if(e.Stock != '0'){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Refax.length != 0){
+              this.Loader = false;
+            }
+
+
+            }else if(this.ImportadoraSeleccionada == 'Alsacia'){
+
+              
+            
+            this.Proceso = 'Buscando en alsacia...';
+
+            let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
+
+            this.Alsacia = Alsacia[0];
+            
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != ''){
+                  return e;
+                }
+              })
+            }
+
+            if(this.Alsacia.length != 0){
+              this.Loader = false;
+            }
+            
+              
+            }else if(this.ImportadoraSeleccionada == 'Mannheim'){
+
+            this.Proceso = 'Buscando en mannheim...';
+
+            let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
+            
+            this.Mannheim = Mannheim;
+
+            if(this.Mannheim.length != 0){
+              this.Loader = false;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'Noriega'){
+
+            this.Proceso = 'Buscando en noriega...';
+
+            let Noriega = await API.POST_API_NORIEGA(this.Solicitud);
+            
+            this.Noriega = Noriega;
+
+            if(this.OcultarAgotados == true){
+              this.Noriega = this.Noriega.filter(e => {
+                if(e.Stock != ''){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Noriega.length != 0){
+              this.Loader = false;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'CuatroRuedas'){
+
+            this.Proceso = 'Buscando en CuatroRuedas...'
+
+            let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
+
+            this.CuatroRuedas = CuatroRuedas;
+
+            if(this.OcultarAgotados == true){
+              this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+                if(e.Stock != 'NO DISPONIBLE'){
+                  return e;
+                }
+              })
+            }
+
+            if(this.CuatroRuedas.length != 0){
+                if(this.CuatroRuedas[0].Descripcion == this.CuatroRuedasByPass[0].Descripcion){
+                  this.CuatroRuedas = [];
+                }else{
+                  this.CuatroRuedasByPass = this.CuatroRuedas;
+                  this.Loader = false;
+                }
+            }
+            }
+
+
             var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Chilerepuestos.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'
             }
-
             
             this.Proceso = '';
-
-            this.tab = null;
-
             this.Loader = false;
 
             // if(Datos.Refax == "ERROR : java.lang.Exception: Logica.ProductosLogica.BuscarArticuloGlosa5: null"){
@@ -1057,6 +1203,24 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     //Apis
     async created(){
         this.Loader = false;
+
+
+      let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka');
+
+      this.CuatroRuedas = CuatroRuedas;
+
+
+      if(this.OcultarAgotados == true){
+        this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+          if(e.Stock != 'NO DISPONIBLE'){
+            return e;
+          }
+        })
+      }
+
+
+        this.CuatroRuedasByPass = this.CuatroRuedas;
+
     },
 
     //WindowsOnready

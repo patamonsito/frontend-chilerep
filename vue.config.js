@@ -4,7 +4,7 @@ module.exports = {
   ],
   lintOnSave: true,
   devServer: {
-    host: '143.198.165.86',
-    proxy: "http://143.198.165.86:3000"
+    host: 'localhost',
+    proxy: "http://localhost:3000"
   }
 }

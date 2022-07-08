@@ -17,13 +17,14 @@ export default class API {
             Contraseña,
             ip
         });
+        localStorage.setItem("Token", res.data.Token)
         return res.data;
     }
 
 
 
     static async GET_USER_TOKEN_ADMIN(ip){
-        const res = await axios.post(url+ '/user_token_admin', { ip });
+        const res = await axios.post(url+ '/user_token_admin', { ip, Token: localStorage.Token });
         return res.data;
     }
 
@@ -265,6 +266,12 @@ export default class API {
     //API IMPORTADORA
     static async POST_API_IMPORTADORA(Buscar){
         const res = await axios.post(url+ '/products/api-importadora', { Buscar } );
+        return res.data;
+    }
+
+    
+    static async POST_API_CHILEREPUESTOS(Buscar){
+        const res = await axios.post(url+ '/api-chilerepuestos', { Buscar } );
         return res.data;
     }
 

@@ -449,7 +449,7 @@
           <td><img :src="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" width="50px"></td>
           <td>{{ Producto.Oem }}</td>
           <td>{{ Producto.Descripcion }}</td>
-          <td>{{ Producto.Fabricante }}</td>
+          <td>{{ Producto.Fabricante  }}</td>
           <td>{{ Producto.Origen }}</td>
           <td>{{ MargenPrecioMannheim(Producto.PrecioImportadora) }}</td>
           <td>

@@ -1734,11 +1734,10 @@
         async Init(){
             await this.getCarrito()
             this.$refs.formLogin.validate();
-            console.log(this.$refs.formLogin.validate());
             if (this.$refs.formLogin.validate() == true) {
               var User = await API.USER_LOGIN_ADMIN(this.UsuarioLogin, this.Correo, this.Contraseña, this.ip)
-              if(typeof(User) !== 'string'){
-                    this.Usuario = User;
+              if(typeof(User.User) !== 'string'){
+                    this.Usuario = User.User;
                     this.Login = true
                 }else{
                     this.alert = User;

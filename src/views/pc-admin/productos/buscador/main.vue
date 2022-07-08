@@ -43,7 +43,7 @@
               </v-alert>
             </v-col>
 
-    <div style="margin-top: 1rem" v-if="Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Loader == false"> 
+    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Loader == false"> 
         
         <p class="center" style="margin-top: 1rem">{{Msg}}</p>
 
@@ -64,44 +64,112 @@
       icons-and-text
     >
       <v-tabs-slider></v-tabs-slider>
-      <v-tab href="#tab-1" v-if="Refax.length != 0">
+      <v-tab href="#tab-1" v-if="Chilerepuestos.length != 0">
+        Bodega
+      </v-tab>
+      <v-tab href="#tab-2" v-if="Refax.length != 0">
         Refax 
       </v-tab>
 
-      <v-tab href="#tab-2" v-if="Alsacia.length != 0">
+      <v-tab href="#tab-3" v-if="Alsacia.length != 0">
         Alsacia
       </v-tab>
 
-      <v-tab href="#tab-3" v-if="Bicimoto.length != 0">
+      <v-tab href="#tab-4" v-if="Bicimoto.length != 0">
         Bicimoto
       </v-tab>
 
-      <v-tab href="#tab-4" v-if="Mannheim.length != 0">
+      <v-tab href="#tab-5" v-if="Mannheim.length != 0">
         Mannheim
       </v-tab>
 
-      <v-tab href="#tab-5" v-if="Noriega.length != 0">
+      <v-tab href="#tab-6" v-if="Noriega.length != 0">
         Noriega
       </v-tab>
       
-      <v-tab href="#tab-6" v-if="CuatroRuedas.length != 0">
+      <v-tab href="#tab-7" v-if="CuatroRuedas.length != 0">
         CuatroRuedas
       </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="i in 6"
+        v-for="i in 7"
         :key="i"
         :value="'tab-' + i"
       >
         <v-card flat>
             <v-card-text v-if="i == 1">
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">
+                        Imagen
+                      </th>
+                      <th class="text-left">
+                        Sku
+                      </th>
+                      <th class="text-left">
+                        Sku 2
+                      </th>
+                      <th class="text-left">
+                        Descripcion
+                      </th>
+                      <th class="text-left">
+                        Marca
+                      </th>
+                      <th class="text-left">
+                        Modelo
+                      </th>
+                      <th class="text-left">
+                        Fabricante
+                      </th>
+                      <th class="text-left">
+                        Origen
+                      </th>
+                      <th class="text-left">
+                        Precio
+                      </th>
+                      <th class="text-left">
+                        Stock
+                      </th>
+                      <th class="text-left">
+                        Ubicación
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="Producto, i in Chilerepuestos"
+                      :key="i"
+                    >
+                      <td><img :src="'https://chilerepuestos.com/img/productos/' + Producto.CodigoImportadora  + '-preview.jpg'" width="50px"></td>
+                      <td>{{ Producto.CodigoImportadora }}</td>
+                      <td>{{ Producto.CodigoProducto }}</td>
+                      <td>{{ Producto.Descripcion + ' ' + Producto.DatosAdicionales }}</td>
+                      <td>{{ Producto.MarcaVehiculo[0] }}</td>
+                      <td>{{ Producto.Modelo + ' ' + Producto.AñoI + ' ' + Producto.AñoT }}</td>
+                      <td>{{ Producto.Marca }}</td>
+                      <td>{{ Producto.Origen }}</td>
+                      <td>{{ Producto.PrecioCliente }}</td>
+                      <td>{{ Producto.StockCH }}</td>
+                      <td>{{ Producto.Ubicacion }}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            
+            </v-card-text>
+            <v-card-text v-if="i == 2">
                 
   <v-simple-table>
     <template v-slot:default>
       <thead>
         <tr>
+          <th class="text-left">
+            Imagen
+          </th>
           <th class="text-left">
             Codigo
           </th>
@@ -136,6 +204,7 @@
           v-for="Producto, i in Refax"
           :key="i"
         >
+          <td><img :src="'https://img.refaxchile.cl:9092/FOTOGRAFIAS/' + Producto.Sku + '/' + Producto.Sku + 'A.jpg'" width="50px"></td>
           <td>{{ Producto.Sku }}</td>
           <td>{{ Producto.Marca }}</td>
           <td v-if="Producto.Modelo != '' && Producto.Modelo" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
@@ -180,7 +249,7 @@
   </v-simple-table>
             </v-card-text>
             
-            <v-card-text v-if="i == 2">
+            <v-card-text v-if="i == 3">
   <v-simple-table>
     <template v-slot:default>
       <thead>
@@ -262,7 +331,7 @@
     </template>
   </v-simple-table>
             </v-card-text>
-            <v-card-text v-if="i == 3">
+            <v-card-text v-if="i == 4">
                 
   <v-simple-table>
     <template v-slot:default>
@@ -344,11 +413,14 @@
     </template>
   </v-simple-table>
             </v-card-text>
-            <v-card-text v-if="i == 4">
+            <v-card-text v-if="i == 5">
   <v-simple-table>
     <template v-slot:default>
       <thead>
         <tr>
+          <th class="text-left">
+            Imagen
+          </th>
           <th class="text-left">
             Oem
           </th>
@@ -374,6 +446,7 @@
           v-for="Producto, i in Mannheim"
           :key="i"
         >
+          <td><img :src="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" width="50px"></td>
           <td>{{ Producto.Oem }}</td>
           <td>{{ Producto.Descripcion }}</td>
           <td>{{ Producto.Fabricante }}</td>
@@ -416,7 +489,7 @@
   </v-simple-table>
 
             </v-card-text>
-            <v-card-text v-if="i == 5">
+            <v-card-text v-if="i == 6">
                 
   <v-simple-table>
     <template v-slot:default>
@@ -495,7 +568,7 @@
     </template>
   </v-simple-table>
             </v-card-text>
-            <v-card-text v-if="i == 6">
+            <v-card-text v-if="i == 7">
   <v-simple-table>
     <template v-slot:default>
       <thead>
@@ -695,6 +768,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         dialogCrearProducto: false,
         dialogMannheim: false,
         AplicacionesM: [],
+        Chilerepuestos: [],
         CuatroRuedas: [],
         CuatroRuedasByPass: [{
           Descripcion: ''
@@ -800,6 +874,16 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.Mannheim = [];
             this.Noriega = [];
             this.CuatroRuedas = [];
+            this.Chilerepuestos = [];
+
+            this.Proceso = 'Buscando en Bodega...';
+
+            this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
+
+            if(this.Chilerepuestos.length != 0){
+              this.Loader = false;
+            }
+
 
             this.Proceso = 'Buscando en refax...';
 
@@ -943,7 +1027,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 }
             }
 
-            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length;
+            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Chilerepuestos.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'

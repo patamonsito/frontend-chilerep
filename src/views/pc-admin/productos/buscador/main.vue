@@ -13,7 +13,7 @@
         <strong>Sugerencia de busqueda "Descripcion Marca y Modelo". Ejmeplo: EMPAQUETADURA CULATA CHEVROLET AVEO</strong>
         </v-alert>
         <v-divider></v-divider>
-
+ 
         <v-row>
             <v-col cols="8">
                 <v-text-field :rules="rules" v-model="Solicitud" placeholder="Amortiguador Chevrolet Sail 1.4" v-on:keyup.enter="onEnter"></v-text-field>

@@ -1027,8 +1027,8 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
 
             if(this.OcultarAgotados == true){
-              this.Refax = this.Refax.filter(e => {
-                if(e.Stock != '0'){
+              this.Refax = this.Refax.filter((e) => {
+                if(e.Stock != '0' || e.Marca != ""){
                   return e;
                 }
               })
@@ -1047,8 +1047,8 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.Alsacia = Alsacia[0];
             
             if(this.OcultarAgotados == true){
-              this.Alsacia = this.Alsacia.filter(e => {
-                if(e.Stock != ''){
+              this.Alsacia = this.Alsacia.filter((e)=> {
+                if(e.Stock != '' || e.Marca != ""){
                   return e;
                 }
               })
@@ -1163,7 +1163,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             if(this.OcultarAgotados == true){
               this.Refax = this.Refax.filter(e => {
-                if(e.Stock != '0'){
+                if(e.Stock != '0' || e.Marca != ""){
                   return e;
                 }
               })
@@ -1187,7 +1187,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             
             if(this.OcultarAgotados == true){
               this.Alsacia = this.Alsacia.filter(e => {
-                if(e.Stock != ''){
+                if(e.Stock != ''  || e.Marca != ""){
                   return e;
                 }
               })

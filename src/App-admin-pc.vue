@@ -1773,7 +1773,9 @@
             console.log(text)
             if(text == 'Salir'){
                 await API.DELETE_SESSION();
-                this.Usuario = [];
+                this.Usuario = [{
+                  Avatar: 'default_avatar.png'
+                }];
                 this.UsuarioLogin = null;
                 this.Correo = null;
                 this.Contraseña = null;

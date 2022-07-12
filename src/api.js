@@ -24,7 +24,7 @@ export default class API {
 
 
     static async GET_USER_TOKEN_ADMIN(ip){
-        const res = await axios.post(url+ '/user_token_admin', { ip, Token: localStorage.Token });
+        const res = await axios.post(url+ '/user_token_admin', { ip, Token: localStorage.Token  });
         return res.data;
     }
 
@@ -186,23 +186,23 @@ export default class API {
 
     //carro
     static async ADD_TO_CART(CodigoImportadora, Cantidad, Modelo){
-        const res = await axios.post(url+ '/add-cart', { CodigoImportadora, Cantidad, Modelo });
+        const res = await axios.post(url+ '/add-cart', { CodigoImportadora, Cantidad, Modelo, Token: localStorage.Token });
         return res.data;
     }
     
     static async REMOVE_TO_CART(CodigoImportadora, Cantidad){
-        const res = await axios.post(url+ '/remove-cart', { CodigoImportadora, Cantidad });
+        const res = await axios.post(url+ '/remove-cart', { CodigoImportadora, Cantidad, Token: localStorage.Token });
         return res.data;
     }
 
 
     static async UPDATE_CART(CodigoImportadora, Cantidad){
-        const res = await axios.post(url+ '/update-carrito', { CodigoImportadora, Cantidad });
+        const res = await axios.post(url+ '/update-carrito', { CodigoImportadora, Cantidad, Token: localStorage.Token });
         return res.data;
     }
 
-    static async GET_CERRITO_SESSION(Id, Cantidad){
-        const res = await axios.get(url+ '/get-carrito');
+    static async GET_CERRITO_SESSION(){
+        const res = await axios.post(url+ '/get-carrito', { Token: localStorage.Token });
         return res.data;
     }
 
@@ -218,6 +218,11 @@ export default class API {
             return res.data;
         }
 
+    }
+
+    static async POST_APLICACIONESR(CodigoImportadora){
+        const res = await axios.post(url+ '/aplicaciones-r', { CodigoImportadora });
+        return res.data;
     }
 
     static async GET_CLIENT(Rut){
@@ -442,7 +447,7 @@ export default class API {
     //WebpayPlus POST_WEBPAY
 
     static async POST_WEBPAY(){
-        const res = await axios.post(url+ '/start-webpay' );
+        const res = await axios.post(url+ '/start-webpay', { Token: localStorage.Token } );
         return res.data;
     }
 

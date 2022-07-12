@@ -181,12 +181,15 @@
             Imagen
           </th>
           <th class="text-left">
-            Codigo
+            Sku
           </th>
-          <th class="text-left">
+          <th v-if="Refax[0].Oem">
+            Oem
+          </th>
+          <th class="text-left" v-if="!Refax[0].Oem">
             Marca
           </th>
-          <th class="text-left">
+          <th class="text-left" v-if="!Refax[0].Oem">
             Modelo
           </th>
           <th class="text-left">
@@ -214,17 +217,18 @@
           v-for="Producto, i in Refax"
           :key="i"
         >
-          <td><img :src="'https://img.refaxchile.cl:9092/FOTOGRAFIAS/' + Producto.Sku + '/' + Producto.Sku + 'A.jpg'" width="50px"></td>
+          <td><a :href="'https://img.refaxchile.cl:9092/FOTOGRAFIAS/' + Producto.Sku + '/' + Producto.Sku + 'A.jpg'" target="_blank"><img :src="'https://img.refaxchile.cl:9092/FOTOGRAFIAS/' + Producto.Sku + '/' + Producto.Sku + 'A.jpg'" width="50px"></a></td>
           <td>{{ Producto.Sku }}</td>
-          <td>{{ Producto.Marca }}</td>
-          <td v-if="Producto.Modelo != '' && Producto.Modelo" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
-          <td v-else></td>
+          <td v-if="Producto.Oem"><ul v-html="Producto.Oem"></ul></td>
+          <td v-if="!Producto.Oem">{{ Producto.Marca }}</td>
+          <td v-if="Producto.Modelo != '' && Producto.Modelo && !Producto.Oem" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
+          <td v-else-if="!Producto.Oem"></td>
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.MARCA }}</td>
           <td>{{ Producto.Origen }}</td>
           <td>{{ MargenPrecio(Producto.PrecioImportadora) }}</td>
           <td>{{ Producto.Stock }}</td>
-          <td v-if="Producto.Stock == 'DISPONIBLE'">
+          <td v-if="Producto.Stock == 'DISPONIBLE' || Producto.Stock == 'Disponible'">
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -240,6 +244,9 @@
             </v-btn>
               </template>
                 <v-list>
+                  <v-list-item link @click="VerAplicacionesR(Producto)">
+                    <v-list-item-title>Ver Aplicaciones</v-list-item-title>
+                  </v-list-item>
                   <v-list-item link @click="CrearProducto(Producto)">
                     <v-list-item-title>Crear Producto</v-list-item-title>
                   </v-list-item>
@@ -456,7 +463,7 @@
           v-for="Producto, i in Mannheim"
           :key="i"
         >
-          <td><img :src="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" width="50px"></td>
+          <td><a :href="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" target="_blank"><img :src="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" width="50px"></a></td>
           <td>{{ Producto.Oem }}</td>
           <td>{{ Producto.Descripcion }}</td>
           <td>{{ Producto.Fabricante  }}</td>
@@ -717,6 +724,39 @@
         
 
 
+        <v-dialog
+      v-model="dialogRefax"
+      width="1300"
+    >
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+          {{ ProductoRefax.Sku }} - {{ ProductoRefax.Descripcion }} Aplicaciones:
+        </v-card-title>
+
+ <v-card-text>
+ 
+      <table v-html="AplicacionesR"></table>
+          
+            
+
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn
+            color="secondary"
+            text
+            @click="dialogRefax = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+
 <!-- Modal Crear Producto -->
     <v-dialog
       v-model="dialogCrearProducto"
@@ -764,6 +804,7 @@
     </div>
 </template>
 
+
 <script>
 import API from '../../../../api.js'
 import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
@@ -777,8 +818,10 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         OcultarAgotados: true,
         Proceso: '',
         dialogCrearProducto: false,
+        dialogRefax: false,
         dialogMannheim: false,
         AplicacionesM: [],
+        AplicacionesR: [],
         Chilerepuestos: [],
         CuatroRuedas: [],
         CuatroRuedasByPass: [{
@@ -790,6 +833,10 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         Mannheim: [],
         Noriega: [],
         Msg: 'Realice una busqueda para empezar.',
+        ProductoRefax: {
+          Descripcion: '',
+          Sku: ''
+        },
         ProductoMannheim: {
           Descripcion: '',
           Oem: ''
@@ -852,16 +899,56 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
         },
 
-        async VerAplicacionesM(Producto){
+        async VerAplicacionesR(Producto){
+            this.dialogRefax = true;
+
+          this.AplicacionesR = `<table style="margin-top: 1rem">
+                                    <thead>
+                                      <th style="background-color: black;">Marca</th>
+                                      <th style="background-color: black;">Modelo</th>
+                                      <th style="background-color: black;">Años</th>            
+                                    </thead>
+                                             <tbody>
+                                                <tr>
+                                                  <td>
+                                                    Cargando...
+                                                  </td>
+                                                  <td>
+                                                    Cargando...
+                                                  </td>
+                                                  <td>
+                                                    Cargando...
+                                                  </td>
+                                                </tr>
+                                             </body>
+                                  </table>`
+
+            this.ProductoRefax = Producto;
             
+            let AplicacionesR = await API.POST_APLICACIONESR(Producto.Sku);
+            
+            this.AplicacionesR = `<table style="margin-top: 2rem">
+                                    <thead>
+                                      <th style="background-color: black;">Marca</th>
+                                      <th style="background-color: black;">Modelo</th>
+                                      <th style="background-color: black;">Años</th>            
+                                    </thead>
+                                             ${AplicacionesR.replaceAll('ul', 'tbody').replaceAll('li', 'tr').replaceAll('span', 'td').replaceAll('small', 'td').replaceAll('<strong></strong>', '')}
+                                  </table>`
+
+        },
+
+        async VerAplicacionesM(Producto){
+      
+            this.dialogMannheim = true;
+
+            this.AplicacionesM = [];
 
             this.ProductoMannheim = Producto;
             
             let AplicacionesM = await API.POST_APLICACIONESM(Producto.Aplicacion);
             
             this.AplicacionesM = AplicacionesM.aplicaciones;
-
-            this.dialogMannheim = true;
 
         },
 
@@ -906,12 +993,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             if(Refax == 'Error al iniciar sesion'){
               this.Proceso = 'Actualizando Acceso a las importadoras...';
               await API.POST_REFAX_AUTH();
-              await API.POST_NORIEGA_AUTH();
 
 
             let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka');
 
-            this.CuatroRuedas = CuatroRuedas;
+            this.CuatroRuedas = CuatroRuedas || [{ Descripcion: '' }];
 
 
             if(this.OcultarAgotados == true){
@@ -923,12 +1009,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }
 
 
-              this.CuatroRuedasByPass = this.CuatroRuedas;
-
-
-              if(process.env.NODE_ENV == 'development'){
-                  await API.POST_BICIMOTO_AUTH();
-              }
+              this.CuatroRuedasByPass = this.CuatroRuedas || [{ Descripcion: '' }];
             
               this.Proceso = 'Buscando en refax...';
 
@@ -1039,7 +1120,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
 
-            this.CuatroRuedas = CuatroRuedas;
+            this.CuatroRuedas = CuatroRuedas || [{ Descripcion: '' }];
 
             if(this.OcultarAgotados == true){
               this.CuatroRuedas = this.CuatroRuedas.filter(e => {
@@ -1053,7 +1134,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 if(this.CuatroRuedas[0].Descripcion == this.CuatroRuedasByPass[0].Descripcion){
                   this.CuatroRuedas = [];
                 }else{
-                  this.CuatroRuedasByPass = this.CuatroRuedas;
+                  this.CuatroRuedasByPass = this.CuatroRuedas || [{ Descripcion: '' }];
                   this.Loader = false;
                 }
             }
@@ -1205,7 +1286,8 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         this.Loader = false;
 
 
-      let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka');
+      let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
+      await API.POST_NORIEGA_AUTH();
 
       this.CuatroRuedas = CuatroRuedas;
 

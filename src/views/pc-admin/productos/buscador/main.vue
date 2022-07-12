@@ -29,7 +29,7 @@
                   dense></v-select>
             </v-col>
             <v-col cols="2">
-                  <v-checkbox v-model="OcultarAgotados" @change="OcultarAgotados = !OcultarAgotados">
+                  <v-checkbox v-model="OcultarAgotados" @change="check($event)">
                     <template v-slot:label>
                       <div>
                         Ocultar Agotados
@@ -869,6 +869,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     // funciones 
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
+
+        check(evt){
+          console.log(evt);
+          this.OcultarAgotados = evt;
+        },
 
         MargenPrecio(Precio){
 

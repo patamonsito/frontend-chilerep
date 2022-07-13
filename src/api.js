@@ -308,6 +308,18 @@ export default class API {
 
     }
 
+    static async POST_API_GABTEC(Buscar){
+        const res = await axios.post(url+ '/api-gabtec', { Buscar });
+        return res.data;
+
+    }
+
+    static async POST_CONSULTARGABTEC(Codigo){
+        const res = await axios.post(url+ '/consultar-gabtec', { Codigo });
+        return res.data;
+    }
+
+
     //API IMPORTADORA
     static async POST_REFAX_AUTH(){
         const res = await axios.post(url+ '/auth-refax');

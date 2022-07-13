@@ -21,7 +21,7 @@
             <v-col cols="2" style="align-self: center;margin-top: 0.5rem;">
                 <v-select
                   v-model="ImportadoraSeleccionada"
-                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas']"
+                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec']"
                   label="Importadora"
                   prepend-icon="mdi-panorama-sphere"
                   persistent-hint
@@ -53,7 +53,7 @@
               </v-alert>
             </v-col>
 
-    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Loader == false"> 
+    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Gabtec == '' && Loader == false"> 
         
         <p class="center" style="margin-top: 1rem">{{Msg}}</p>
 
@@ -100,11 +100,15 @@
       <v-tab href="#tab-7" v-if="CuatroRuedas.length != 0">
         CuatroRuedas
       </v-tab>
+
+      <v-tab href="#tab-8" v-if="Gabtec.length != 0">
+        Gabtec
+      </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="i in 7"
+        v-for="i in 8"
         :key="i"
         :value="'tab-' + i"
       >
@@ -650,6 +654,91 @@
   </v-simple-table>
 
             </v-card-text>
+            <v-card-text v-if="i == 8">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Imagen
+          </th>
+          <th class="text-left">
+            Sku
+          </th>
+          <th class="text-left">
+            Marca
+          </th>
+          <th class="text-left">
+            Modelo
+          </th>
+          <th class="text-left">
+            Posicion
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Fabricante
+          </th>
+          <th class="text-left">
+            Sotck
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Accion
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in Gabtec"
+          :key="i"
+        >
+          <td><a :href="'https://www.gabtec.cl./' + Producto.Img.replace('../../', '/')" target="_blank"><img :src="'https://www.gabtec.cl./' + Producto.Img.replace('../../', '/')" width="50px"></a></td>
+          <td>{{ Producto.CodigoImportadora }}</td>
+          <td>{{ Producto.Marca }}</td>
+          <td>{{ Producto.Modelo }} {{ Producto.AñoI }} - {{ Producto.AñoT}}</td>
+          <td>{{ Producto.Posicion }}</td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td>{{ Producto.Fabricante }}</td>
+          <td>{{ Producto.Stock ?  Producto.Stock.replace('Stock: ', '') : 'Consultando...' }}</td>
+          <td>{{ Producto.Precio ?  MargenPrecio(Producto.Precio) : 'Consultando...' }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
+            </v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -832,6 +921,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         Bicimoto: [],
         Mannheim: [],
         Noriega: [],
+        Gabtec: [],
         Msg: 'Realice una busqueda para empezar.',
         ProductoRefax: {
           Descripcion: '',
@@ -870,14 +960,21 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
+        async ConsultarGabtec(Codigo){
+          let RequestData = await API.POST_CONSULTARGABTEC(Codigo);
+
+          console.log(RequestData)
+
+        },
+
         check(evt){
-          console.log(evt);
           this.OcultarAgotados = evt;
         },
 
         MargenPrecio(Precio){
 
-          Precio = parseInt(Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '')) * 2;
+          Precio = Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll('Precio:', '');
+          Precio = parseInt(Precio) * 2;
 
           if(Precio == NaN){
             return 0;
@@ -978,6 +1075,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.Noriega = [];
             this.CuatroRuedas = [];
             this.Chilerepuestos = [];
+            this.Gabtec = []
 
 
             if(this.ImportadoraSeleccionada == 'Todas'){
@@ -1144,6 +1242,34 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 }
             }
 
+            // aqui}
+            this.Proceso = 'Buscando en Gabtec...'
+
+            let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
+
+            this.Gabtec = Gabtec;
+
+
+            if(this.Gabtec.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Gabtec.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
+
+                  if(!Gabtec[i].Precio){
+                        var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
+                          Gabtec.map(e => {
+                            if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock;
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Gabtec = Gabtec;
+            }
+
             }else if(this.ImportadoraSeleccionada == 'Bodega'){
             
             this.Proceso = 'Buscando en Bodega...';
@@ -1260,6 +1386,35 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                   this.Loader = false;
                 }
             }
+            }else if(this.ImportadoraSeleccionada == 'Gabtec'){
+
+            this.Proceso = 'Buscando en Gabtec...'
+
+            let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
+
+            this.Gabtec = Gabtec;
+
+
+            if(this.Gabtec.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Gabtec.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
+
+                  if(!Gabtec[i].Precio){
+                        var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
+                          Gabtec.map(e => {
+                            if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock;
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Gabtec = Gabtec;
+            }
+
             }
 
 
@@ -1290,12 +1445,10 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     async created(){
         this.Loader = false;
 
-
       let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
       await API.POST_NORIEGA_AUTH();
 
       this.CuatroRuedas = CuatroRuedas;
-
 
       if(this.OcultarAgotados == true){
         this.CuatroRuedas = this.CuatroRuedas.filter(e => {

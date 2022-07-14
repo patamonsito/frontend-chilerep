@@ -56,7 +56,9 @@ export default class API {
         return res.data;
     }
     static async GET_LOGOUT(id){
-        const res = await axios.get(url+ '/logout');
+        const res = await axios.get(url+ '/logout', {Token: localStorage.Token });
+        localStorage.User = null;
+        localStorage.Token = null;
         return res.data;
     }
 

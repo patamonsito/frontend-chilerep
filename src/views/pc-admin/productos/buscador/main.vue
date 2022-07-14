@@ -934,6 +934,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         Loader: true,
         ImportadoraSeleccionada: 'Todas',
         OcultarAgotados: true,
+        BestPrice: [],
         Proceso: '',
         AlsaciaHtml: `
         <div class="center">
@@ -1010,13 +1011,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
         MargenPrecio(Precio){
 
-          Precio = Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll('Precio:', '');
-          Precio = parseInt(Precio) * 2;
+          let NewPrecio = Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll('Precio:', '');
+          NewPrecio = parseInt(NewPrecio) * 2;
 
-          if(Precio == NaN){
-            return 0;
+          if(!NewPrecio){
+            return Precio;
           }else{
-            return FormatearPrecio(Precio);
+            return FormatearPrecio(NewPrecio);
           }
 
         },
@@ -1121,6 +1122,14 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
 
+            if(this.OcultarAgotados == true){
+              this.Chilerepuestos = this.Chilerepuestos.filter(e => {
+                if(e.StockCH != 0){
+                  return e;
+                }
+              })
+            }
+
             if(this.Chilerepuestos.length != 0){
               this.Loader = false;
             }
@@ -1164,6 +1173,10 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             this.Refax = Refax[0];
 
+            this.Refax = this.Refax.map((e) => {
+              e.Precio = e.PrecioImportadora
+              return e;
+            });
 
 
             if(this.OcultarAgotados == true){
@@ -1210,6 +1223,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             this.Bicimoto = Bicimoto;
 
+            this.Bicimoto = this.Bicimoto.map((e) => {
+              e.Precio = e.PrecioImportadora
+              return e;
+            });
+
 
             if(this.OcultarAgotados == true){
               this.Bicimoto = this.Bicimoto.filter(e => {
@@ -1232,6 +1250,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             
             this.Mannheim = Mannheim;
 
+            this.Mannheim = this.Mannheim.map((e) => {
+              e.Precio = e.PrecioImportadora
+              return e;
+            });
+
             if(this.Mannheim.length != 0){
               this.Loader = false;
             }
@@ -1244,7 +1267,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             if(this.OcultarAgotados == true){
               this.Noriega = this.Noriega.filter(e => {
-                if(e.Stock != ''){
+                if(e.Stock != '' || e.Marca != ""){
                   return e;
                 }
               })
@@ -1319,9 +1342,18 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
 
+            if(this.OcultarAgotados == true){
+              this.Chilerepuestos = this.Chilerepuestos.filter(e => {
+                if(e.StockCH != 0){
+                  return e;
+                }
+              })
+            }
+
             if(this.Chilerepuestos.length != 0){
               this.Loader = false;
             }
+
 
             }else if(this.ImportadoraSeleccionada == 'Refax'){
 
@@ -1394,7 +1426,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             if(this.OcultarAgotados == true){
               this.Noriega = this.Noriega.filter(e => {
-                if(e.Stock != ''){
+                if(e.Stock != '' || e.Marca != ""){
                   return e;
                 }
               })
@@ -1477,6 +1509,9 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.Proceso = '';
             this.Loader = false;
 
+
+      
+
             // if(Datos.Refax == "ERROR : java.lang.Exception: Logica.ProductosLogica.BuscarArticuloGlosa5: null"){
             //     let Go = await API.POST_REFAX_AUTH();
             //     let Datos = await API.POST_API_IMPORTADORA(this.Solicitud);
@@ -1498,7 +1533,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
       let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
       await API.POST_NORIEGA_AUTH();
 
-      this.CuatroRuedas = CuatroRuedas;
+        if(process.env.NODE_ENV == 'development'){
+           await API.POST_BICIMOTO_AUTH();
+        }
+
+      this.CuatroRuedasByPass = CuatroRuedas;
 
       if(this.OcultarAgotados == true){
         this.CuatroRuedas = this.CuatroRuedas.filter(e => {
@@ -1507,9 +1546,6 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
           }
         })
       }
-
-
-        this.CuatroRuedasByPass = this.CuatroRuedas;
 
     },
 

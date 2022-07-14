@@ -319,6 +319,11 @@ export default class API {
         return res.data;
     }
 
+    static async POST_CONSULTARALSACIA(Codigo){
+        const res = await axios.post(url+ '/consultar-alsacia', { Codigo });
+        return res.data;
+    }
+
 
     //API IMPORTADORA
     static async POST_REFAX_AUTH(){

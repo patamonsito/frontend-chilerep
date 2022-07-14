@@ -309,7 +309,7 @@
           v-for="Producto, i in Alsacia"
           :key="i"
         >
-          <td>{{ Producto.Sku }}</td>
+          <td @click="ModalAlsacia(Producto.Sku)" style="color: blue; cursor: pointer;">{{ Producto.Sku }}</td>
           <td>{{ Producto.Marca }}</td>
           <td v-if="Producto.Modelo != ''" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
           <td v-else></td>
@@ -696,15 +696,15 @@
           v-for="Producto, i in Gabtec"
           :key="i"
         >
-          <td><a :href="'https://www.gabtec.cl./' + Producto.Img.replace('../../', '/')" target="_blank"><img :src="'https://www.gabtec.cl./' + Producto.Img.replace('../../', '/')" width="50px"></a></td>
+          <td><a :href="'https://www.gabtec.cl./' + Producto.Img" target="_blank"><img :src="'https://www.gabtec.cl./' + Producto.Img" width="50px"></a></td>
           <td>{{ Producto.CodigoImportadora }}</td>
           <td>{{ Producto.Marca }}</td>
           <td>{{ Producto.Modelo }} {{ Producto.AñoI }} - {{ Producto.AñoT}}</td>
           <td>{{ Producto.Posicion }}</td>
           <td>{{ Producto.Descripcion }}</td>
           <td>{{ Producto.Fabricante }}</td>
-          <td>{{ Producto.Stock ?  Producto.Stock.replace('Stock: ', '') : 'Consultando...' }}</td>
-          <td>{{ Producto.Precio ?  MargenPrecio(Producto.Precio) : 'Consultando...' }}</td>
+          <td>{{ Producto.Stock }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
           <td>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -845,6 +845,35 @@
     </v-dialog>
 
 
+        <v-dialog
+      v-model="dialogAlsacia"
+      width="1300"
+    >
+      <v-card>
+ <v-card-text>
+ 
+
+        <body v-html="AlsaciaHtml">
+        </body>
+
+            
+
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn
+            color="secondary"
+            text
+            @click="dialogAlsacia = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
 
 <!-- Modal Crear Producto -->
     <v-dialog
@@ -906,8 +935,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         ImportadoraSeleccionada: 'Todas',
         OcultarAgotados: true,
         Proceso: '',
+        AlsaciaHtml: `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`,
         dialogCrearProducto: false,
         dialogRefax: false,
+        dialogAlsacia: false,
         dialogMannheim: false,
         AplicacionesM: [],
         AplicacionesR: [],
@@ -960,12 +994,15 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
-        async ConsultarGabtec(Codigo){
-          let RequestData = await API.POST_CONSULTARGABTEC(Codigo);
-
-          console.log(RequestData)
-
-        },
+       async ModalAlsacia(Codigo){
+        this.AlsaciaHtml = `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`,
+        this.dialogAlsacia = true
+        let AlsaciaHtml = await API.POST_CONSULTARALSACIA(Codigo);
+        this.AlsaciaHtml = AlsaciaHtml.toString().trim().replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('padding: 5px 0 0;', 'display: none;').replaceAll('placeholder="Buscar..."', 'style="display: none;"').replaceAll('<img', '<img width="50px"').replaceAll('th scope="col"', 'th scope="col" style="color:black"');
+       },
 
         check(evt){
           this.OcultarAgotados = evt;
@@ -1247,6 +1284,12 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
 
+            Gabtec = Gabtec.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
             this.Gabtec = Gabtec;
 
 
@@ -1255,11 +1298,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 for (let i = 0; i < Gabtec.length; i++) {
                   this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
 
-                  if(!Gabtec[i].Precio){
+                  if(Gabtec[i].Precio == '0'){
                         var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
                           Gabtec.map(e => {
                             if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
-                                e.Stock = RequestData.Stock;
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
                                 e.Precio = RequestData.Precio;
                             }
                             return e;
@@ -1392,6 +1435,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
 
+            Gabtec = Gabtec.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+
             this.Gabtec = Gabtec;
 
 
@@ -1400,7 +1450,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 for (let i = 0; i < Gabtec.length; i++) {
                   this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
 
-                  if(!Gabtec[i].Precio){
+                  if(Gabtec[i].Precio == '0'){
                         var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
                           Gabtec.map(e => {
                             if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){

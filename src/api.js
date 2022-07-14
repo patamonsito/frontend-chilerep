@@ -313,14 +313,30 @@ export default class API {
     static async POST_API_GABTEC(Buscar){
         const res = await axios.post(url+ '/api-gabtec', { Buscar });
         return res.data;
+    }
 
+    static async POST_API_SASVAL(Buscar){
+        const res = await axios.post(url+ '/api-sasval', { Buscar });
+        return res.data;
     }
 
     static async POST_CONSULTARGABTEC(Codigo){
         const res = await axios.post(url+ '/consultar-gabtec', { Codigo });
         return res.data;
     }
+    
 
+    static async POST_CONSULTARSASVAL(Codigo){
+        const res = await axios.post(url+ '/consultar-sasval', { Codigo });
+        return res.data;
+    }
+    
+
+    static async POST_CONSULTARBODEGASASVAL(Codigo){
+        const res = await axios.post(url+ '/consultar-bodega-sasval', { Codigo });
+        return res.data;
+    }
+    
     static async POST_CONSULTARALSACIA(Codigo){
         const res = await axios.post(url+ '/consultar-alsacia', { Codigo });
         return res.data;

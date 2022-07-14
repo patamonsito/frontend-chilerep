@@ -21,7 +21,7 @@
             <v-col cols="2" style="align-self: center;margin-top: 0.5rem;">
                 <v-select
                   v-model="ImportadoraSeleccionada"
-                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec']"
+                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec', 'Sasval']"
                   label="Importadora"
                   prepend-icon="mdi-panorama-sphere"
                   persistent-hint
@@ -53,7 +53,7 @@
               </v-alert>
             </v-col>
 
-    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Gabtec == '' && Loader == false"> 
+    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Gabtec == '' && Sasval == '' && Loader == false"> 
         
         <p class="center" style="margin-top: 1rem">{{Msg}}</p>
 
@@ -104,11 +104,14 @@
       <v-tab href="#tab-8" v-if="Gabtec.length != 0">
         Gabtec
       </v-tab>
+      <v-tab href="#tab-9" v-if="Sasval.length != 0">
+        Sasval
+      </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="i in 8"
+        v-for="i in 9"
         :key="i"
         :value="'tab-' + i"
       >
@@ -263,7 +266,7 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
@@ -346,7 +349,7 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
@@ -428,7 +431,7 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
@@ -583,7 +586,7 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
@@ -739,6 +742,87 @@
   </v-simple-table>
 
             </v-card-text>
+            <v-card-text v-if="i == 9">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Sku
+          </th>
+          <th class="text-left">
+            SkuProveedor
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Marca
+          </th>
+          <th class="text-left">
+            Modelo
+          </th>
+          <th class="text-left">
+            Linea
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Sotck
+          </th>
+          <th class="text-left">
+            Accion
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in Sasval"
+          :key="i"
+        >
+          <td>{{ Producto.Sku }}</td>
+          <td>{{ Producto.CodigoProveedor }}</td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td>{{ Producto.Marca }}</td>
+          <td>{{ Producto.Modelo }}</td>
+          <td>{{ Producto.Linea }}</td>
+          <td>{{ Producto.Precio }}</td>
+          <td @click="ModalSasval(Producto.Sku)" style="color: blue; cursor: pointer;">{{ Producto.Stock }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
+            </v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -824,6 +908,8 @@
 
  <v-card-text>
  
+ <v-divider></v-divider>
+ 
       <table v-html="AplicacionesR"></table>
           
             
@@ -874,6 +960,38 @@
       </v-card>
     </v-dialog>
 
+
+
+
+        <v-dialog
+      v-model="dialogSasval"
+      width="1300"
+    >
+      <v-card>
+ <v-card-text>
+  
+ <v-divider></v-divider>
+
+        <table v-html="SasvalHtml">
+        </table>
+
+            
+
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn
+            color="secondary"
+            text
+            @click="dialogSasval = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
 <!-- Modal Crear Producto -->
     <v-dialog
@@ -936,6 +1054,10 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         OcultarAgotados: true,
         BestPrice: [],
         Proceso: '',
+        SasvalHtml: `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`,
         AlsaciaHtml: `
         <div class="center">
             <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
@@ -944,6 +1066,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         dialogRefax: false,
         dialogAlsacia: false,
         dialogMannheim: false,
+        dialogSasval: false,
         AplicacionesM: [],
         AplicacionesR: [],
         Chilerepuestos: [],
@@ -957,6 +1080,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         Mannheim: [],
         Noriega: [],
         Gabtec: [],
+        Sasval: [],
         Msg: 'Realice una busqueda para empezar.',
         ProductoRefax: {
           Descripcion: '',
@@ -967,6 +1091,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
           Oem: ''
         },
         Solicitud: '',
+        CompSolicitud: '',
         rules: [
         value => !!value || 'Este campo es requirido para buscar.',
         value => (value || '').length <= 100 || 'Maximo 100 letras',
@@ -995,11 +1120,24 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
+      async ModalSasval(Codigo){
+        this.dialogSasval = true;
+        this.SasvalHtml = `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`;
+
+        let SasvalHtml = await API.POST_CONSULTARBODEGASASVAL(Codigo);
+
+        this.SasvalHtml = SasvalHtml
+      },
+
+
        async ModalAlsacia(Codigo){
         this.AlsaciaHtml = `
         <div class="center">
             <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
-        </div>`,
+        </div>`;
         this.dialogAlsacia = true
         let AlsaciaHtml = await API.POST_CONSULTARALSACIA(Codigo);
         this.AlsaciaHtml = AlsaciaHtml.toString().trim().replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('padding: 5px 0 0;', 'display: none;').replaceAll('placeholder="Buscar..."', 'style="display: none;"').replaceAll('<img', '<img width="50px"').replaceAll('th scope="col"', 'th scope="col" style="color:black"');
@@ -1099,11 +1237,14 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
         async Buscar(){
 
+
             if(this.Solicitud == ''){
               return alert('No puedes realizar una busqueda vacia.')
             }
 
             this.Loader = true;
+
+            this.CompSolicitud = this.Solicitud;
 
 
             this.Refax = [];
@@ -1113,12 +1254,18 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.Noriega = [];
             this.CuatroRuedas = [];
             this.Chilerepuestos = [];
-            this.Gabtec = []
+            this.Gabtec = [];
+            this.Sasval = [];
 
 
             if(this.ImportadoraSeleccionada == 'Todas'){
 
             this.Proceso = 'Buscando en Bodega...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
 
             this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
 
@@ -1136,6 +1283,12 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
 
             this.Proceso = 'Buscando en refax...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
 
             let Refax = await API.POST_API_REFAX(this.Solicitud);
 
@@ -1161,6 +1314,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               this.CuatroRuedasByPass = this.CuatroRuedas || [{ Descripcion: '' }];
             
               this.Proceso = 'Buscando en refax...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
 
               Refax = await API.POST_API_REFAX(this.Solicitud);
             }
@@ -1195,6 +1353,12 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             
             this.Proceso = 'Buscando en alsacia...';
 
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
             let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
 
             this.Alsacia = Alsacia[0];
@@ -1214,6 +1378,12 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             if(process.env.NODE_ENV == 'development'){
             this.Proceso = 'Buscando en bicimoto...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
 
             let Bicimoto = await API.POST_API_BICIMOTO(this.Solicitud);
             
@@ -1246,6 +1416,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             this.Proceso = 'Buscando en mannheim...';
 
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
             let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
             
             this.Mannheim = Mannheim;
@@ -1260,6 +1435,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }
 
             this.Proceso = 'Buscando en noriega...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
 
             let Noriega = await API.POST_API_NORIEGA(this.Solicitud);
             
@@ -1280,6 +1460,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
 
             this.Proceso = 'Buscando en CuatroRuedas...'
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
 
             let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
 
@@ -1305,6 +1490,11 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             // aqui}
             this.Proceso = 'Buscando en Gabtec...'
 
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
             let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
 
             Gabtec = Gabtec.map(e => {
@@ -1322,6 +1512,12 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                   this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
 
                   if(Gabtec[i].Precio == '0'){
+
+                      if(this.CompSolicitud != this.Solicitud){
+                        this.Proceso = 'Se cancelo la busqueda.';
+                        return true;
+                      }
+
                         var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
                           Gabtec.map(e => {
                             if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
@@ -1336,9 +1532,66 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 this.Gabtec = Gabtec;
             }
 
+            this.Proceso = 'Buscando en Sasval...'
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Sasval = await API.POST_API_SASVAL(this.Solicitud);
+
+            Sasval = Sasval.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+
+            this.Sasval = Sasval;
+
+
+            if(this.Sasval.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Sasval.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Sasval... ' + (i + 1) + ' de '  + Sasval.length;
+
+                  if(Sasval[i].Precio == '0'){
+                    
+                        if(this.CompSolicitud != this.Solicitud){
+                          this.Proceso = 'Se cancelo la busqueda.';
+                          return true;
+                        }
+
+                        var RequestData = await API.POST_CONSULTARSASVAL(Sasval[i].Sku);
+                          Sasval.map(e => {
+                            if(e.Sku == Sasval[i].Sku){
+                                e.Stock = RequestData.Stock;
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Sasval = Sasval;
+            }
+
+
+
+
             }else if(this.ImportadoraSeleccionada == 'Bodega'){
             
             this.Proceso = 'Buscando en Bodega...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
 
             this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
 
@@ -1358,6 +1611,14 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }else if(this.ImportadoraSeleccionada == 'Refax'){
 
             this.Proceso = 'Buscando en refax...';
+
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
 
             let Refax = await API.POST_API_REFAX(this.Solicitud);
 
@@ -1387,6 +1648,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             
             this.Proceso = 'Buscando en alsacia...';
 
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
             let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
 
             this.Alsacia = Alsacia[0];
@@ -1408,6 +1676,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             this.Proceso = 'Buscando en mannheim...';
 
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
             let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
             
             this.Mannheim = Mannheim;
@@ -1419,6 +1694,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }else if(this.ImportadoraSeleccionada == 'Noriega'){
 
             this.Proceso = 'Buscando en noriega...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
 
             let Noriega = await API.POST_API_NORIEGA(this.Solicitud);
             
@@ -1440,6 +1722,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }else if(this.ImportadoraSeleccionada == 'CuatroRuedas'){
 
             this.Proceso = 'Buscando en CuatroRuedas...'
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
 
             let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
 
@@ -1465,6 +1754,13 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             this.Proceso = 'Buscando en Gabtec...'
 
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
             let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
 
             Gabtec = Gabtec.map(e => {
@@ -1483,6 +1779,14 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                   this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
 
                   if(Gabtec[i].Precio == '0'){
+
+
+                  if(this.CompSolicitud != this.Solicitud){
+                    this.Proceso = 'Se cancelo la busqueda.';
+                    return true;
+                  }
+
+
                         var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
                           Gabtec.map(e => {
                             if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
@@ -1497,10 +1801,59 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 this.Gabtec = Gabtec;
             }
 
+            }else if(this.ImportadoraSeleccionada == 'Sasval'){
+
+            this.Proceso = 'Buscando en Sasval...'
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
             }
 
 
-            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Chilerepuestos.length;
+            let Sasval = await API.POST_API_SASVAL(this.Solicitud);
+
+            Sasval = Sasval.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+
+            this.Sasval = Sasval;
+
+
+            if(this.Sasval.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Sasval.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Sasval... ' + (i + 1) + ' de '  + Sasval.length;
+
+                  if(Sasval[i].Precio == '0'){
+                    
+                        if(this.CompSolicitud != this.Solicitud){
+                          this.Proceso = 'Se cancelo la busqueda.';
+                          return true;
+                        }
+
+                        var RequestData = await API.POST_CONSULTARSASVAL(Sasval[i].Sku);
+                          Sasval.map(e => {
+                            if(e.Sku == Sasval[i].Sku){
+                                e.Stock = RequestData.Stock;
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Sasval = Sasval;
+            }
+
+            }
+
+
+            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Gabtec.length + this.Sasval.length + this.Chilerepuestos.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'

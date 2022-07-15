@@ -320,6 +320,16 @@ export default class API {
         return res.data;
     }
 
+    static async POST_API_AUTOMARCOS(Buscar){
+        const res = await axios.post(url+ '/api-automarcos', { Buscar });
+        return res.data;
+    }
+
+    static async POST_CONSULTARAUTOMARCOS(Codigo){
+        const res = await axios.post(url+ '/consultar-automarcos', { Codigo });
+        return res.data;
+    }
+
     static async POST_CONSULTARGABTEC(Codigo){
         const res = await axios.post(url+ '/consultar-gabtec', { Codigo });
         return res.data;
@@ -344,6 +354,16 @@ export default class API {
 
 
     //API IMPORTADORA
+
+
+
+static async POST_AUTOMARCO_AUTH(){
+    const res = await axios.post(url+ '/auth-automarco');
+    return res.data;
+}
+
+
+
     static async POST_REFAX_AUTH(){
         const res = await axios.post(url+ '/auth-refax');
         return res.data;
@@ -360,8 +380,10 @@ export default class API {
         return res.data;
     }
 
-
-
+    static async POST_SASVAL_AUTH(){
+        const res = await axios.post(url+ '/auth-sasval');
+        return res.data;
+    }
 
     static async POST_APLICACIONESM(Aplicacion){
         const res = await axios.post(url+ '/aplicaciones-m', { Aplicacion } );

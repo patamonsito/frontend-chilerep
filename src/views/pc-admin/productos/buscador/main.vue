@@ -21,7 +21,7 @@
             <v-col cols="2" style="align-self: center;margin-top: 0.5rem;">
                 <v-select
                   v-model="ImportadoraSeleccionada"
-                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec', 'Sasval']"
+                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec', 'Automarco', 'Sasval']"
                   label="Importadora"
                   prepend-icon="mdi-panorama-sphere"
                   persistent-hint
@@ -53,7 +53,7 @@
               </v-alert>
             </v-col>
 
-    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Gabtec == '' && Sasval == '' && Loader == false"> 
+    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Gabtec == '' && Automarco == '' && Sasval == '' && Loader == false"> 
         
         <p class="center" style="margin-top: 1rem">{{Msg}}</p>
 
@@ -104,14 +104,19 @@
       <v-tab href="#tab-8" v-if="Gabtec.length != 0">
         Gabtec
       </v-tab>
-      <v-tab href="#tab-9" v-if="Sasval.length != 0">
+
+      <v-tab href="#tab-9" v-if="Automarco.length != 0">
+        Automarco
+      </v-tab>
+
+      <v-tab href="#tab-10" v-if="Sasval.length != 0">
         Sasval
       </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="i in 9"
+        v-for="i in 10"
         :key="i"
         :value="'tab-' + i"
       >
@@ -699,13 +704,13 @@
           v-for="Producto, i in Gabtec"
           :key="i"
         >
-          <td><a :href="'https://www.gabtec.cl./' + Producto.Img" target="_blank"><img :src="'https://www.gabtec.cl./' + Producto.Img" width="50px"></a></td>
+          <td><a :href="'https://www.gabtec.cl/' + Producto.Img" target="_blank"><img :src="'https://www.gabtec.cl/' + Producto.Img" width="50px"></a></td>
           <td>{{ Producto.CodigoImportadora }}</td>
           <td>{{ Producto.Marca }}</td>
           <td>{{ Producto.Modelo }} {{ Producto.AñoI }} - {{ Producto.AñoT}}</td>
           <td>{{ Producto.Posicion }}</td>
           <td>{{ Producto.Descripcion }}</td>
-          <td>{{ Producto.Fabricante }}</td>
+          <td><img :src="'https://www.gabtec.cl/images/marcas/' + Producto.Fabricante + '.jpg'" width="50px" :alt="Producto.Fabricante"></td>
           <td>{{ Producto.Stock }}</td>
           <td>{{ MargenPrecio(Producto.Precio) }}</td>
           <td>
@@ -743,6 +748,91 @@
 
             </v-card-text>
             <v-card-text v-if="i == 9">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Imagen
+          </th>
+          <th class="text-left">
+            Sku
+          </th>
+          <th class="text-left">
+            Marca
+          </th>
+          <th class="text-left">
+            Modelo
+          </th>
+          <th class="text-left">
+            Posicion
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Fabricante
+          </th>
+          <th class="text-left">
+            Sotck
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Accion
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in Automarco"
+          :key="i"
+        >
+          <td><a :href="'https://www.automarco.cl./' + Producto.Img" target="_blank"><img :src="'https://www.automarco.cl./' + Producto.Img" width="50px"></a></td>
+          <td>{{ Producto.CodigoImportadora }}</td>
+          <td>{{ Producto.Marca }}</td>
+          <td>{{ Producto.Modelo }} {{ Producto.Motor }} {{ Producto.AñoI }} - {{ Producto.AñoT}}</td>
+          <td>{{ Producto.Aplicacion }} </td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td><img :src="'https://www.automarco.cl./' + Producto.FabricanteImg" width="50px" :alt="Producto.Fabricante"></td>
+          <td>{{ Producto.Stock }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
+            </v-card-text>
+            <v-card-text v-if="i == 10">
   <v-simple-table>
     <template v-slot:default>
       <thead>
@@ -1080,6 +1170,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         Mannheim: [],
         Noriega: [],
         Gabtec: [],
+        Automarco: [],
         Sasval: [],
         Msg: 'Realice una busqueda para empezar.',
         ProductoRefax: {
@@ -1256,6 +1347,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.Chilerepuestos = [];
             this.Gabtec = [];
             this.Sasval = [];
+            this.Automarco = [];
 
 
             if(this.ImportadoraSeleccionada == 'Todas'){
@@ -1532,6 +1624,53 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                 this.Gabtec = Gabtec;
             }
 
+
+            // automarco
+            this.Proceso = 'Buscando en Automarco...'
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            let Automarco = await API.POST_API_AUTOMARCOS(this.Solicitud);
+
+            Automarco = Automarco.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+            this.Automarco = Automarco;
+
+
+            if(this.Automarco.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Automarco.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Automarco... ' + (i + 1) + ' de '  + Automarco.length;
+
+                  if(Automarco[i].Precio == '0'){
+
+                      if(this.CompSolicitud != this.Solicitud){
+                        this.Proceso = 'Se cancelo la busqueda.';
+                        return true;
+                      }
+
+                        var RequestData = await API.POST_CONSULTARAUTOMARCOS(Automarco[i].CodigoImportadora);
+                          Automarco.map(e => {
+                            if(e.CodigoImportadora == Automarco[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Automarco = Automarco;
+            }
+
+
             this.Proceso = 'Buscando en Sasval...'
 
 
@@ -1790,7 +1929,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
                         var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
                           Gabtec.map(e => {
                             if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
-                                e.Stock = RequestData.Stock;
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
                                 e.Precio = RequestData.Precio;
                             }
                             return e;
@@ -1799,6 +1938,53 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
                 }
                 this.Gabtec = Gabtec;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'Automarco'){
+
+
+            this.Proceso = 'Buscando en Automarco...'
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            let Automarco = await API.POST_API_AUTOMARCOS(this.Solicitud);
+
+            Automarco = Automarco.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+            this.Automarco = Automarco;
+
+
+            if(this.Automarco.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Automarco.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Automarco... ' + (i + 1) + ' de '  + Automarco.length;
+
+                  if(Automarco[i].Precio == '0'){
+
+                      if(this.CompSolicitud != this.Solicitud){
+                        this.Proceso = 'Se cancelo la busqueda.';
+                        return true;
+                      }
+
+                        var RequestData = await API.POST_CONSULTARAUTOMARCOS(Automarco[i].CodigoImportadora);
+                          Automarco.map(e => {
+                            if(e.CodigoImportadora == Automarco[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Automarco = Automarco;
             }
 
             }else if(this.ImportadoraSeleccionada == 'Sasval'){
@@ -1853,7 +2039,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }
 
 
-            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Gabtec.length + this.Sasval.length + this.Chilerepuestos.length;
+            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Gabtec.length + this.Automarco.length + this.Sasval.length + this.Chilerepuestos.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'
@@ -1885,6 +2071,8 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
       let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
       await API.POST_NORIEGA_AUTH();
+      await API.POST_SASVAL_AUTH();
+      await API.POST_AUTOMARCO_AUTH();
 
         if(process.env.NODE_ENV == 'development'){
            await API.POST_BICIMOTO_AUTH();

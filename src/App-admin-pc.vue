@@ -1713,6 +1713,7 @@
           async getCarrito(){
           this.Carrito = await API.GET_CERRITO_SESSION();
 
+          console.log(this.Carrito)
           this.PrecioTotal = 0;
           this.CantidadTotal = 0;
           this.CantidadAgregada = [];

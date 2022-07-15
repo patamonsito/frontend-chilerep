@@ -1445,6 +1445,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             
             this.Proceso = 'Buscando en alsacia...';
 
+
             if(this.CompSolicitud != this.Solicitud){
               this.Proceso = 'Se cancelo la busqueda.';
               return true;
@@ -1453,18 +1454,65 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
 
-            this.Alsacia = Alsacia[0];
+            Alsacia = Alsacia[0]
+
+            this.Alsacia = Alsacia;
             
             if(this.OcultarAgotados == true){
-              this.Alsacia = this.Alsacia.filter((e)=> {
-                if(e.Stock != '' || e.Marca != ""){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != ''  || e.Marca != ""){
                   return e;
                 }
               })
             }
 
+
             if(this.Alsacia.length != 0){
               this.Loader = false;
+              if(Alsacia.length > 29){
+
+                if(this.CompSolicitud != this.Solicitud){
+                  this.Proceso = 'Se cancelo la busqueda.';
+                  return true;
+                }
+
+                this.Proceso = 'Buscando mas resultados en alsacia...';
+                let Page1 = await API.POST_PAGEALSACIA(1);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1
+                ];
+              if(Page1.length > 29){
+                
+                 if(this.CompSolicitud != this.Solicitud){
+                   this.Proceso = 'Se cancelo la busqueda.';
+                   return true;
+                 }
+
+                let Page2 = await API.POST_PAGEALSACIA(2);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1,
+                  ...Page2
+                ];
+              }
+
+            this.Alsacia = Alsacia;
+
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != '' && e.Stock != '0'){
+                  e.Stock = 'Disp.'
+                  return e;
+                }
+              })
+            }
+
+
+              }
+
             }
             
 
@@ -1793,10 +1841,22 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               return true;
             }
 
+console.log(this.Solicitud.split(' ').length)
+            if(this.Solicitud.split(' ').length == 1){
+                this.AlsaciaHtml = `
+                <div class="center">
+                    <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+                </div>`;
+                this.dialogAlsacia = true
+                let AlsaciaHtml = await API.POST_CONSULTARALSACIA(this.Solicitud);
+                this.AlsaciaHtml = AlsaciaHtml.toString().trim().replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('padding: 5px 0 0;', 'display: none;').replaceAll('placeholder="Buscar..."', 'style="display: none;"').replaceAll('<img', '<img width="50px"').replaceAll('th scope="col"', 'th scope="col" style="color:black"');
+            }else{
 
             let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
 
-            this.Alsacia = Alsacia[0];
+            Alsacia = Alsacia[0]
+
+            this.Alsacia = Alsacia;
             
             if(this.OcultarAgotados == true){
               this.Alsacia = this.Alsacia.filter(e => {
@@ -1806,10 +1866,58 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               })
             }
 
+
             if(this.Alsacia.length != 0){
               this.Loader = false;
+              if(Alsacia.length > 29){
+                
+                if(this.CompSolicitud != this.Solicitud){
+                  this.Proceso = 'Se cancelo la busqueda.';
+                  return true;
+                }
+
+                this.Proceso = 'Buscando mas resultados en alsacia...';
+                let Page1 = await API.POST_PAGEALSACIA(1);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1
+                ];
+              if(Page1.length > 29){
+
+              if(this.CompSolicitud != this.Solicitud){
+                this.Proceso = 'Se cancelo la busqueda.';
+                return true;
+              }
+
+                let Page2 = await API.POST_PAGEALSACIA(2);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1,
+                  ...Page2
+                ];
+              }
+
+            this.Alsacia = Alsacia;
+
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != '' && e.Stock != '0'){
+                  e.Stock = 'Disp.'
+                  return e;
+                }
+              })
             }
-            
+
+
+              }
+
+            }
+
+            }
+
+
               
             }else if(this.ImportadoraSeleccionada == 'Mannheim'){
 

@@ -299,6 +299,12 @@ export default class API {
         const res = await axios.post(url+ '/api-alsacia', { Buscar } );
         return res.data;
     }
+
+    static async POST_PAGEALSACIA(Page){
+        const res = await axios.post(url+ '/alsacia-page', { Page } );
+        return res.data;
+    }
+    
     static async POST_API_NORIEGA(Buscar){
         const res = await axios.post(url+ '/api-noriega', { Buscar } );
         return res.data;

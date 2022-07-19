@@ -1587,7 +1587,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             if(this.OcultarAgotados == true){
               this.Noriega = this.Noriega.filter(e => {
-                if(e.Stock != '' || e.Marca != ""){
+                if(e.Stock != 'X'){
                   return e;
                 }
               })
@@ -1619,12 +1619,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }
 
             if(this.CuatroRuedas.length != 0){
-                if(this.CuatroRuedas[0].Descripcion == this.CuatroRuedasByPass[0].Descripcion){
-                  this.CuatroRuedas = [];
-                }else{
-                  this.CuatroRuedasByPass = this.CuatroRuedas || [{ Descripcion: '' }];
                   this.Loader = false;
-                }
             }
 
             // aqui}
@@ -1955,7 +1950,7 @@ console.log(this.Solicitud.split(' ').length)
 
             if(this.OcultarAgotados == true){
               this.Noriega = this.Noriega.filter(e => {
-                if(e.Stock != '' || e.Marca != ""){
+                if(e.Stock != 'X'){
                   return e;
                 }
               })
@@ -1990,12 +1985,7 @@ console.log(this.Solicitud.split(' ').length)
             }
 
             if(this.CuatroRuedas.length != 0){
-                if(this.CuatroRuedas[0].Descripcion == this.CuatroRuedasByPass[0].Descripcion){
-                  this.CuatroRuedas = [];
-                }else{
-                  this.CuatroRuedasByPass = this.CuatroRuedas;
                   this.Loader = false;
-                }
             }
             }else if(this.ImportadoraSeleccionada == 'Gabtec'){
 

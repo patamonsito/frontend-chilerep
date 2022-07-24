@@ -443,6 +443,84 @@
   </v-simple-table>
             </v-card-text>
             <v-card-text v-if="i == 5">
+
+
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">
+                        Imagen
+                      </th>
+                      <th class="text-left">
+                        Oem
+                      </th>
+                      <th class="text-left">
+                        Descripcion
+                      </th>
+                      <th class="text-left">
+                        Fabricante
+                      </th>
+                      <th class="text-left">
+                        Origen
+                      </th>
+                      <th class="text-left">
+                        Precio
+                      </th>
+                      <th class="text-left">
+                        Acción
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="Producto, i in MannheimDB"
+                      :key="i"
+                    >
+                      <td><a :href="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" target="_blank"><img :src="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" width="50px"></a></td>
+                      <td>{{ Producto.Oem }}</td>
+                      <td>{{ Producto.Marca }}</td>
+                      <td>{{ Producto.Modelo }} {{ Producto.Años }}</td>
+                      <td>{{ Producto.Descripcion }}</td>
+                      <td>{{ Producto.Fabricante  }}</td>
+                      <td>{{ Producto.Origen }}</td>
+                      <td>{{ Producto.Precio }}</td>
+                      <td>
+                        <v-menu offset-y>
+                          <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          class="ma-1"
+                          outlined
+                          fab
+                          small
+                          color="grey"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                          </template>
+                            <v-list>
+                              <v-list-item link @click="CrearProducto(Producto)">
+                                <v-list-item-title>Crear Producto</v-list-item-title>
+                              </v-list-item>
+                              <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                                <v-list-item-title>Pedir Producto</v-list-item-title>
+                              </v-list-item>
+                              <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                                <v-list-item-title>Ver en Importadora</v-list-item-title>
+                              </v-list-item>
+                            </v-list>
+                        </v-menu>
+                     </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+
+              <v-divider></v-divider>
+              <h5>Otros Resultados:</h5>
+
   <v-simple-table>
     <template v-slot:default>
       <thead>
@@ -1168,6 +1246,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         Alsacia: [],
         Bicimoto: [],
         Mannheim: [],
+        MannheimDB: [],
         Noriega: [],
         Gabtec: [],
         Automarco: [],
@@ -1348,6 +1427,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             this.Gabtec = [];
             this.Sasval = [];
             this.Automarco = [];
+            this.MannheimDB = [];
 
 
             if(this.ImportadoraSeleccionada == 'Todas'){
@@ -1563,7 +1643,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
             
-            this.Mannheim = Mannheim;
+            this.Mannheim = Mannheim[0];
 
             this.Mannheim = this.Mannheim.map((e) => {
               e.Precio = e.PrecioImportadora
@@ -1926,10 +2006,18 @@ console.log(this.Solicitud.split(' ').length)
 
 
             let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
-            
-            this.Mannheim = Mannheim;
+
+            this.Mannheim = Mannheim[0];
 
             if(this.Mannheim.length != 0){
+              this.Loader = false;
+            }
+
+
+            this.MannheimDB = Mannheim[1];
+
+
+          if(this.MannheimDB.length != 0){
               this.Loader = false;
             }
 
@@ -2137,7 +2225,7 @@ console.log(this.Solicitud.split(' ').length)
             }
 
 
-            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Gabtec.length + this.Automarco.length + this.Sasval.length + this.Chilerepuestos.length;
+            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Gabtec.length + this.Automarco.length + this.Sasval.length + this.Chilerepuestos.length + this.MannheimDB.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'

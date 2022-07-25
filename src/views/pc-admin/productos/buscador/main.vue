@@ -456,6 +456,12 @@
                         Oem
                       </th>
                       <th class="text-left">
+                        Marca
+                      </th>
+                      <th class="text-left">
+                        Modelo
+                      </th>
+                      <th class="text-left">
                         Descripcion
                       </th>
                       <th class="text-left">
@@ -463,9 +469,6 @@
                       </th>
                       <th class="text-left">
                         Origen
-                      </th>
-                      <th class="text-left">
-                        Precio
                       </th>
                       <th class="text-left">
                         Acción
@@ -484,7 +487,6 @@
                       <td>{{ Producto.Descripcion }}</td>
                       <td>{{ Producto.Fabricante  }}</td>
                       <td>{{ Producto.Origen }}</td>
-                      <td>{{ Producto.Precio }}</td>
                       <td>
                         <v-menu offset-y>
                           <template v-slot:activator="{ on, attrs }">
@@ -1595,8 +1597,6 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             }
             
-
-            if(process.env.NODE_ENV == 'development'){
             this.Proceso = 'Buscando en bicimoto...';
 
             if(this.CompSolicitud != this.Solicitud){
@@ -1607,7 +1607,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             let Bicimoto = await API.POST_API_BICIMOTO(this.Solicitud);
             
-            if(Bicimoto[0].Descripcion == '' || process.env.NODE_ENV == 'production'){
+            if(Bicimoto[0].Descripcion == ''){
                 Bicimoto = [];
             }
 
@@ -1630,8 +1630,6 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
             if(this.Bicimoto.length != 0){
               this.Loader = false;
-            }
-
             }
 
             this.Proceso = 'Buscando en mannheim...';
@@ -1994,6 +1992,35 @@ console.log(this.Solicitud.split(' ').length)
 
 
               
+            }else if(this.ImportadoraSeleccionada == 'Bicimoto'){
+
+            this.Proceso = 'Buscando en bicimoto...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Bicimoto = await API.POST_API_BICIMOTO(this.Solicitud);
+
+            this.Bicimoto = Bicimoto;
+
+            if(this.OcultarAgotados == true){
+              this.Bicimoto = this.Bicimoto.filter(e => {
+                if(e.Stock != '0'){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Noriega.length != 0){
+              this.Loader = false;
+            }
+
+
             }else if(this.ImportadoraSeleccionada == 'Mannheim'){
 
             this.Proceso = 'Buscando en mannheim...';

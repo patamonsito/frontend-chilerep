@@ -21,7 +21,7 @@
             <v-col cols="2" style="align-self: center;margin-top: 0.5rem;">
                 <v-select
                   v-model="ImportadoraSeleccionada"
-                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec', 'Automarco', 'Sasval']"
+                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec', 'Automarco']"
                   label="Importadora"
                   prepend-icon="mdi-panorama-sphere"
                   persistent-hint
@@ -1792,52 +1792,52 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }
 
 
-            this.Proceso = 'Buscando en Sasval...'
+            // this.Proceso = 'Buscando en Sasval...'
 
 
-            if(this.CompSolicitud != this.Solicitud){
-              this.Proceso = 'Se cancelo la busqueda.';
-              return true;
-            }
+            // if(this.CompSolicitud != this.Solicitud){
+            //   this.Proceso = 'Se cancelo la busqueda.';
+            //   return true;
+            // }
 
 
-            let Sasval = await API.POST_API_SASVAL(this.Solicitud);
+            // let Sasval = await API.POST_API_SASVAL(this.Solicitud);
 
-            Sasval = Sasval.map(e => {
-              e.Stock = 'Consultado...';
-              e.Precio = '0';
-              return e;
-            })
-
-
-            this.Sasval = Sasval;
+            // Sasval = Sasval.map(e => {
+            //   e.Stock = 'Consultado...';
+            //   e.Precio = '0';
+            //   return e;
+            // })
 
 
-            if(this.Sasval.length != 0){
-                this.Loader = false;
-                for (let i = 0; i < Sasval.length; i++) {
-                  this.Proceso = 'Consultando Stock y Precio en Sasval... ' + (i + 1) + ' de '  + Sasval.length;
+            // this.Sasval = Sasval;
 
-                  if(Sasval[i].Precio == '0'){
+
+            // if(this.Sasval.length != 0){
+            //     this.Loader = false;
+            //     for (let i = 0; i < Sasval.length; i++) {
+            //       this.Proceso = 'Consultando Stock y Precio en Sasval... ' + (i + 1) + ' de '  + Sasval.length;
+
+            //       if(Sasval[i].Precio == '0'){
                     
-                        if(this.CompSolicitud != this.Solicitud){
-                          this.Proceso = 'Se cancelo la busqueda.';
-                          return true;
-                        }
+            //             if(this.CompSolicitud != this.Solicitud){
+            //               this.Proceso = 'Se cancelo la busqueda.';
+            //               return true;
+            //             }
 
-                        var RequestData = await API.POST_CONSULTARSASVAL(Sasval[i].Sku);
-                          Sasval.map(e => {
-                            if(e.Sku == Sasval[i].Sku){
-                                e.Stock = RequestData.Stock;
-                                e.Precio = RequestData.Precio;
-                            }
-                            return e;
-                          })
-                  }
+            //             var RequestData = await API.POST_CONSULTARSASVAL(Sasval[i].Sku);
+            //               Sasval.map(e => {
+            //                 if(e.Sku == Sasval[i].Sku){
+            //                     e.Stock = RequestData.Stock;
+            //                     e.Precio = RequestData.Precio;
+            //                 }
+            //                 return e;
+            //               })
+            //       }
 
-                }
-                this.Sasval = Sasval;
-            }
+            //     }
+            //     this.Sasval = Sasval;
+            // }
 
 
 
@@ -2283,6 +2283,7 @@ console.log(this.Solicitud.split(' ').length)
         this.Loader = false;
 
       let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
+      await API.POST_REFAX_AUTH();
       await API.POST_NORIEGA_AUTH();
       await API.POST_SASVAL_AUTH();
       await API.POST_AUTOMARCO_AUTH();

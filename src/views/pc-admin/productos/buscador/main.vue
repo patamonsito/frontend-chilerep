@@ -1455,73 +1455,40 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               this.Loader = false;
             }
 
-
-            this.Proceso = 'Buscando en refax...';
-
-            if(this.CompSolicitud != this.Solicitud){
-              this.Proceso = 'Se cancelo la busqueda.';
-              return true;
-            }
-
-
-            let Refax = await API.POST_API_REFAX(this.Solicitud);
-
-            if(Refax == 'Error al iniciar sesion'){
-              this.Proceso = 'Actualizando Acceso a las importadoras...';
-              await API.POST_REFAX_AUTH();
-
-
-            let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka');
-
-            this.CuatroRuedas = CuatroRuedas || [{ Descripcion: '' }];
-
-
-            if(this.OcultarAgotados == true){
-              this.CuatroRuedas = this.CuatroRuedas.filter(e => {
-                if(e.Stock != 'NO DISPONIBLE'){
-                  return e;
-                }
-              })
-            }
-
-
-              this.CuatroRuedasByPass = this.CuatroRuedas || [{ Descripcion: '' }];
-            
+            if(new Date().getHours() > 8){
               this.Proceso = 'Buscando en refax...';
-
-            if(this.CompSolicitud != this.Solicitud){
-              this.Proceso = 'Se cancelo la busqueda.';
-              return true;
-            }
-
-              Refax = await API.POST_API_REFAX(this.Solicitud);
-            }
-
-
-
-
-            Refax[0].pop();
-            Refax[0].pop();
-
-            this.Refax = Refax[0];
-
-            this.Refax = this.Refax.map((e) => {
-              e.Precio = e.PrecioImportadora
-              return e;
-            });
-
-
-            if(this.OcultarAgotados == true){
-              this.Refax = this.Refax.filter((e) => {
-                if(e.Stock != '0' || e.Marca != ""){
-                  return e;
-                }
-              })
-            }
-
-
-            if(this.Refax.length != 0){
-              this.Loader = false;
+  
+              if(this.CompSolicitud != this.Solicitud){
+                this.Proceso = 'Se cancelo la busqueda.';
+                return true;
+              }
+  
+  
+              let Refax = await API.POST_API_REFAX(this.Solicitud);
+  
+              Refax[0].pop();
+              Refax[0].pop();
+  
+              this.Refax = Refax[0];
+  
+              this.Refax = this.Refax.map((e) => {
+                e.Precio = e.PrecioImportadora
+                return e;
+              });
+  
+  
+              if(this.OcultarAgotados == true){
+                this.Refax = this.Refax.filter((e) => {
+                  if(e.Stock != '0' || e.Marca != ""){
+                    return e;
+                  }
+                })
+              }
+  
+  
+              if(this.Refax.length != 0){
+                this.Loader = false;
+              }
             }
 
             

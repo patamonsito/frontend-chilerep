@@ -1656,29 +1656,32 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               this.Loader = false;
             }
 
-
-            this.Proceso = 'Buscando en CuatroRuedas...'
-
-            if(this.CompSolicitud != this.Solicitud){
-              this.Proceso = 'Se cancelo la busqueda.';
-              return true;
+            if(process.env.NODE_ENV == 'development'){
+              this.Proceso = 'Buscando en CuatroRuedas...'
+  
+              if(this.CompSolicitud != this.Solicitud){
+                this.Proceso = 'Se cancelo la busqueda.';
+                return true;
+              }
+  
+              let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
+  
+              this.CuatroRuedas = CuatroRuedas || [{ Descripcion: '' }];
+  
+              if(this.OcultarAgotados == true){
+                this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+                  if(e.Stock != 'NO DISPONIBLE'){
+                    return e;
+                  }
+                })
+              }
+  
+              if(this.CuatroRuedas.length != 0){
+                    this.Loader = false;
+              }
             }
 
-            let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
 
-            this.CuatroRuedas = CuatroRuedas || [{ Descripcion: '' }];
-
-            if(this.OcultarAgotados == true){
-              this.CuatroRuedas = this.CuatroRuedas.filter(e => {
-                if(e.Stock != 'NO DISPONIBLE'){
-                  return e;
-                }
-              })
-            }
-
-            if(this.CuatroRuedas.length != 0){
-                  this.Loader = false;
-            }
 
             // aqui}
             this.Proceso = 'Buscando en Gabtec...'
@@ -2058,30 +2061,33 @@ console.log(this.Solicitud.split(' ').length)
 
             }else if(this.ImportadoraSeleccionada == 'CuatroRuedas'){
 
-            this.Proceso = 'Buscando en CuatroRuedas...'
-
-
-            if(this.CompSolicitud != this.Solicitud){
-              this.Proceso = 'Se cancelo la busqueda.';
-              return true;
-            }
-
-
-            let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
-
-            this.CuatroRuedas = CuatroRuedas;
-
-            if(this.OcultarAgotados == true){
-              this.CuatroRuedas = this.CuatroRuedas.filter(e => {
-                if(e.Stock != 'NO DISPONIBLE'){
-                  return e;
+              if(process.env.NODE_ENV == 'development'){
+                this.Proceso = 'Buscando en CuatroRuedas...'
+    
+    
+                if(this.CompSolicitud != this.Solicitud){
+                  this.Proceso = 'Se cancelo la busqueda.';
+                  return true;
                 }
-              })
-            }
+    
+    
+                let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
+    
+                this.CuatroRuedas = CuatroRuedas;
+    
+                if(this.OcultarAgotados == true){
+                  this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+                    if(e.Stock != 'NO DISPONIBLE'){
+                      return e;
+                    }
+                  })
+                }
+    
+                if(this.CuatroRuedas.length != 0){
+                      this.Loader = false;
+                }
+              }
 
-            if(this.CuatroRuedas.length != 0){
-                  this.Loader = false;
-            }
             }else if(this.ImportadoraSeleccionada == 'Gabtec'){
 
             this.Proceso = 'Buscando en Gabtec...'
@@ -2266,30 +2272,21 @@ console.log(this.Solicitud.split(' ').length)
 
       await API.POST_NORIEGA_AUTH();
       await API.POST_SASVAL_AUTH();
+      await API.POST_REFAX_AUTH();
       await API.POST_AUTOMARCO_AUTH();
 
       if(process.env.NODE_ENV == 'development'){
+        let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
+        this.CuatroRuedasByPass = CuatroRuedas;
+         if(this.OcultarAgotados == true){
+            this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+              if(e.Stock != 'NO DISPONIBLE'){
+                 return e;
+              }
+            })
+         }
          await API.POST_BICIMOTO_AUTH();
       }
-
-
-      let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
-
-
-      this.CuatroRuedasByPass = CuatroRuedas;
-
-      if(this.OcultarAgotados == true){
-        this.CuatroRuedas = this.CuatroRuedas.filter(e => {
-          if(e.Stock != 'NO DISPONIBLE'){
-            return e;
-          }
-        })
-      }
-
-
-      await API.POST_REFAX_AUTH();
-
-
     },
 
     //WindowsOnready

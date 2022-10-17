@@ -18,6 +18,13 @@
               >
                 <v-icon>mdi-cached</v-icon>
               </v-btn>
+              <v-btn
+              icon
+              color="indigo"
+              @click="asignarCodeAlsacia()"
+            >
+              <v-icon>mdi-cloud-upload</v-icon>
+            </v-btn>
         </strong>
         </v-alert>
         <v-divider></v-divider>
@@ -1401,6 +1408,16 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
         },
 
+        async asignarCodeAlsacia(){
+          let codeAlsacia = prompt("Por favor ingrese el codigo de alsacia.");
+          if (codeAlsacia && codeAlsacia.length > 20) {
+            this.AlsaciaCookie = codeAlsacia;
+            await API.POST_ALSACIA_CODE(codeAlsacia)
+          }else if(codeAlsacia.length > 0 && codeAlsacia.length < 20){
+            alert('Codigo invalido.')
+          }
+        },
+        
         async VerAplicacionesM(Producto){
       
             this.dialogMannheim = true;
@@ -1897,7 +1914,6 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               return true;
             }
 
-console.log(this.Solicitud.split(' ').length)
             if(this.Solicitud.split(' ').length == 1){
                 this.AlsaciaHtml = `
                 <div class="center">

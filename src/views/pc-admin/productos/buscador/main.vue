@@ -10,7 +10,15 @@
               outlined
               type="info"
               >
-        <strong>Sugerencia de busqueda "Descripcion Marca y Modelo". Ejmeplo: EMPAQUETADURA CULATA CHEVROLET AVEO</strong>
+                Sesion Alsacia: {{ AlsaciaCookie || 'Cargando...' }}
+              <v-btn
+                icon
+                color="green"
+                @click="reloadAlsacia()"
+              >
+                <v-icon>mdi-cached</v-icon>
+              </v-btn>
+        </strong>
         </v-alert>
         <v-divider></v-divider>
  
@@ -1237,6 +1245,7 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
         dialogAlsacia: false,
         dialogMannheim: false,
         dialogSasval: false,
+        AlsaciaCookie: null,
         AplicacionesM: [],
         AplicacionesR: [],
         Chilerepuestos: [],
@@ -1332,6 +1341,10 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
         },
 
+
+      async reloadAlsacia(){
+        this.AlsaciaCookie =  await API.POST_LOGIN_ALSACIA();
+      },
 
       MargenPrecioMannheim(Precio){
 
@@ -2247,17 +2260,21 @@ console.log(this.Solicitud.split(' ').length)
 
     //Apis
     async created(){
-        this.Loader = false;
+      this.Loader = false;
 
-      let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
-      await API.POST_REFAX_AUTH();
+      this.AlsaciaCookie = await API.POST_COOKIE_ALSACIA();
+
       await API.POST_NORIEGA_AUTH();
       await API.POST_SASVAL_AUTH();
       await API.POST_AUTOMARCO_AUTH();
 
-        if(process.env.NODE_ENV == 'development'){
-           await API.POST_BICIMOTO_AUTH();
-        }
+      if(process.env.NODE_ENV == 'development'){
+         await API.POST_BICIMOTO_AUTH();
+      }
+
+
+      let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
+
 
       this.CuatroRuedasByPass = CuatroRuedas;
 
@@ -2268,6 +2285,10 @@ console.log(this.Solicitud.split(' ').length)
           }
         })
       }
+
+
+      await API.POST_REFAX_AUTH();
+
 
     },
 

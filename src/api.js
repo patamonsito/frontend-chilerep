@@ -363,15 +363,26 @@ export default class API {
 
 
 
-static async POST_AUTOMARCO_AUTH(){
-    const res = await axios.post(url+ '/auth-automarco');
-    return res.data;
-}
-
+    static async POST_AUTOMARCO_AUTH(){
+        const res = await axios.post(url+ '/auth-automarco');
+        return res.data;
+    }
 
 
     static async POST_REFAX_AUTH(){
         const res = await axios.post(url+ '/auth-refax');
+        return res.data;
+    }
+
+
+    static async POST_COOKIE_ALSACIA(){
+        const res = await axios.post(url+ '/cookie-alsacia');
+        return res.data;
+    }
+
+
+    static async POST_LOGIN_ALSACIA(){
+        const res = await axios.post(url+ '/auth-alsacia');
         return res.data;
     }
 

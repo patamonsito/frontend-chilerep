@@ -271,6 +271,12 @@ export default class API {
     
 
     //API IMPORTADORA
+
+    static async POST_ALSACIA_CODE(codeAlsacia){
+        const res = await axios.post(url+ '/save-alsacia-code', { codeAlsacia } );
+        return res.data;
+    }
+
     static async POST_API_IMPORTADORA(Buscar){
         const res = await axios.post(url+ '/products/api-importadora', { Buscar } );
         return res.data;

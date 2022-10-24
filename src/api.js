@@ -4,7 +4,7 @@ import axios from 'axios';
 
 console.log(process.env.NODE_ENV)
 
-const url = process.env.NODE_ENV == 'development' ? '/api' : 'http://143.198.165.86:3000/api'
+const url = process.env.NODE_ENV == 'development' ? 'http://localhost:3000/api' : 'http://143.198.165.86:3000/api'
 
 console.log(url)
 

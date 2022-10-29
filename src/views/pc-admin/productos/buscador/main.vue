@@ -11,13 +11,13 @@
               type="info"
               >
                 Sesion Alsacia: {{ AlsaciaCookie || 'Cargando...' }}
-              <v-btn
+              <!-- <v-btn
                 icon
                 color="green"
                 @click="reloadAlsacia()"
               >
                 <v-icon>mdi-cached</v-icon>
-              </v-btn>
+              </v-btn> -->
               <v-btn
               icon
               color="indigo"

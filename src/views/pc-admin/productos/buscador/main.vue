@@ -1522,78 +1522,6 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
             }
 
             
-            this.Proceso = 'Buscando en alsacia...';
-
-
-            if(this.CompSolicitud != this.Solicitud){
-              this.Proceso = 'Se cancelo la busqueda.';
-              return true;
-            }
-
-
-            let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
-
-            Alsacia = Alsacia[0]
-
-            this.Alsacia = Alsacia;
-            
-            if(this.OcultarAgotados == true){
-              this.Alsacia = this.Alsacia.filter(e => {
-                if(e.Stock != ''  || e.Marca != ""){
-                  return e;
-                }
-              })
-            }
-
-
-            if(this.Alsacia.length != 0){
-              this.Loader = false;
-              if(Alsacia.length > 29){
-
-                if(this.CompSolicitud != this.Solicitud){
-                  this.Proceso = 'Se cancelo la busqueda.';
-                  return true;
-                }
-
-                this.Proceso = 'Buscando mas resultados en alsacia...';
-                let Page1 = await API.POST_PAGEALSACIA(1);
-
-                Alsacia = [
-                  ...Alsacia,
-                  ...Page1
-                ];
-              if(Page1.length > 29){
-                
-                 if(this.CompSolicitud != this.Solicitud){
-                   this.Proceso = 'Se cancelo la busqueda.';
-                   return true;
-                 }
-
-                let Page2 = await API.POST_PAGEALSACIA(2);
-
-                Alsacia = [
-                  ...Alsacia,
-                  ...Page1,
-                  ...Page2
-                ];
-              }
-
-            this.Alsacia = Alsacia;
-
-            if(this.OcultarAgotados == true){
-              this.Alsacia = this.Alsacia.filter(e => {
-                if(e.Stock != '' && e.Stock != '0'){
-                  e.Stock = 'Disp.'
-                  return e;
-                }
-              })
-            }
-
-
-              }
-
-            }
-            
             this.Proceso = 'Buscando en bicimoto...';
 
             if(this.CompSolicitud != this.Solicitud){
@@ -1629,25 +1557,25 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
               this.Loader = false;
             }
 
-            this.Proceso = 'Buscando en mannheim...';
+            // this.Proceso = 'Buscando en mannheim...';
 
-            if(this.CompSolicitud != this.Solicitud){
-              this.Proceso = 'Se cancelo la busqueda.';
-              return true;
-            }
+            // if(this.CompSolicitud != this.Solicitud){
+            //   this.Proceso = 'Se cancelo la busqueda.';
+            //   return true;
+            // }
 
-            let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
+            // let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
             
-            this.Mannheim = Mannheim[0];
+            // this.Mannheim = Mannheim[0];
 
-            this.Mannheim = this.Mannheim.map((e) => {
-              e.Precio = e.PrecioImportadora
-              return e;
-            });
+            // this.Mannheim = this.Mannheim.map((e) => {
+            //   e.Precio = e.PrecioImportadora
+            //   return e;
+            // });
 
-            if(this.Mannheim.length != 0){
-              this.Loader = false;
-            }
+            // if(this.Mannheim.length != 0){
+            //   this.Loader = false;
+            // }
 
             this.Proceso = 'Buscando en noriega...';
 
@@ -1789,6 +1717,80 @@ import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
 
                 }
                 this.Automarco = Automarco;
+            }
+
+
+            
+            this.Proceso = 'Buscando en alsacia...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
+
+            Alsacia = Alsacia[0]
+
+            this.Alsacia = Alsacia;
+            
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != ''  || e.Marca != ""){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Alsacia.length != 0){
+              this.Loader = false;
+              if(Alsacia.length > 29){
+
+                if(this.CompSolicitud != this.Solicitud){
+                  this.Proceso = 'Se cancelo la busqueda.';
+                  return true;
+                }
+
+                this.Proceso = 'Buscando mas resultados en alsacia...';
+                let Page1 = await API.POST_PAGEALSACIA(1);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1
+                ];
+              if(Page1.length > 29){
+                
+                 if(this.CompSolicitud != this.Solicitud){
+                   this.Proceso = 'Se cancelo la busqueda.';
+                   return true;
+                 }
+
+                let Page2 = await API.POST_PAGEALSACIA(2);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1,
+                  ...Page2
+                ];
+              }
+
+            this.Alsacia = Alsacia;
+
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != '' && e.Stock != '0'){
+                  e.Stock = 'Disp.'
+                  return e;
+                }
+              })
+            }
+
+
+              }
+
             }
 
 

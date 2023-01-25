@@ -1261,14 +1261,14 @@
         cards: ['Today', 'Yesterday'],
         drawer: null,
         items: [
-                // {
-                //   action: 'mdi-code-json',
-                //   title: 'Developer',
-                //   items: [
-                //     { title: 'Agregar Repuestos' },
-                //     { title: 'Gestionar Imagenes' },
-                //   ],
-                // },
+                {
+                  action: 'mdi-code-json',
+                  title: 'Developer',
+                  items: [
+                    { title: 'Agregar Repuestos' },
+                    { title: 'Gestionar Imagenes' },
+                  ],
+                },
                 {
                   rol: ["Vendedor", "Director", "Administrador"],
                   action: 'mdi-car-door',

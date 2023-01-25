@@ -1,8 +1,10 @@
 
 import axios from 'axios';
+// axios.defaults.withCredentials = true;
+
 console.log(process.env.NODE_ENV)
 
-const url = process.env.NODE_ENV == 'development' ? '/api' : 'http://143.198.165.86:3000/api'
+const url = process.env.NODE_ENV == 'development' ? 'http://localhost:3000/api' : 'http://137.184.198.84:3000/api'
 
 console.log(url)
 
@@ -15,11 +17,14 @@ export default class API {
             Contraseña,
             ip
         });
+        localStorage.setItem("Token", res.data.Token)
         return res.data;
     }
 
+
+
     static async GET_USER_TOKEN_ADMIN(ip){
-        const res = await axios.post(url+ '/user_token_admin', { ip });
+        const res = await axios.post(url+ '/user_token_admin', { ip, Token: localStorage.Token  });
         return res.data;
     }
 
@@ -51,7 +56,9 @@ export default class API {
         return res.data;
     }
     static async GET_LOGOUT(id){
-        const res = await axios.get(url+ '/logout');
+        const res = await axios.get(url+ '/logout', {Token: localStorage.Token });
+        localStorage.User = null;
+        localStorage.Token = null;
         return res.data;
     }
 
@@ -181,23 +188,23 @@ export default class API {
 
     //carro
     static async ADD_TO_CART(CodigoImportadora, Cantidad, Modelo){
-        const res = await axios.post(url+ '/add-cart', { CodigoImportadora, Cantidad, Modelo });
+        const res = await axios.post(url+ '/add-cart', { CodigoImportadora, Cantidad, Modelo, Token: localStorage.Token });
         return res.data;
     }
     
     static async REMOVE_TO_CART(CodigoImportadora, Cantidad){
-        const res = await axios.post(url+ '/remove-cart', { CodigoImportadora, Cantidad });
+        const res = await axios.post(url+ '/remove-cart', { CodigoImportadora, Cantidad, Token: localStorage.Token });
         return res.data;
     }
 
 
     static async UPDATE_CART(CodigoImportadora, Cantidad){
-        const res = await axios.post(url+ '/update-carrito', { CodigoImportadora, Cantidad });
+        const res = await axios.post(url+ '/update-carrito', { CodigoImportadora, Cantidad, Token: localStorage.Token });
         return res.data;
     }
 
-    static async GET_CERRITO_SESSION(Id, Cantidad){
-        const res = await axios.get(url+ '/get-carrito');
+    static async GET_CERRITO_SESSION(){
+        const res = await axios.post(url+ '/get-carrito', { Token: localStorage.Token });
         return res.data;
     }
 
@@ -213,6 +220,11 @@ export default class API {
             return res.data;
         }
 
+    }
+
+    static async POST_APLICACIONESR(CodigoImportadora){
+        const res = await axios.post(url+ '/aplicaciones-r', { CodigoImportadora });
+        return res.data;
     }
 
     static async GET_CLIENT(Rut){
@@ -256,17 +268,143 @@ export default class API {
         const res = await axios.post(url+ '/obtener-documentos', { dateFilter } );
         return res.data;
     }
-
+    
 
     //API IMPORTADORA
+
+    static async POST_ALSACIA_CODE(codeAlsacia){
+        const res = await axios.post(url+ '/save-alsacia-code', { codeAlsacia } );
+        return res.data;
+    }
+
     static async POST_API_IMPORTADORA(Buscar){
         const res = await axios.post(url+ '/products/api-importadora', { Buscar } );
         return res.data;
     }
 
+    
+    static async POST_API_CHILEREPUESTOS(Buscar){
+        const res = await axios.post(url+ '/api-chilerepuestos', { Buscar } );
+        return res.data;
+    }
+
+    static async POST_API_REFAX(Buscar){
+        const res = await axios.post(url+ '/api-refax', { Buscar } );
+        return res.data;
+    }
+    
+    static async POST_API_BICIMOTO(Buscar){
+        const res = await axios.post(url+ '/api-bicimoto', { Buscar } );
+        return res.data;
+    }
+    static async POST_API_MANNHEIM(Buscar){
+        const res = await axios.post(url+ '/api-mannheim', { Buscar } );
+        return res.data;
+    }
+    static async POST_API_ALSACIA(Buscar){
+        const res = await axios.post(url+ '/api-alsacia', { Buscar } );
+        return res.data;
+    }
+
+    static async POST_PAGEALSACIA(Page){
+        const res = await axios.post(url+ '/alsacia-page', { Page } );
+        return res.data;
+    }
+    
+    static async POST_API_NORIEGA(Buscar){
+        const res = await axios.post(url+ '/api-noriega', { Buscar } );
+        return res.data;
+    }
+  
+    static async POST_API_CUATRORUEDAS(Buscar){
+        const res = await axios.post(url+ '/api-cuatro-ruedas', { Buscar });
+        return res.data;
+
+    }
+
+    static async POST_API_GABTEC(Buscar){
+        const res = await axios.post(url+ '/api-gabtec', { Buscar });
+        return res.data;
+    }
+
+    static async POST_API_SASVAL(Buscar){
+        const res = await axios.post(url+ '/api-sasval', { Buscar });
+        return res.data;
+    }
+
+    static async POST_API_AUTOMARCOS(Buscar){
+        const res = await axios.post(url+ '/api-automarcos', { Buscar });
+        return res.data;
+    }
+
+    static async POST_CONSULTARAUTOMARCOS(Codigo){
+        const res = await axios.post(url+ '/consultar-automarcos', { Codigo });
+        return res.data;
+    }
+
+    static async POST_CONSULTARGABTEC(Codigo){
+        const res = await axios.post(url+ '/consultar-gabtec', { Codigo });
+        return res.data;
+    }
+    
+
+    static async POST_CONSULTARSASVAL(Codigo){
+        const res = await axios.post(url+ '/consultar-sasval', { Codigo });
+        return res.data;
+    }
+    
+
+    static async POST_CONSULTARBODEGASASVAL(Codigo){
+        const res = await axios.post(url+ '/consultar-bodega-sasval', { Codigo });
+        return res.data;
+    }
+    
+    static async POST_CONSULTARALSACIA(Codigo){
+        const res = await axios.post(url+ '/consultar-alsacia', { Codigo });
+        return res.data;
+    }
+
+
     //API IMPORTADORA
+
+
+
+    static async POST_AUTOMARCO_AUTH(){
+        const res = await axios.post(url+ '/auth-automarco');
+        return res.data;
+    }
+
+
     static async POST_REFAX_AUTH(){
         const res = await axios.post(url+ '/auth-refax');
+        return res.data;
+    }
+
+
+    static async POST_COOKIE_ALSACIA(){
+        const res = await axios.post(url+ '/cookie-alsacia');
+        return res.data;
+    }
+
+
+    static async POST_LOGIN_ALSACIA(){
+        const res = await axios.post(url+ '/auth-alsacia');
+        return res.data;
+    }
+
+
+    static async POST_BICIMOTO_AUTH(){
+        const res = await axios.post(url+ '/auth-bicimoto');
+        return res.data;
+    }
+
+    static async POST_NORIEGA_AUTH(){
+        const res = await axios.post(url+ '/auth-noriega');
+        return res.data;
+    }
+
+    static async POST_SASVAL_AUTH(){
+        const res = await axios.post(url+ '/auth-sasval');
         return res.data;
     }
 
@@ -389,7 +527,7 @@ export default class API {
     //WebpayPlus POST_WEBPAY
 
     static async POST_WEBPAY(){
-        const res = await axios.post(url+ '/start-webpay' );
+        const res = await axios.post(url+ '/start-webpay', { Token: localStorage.Token } );
         return res.data;
     }
 

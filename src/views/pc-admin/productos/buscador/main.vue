@@ -5,20 +5,70 @@
     <div>
         <h4>Buscar productos en importadora</h4>
         <div class="subtitle-1 mt-3 mb-3 text--secondary">Aqui buscar los productos disponibles en la importadora, usted podra usar el buscador para realizar una busqueda exacta.</div>
+                      <v-alert class="mt-2 mb-2 center"
+              dense
+              outlined
+              type="info"
+              >
+                Sesion Alsacia: {{ AlsaciaCookie || 'Cargando...' }}
+              <!-- <v-btn
+                icon
+                color="green"
+                @click="reloadAlsacia()"
+              >
+                <v-icon>mdi-cached</v-icon>
+              </v-btn> -->
+              <v-btn
+              icon
+              color="indigo"
+              @click="asignarCodeAlsacia()"
+            >
+              <v-icon>mdi-cloud-upload</v-icon>
+            </v-btn>
+        </strong>
+        </v-alert>
         <v-divider></v-divider>
-
+ 
         <v-row>
-            <v-col cols="10">
+            <v-col cols="8">
                 <v-text-field :rules="rules" v-model="Solicitud" placeholder="Amortiguador Chevrolet Sail 1.4" v-on:keyup.enter="onEnter"></v-text-field>
             </v-col>
+            <v-col cols="2" style="align-self: center;margin-top: 0.5rem;">
+                <v-select
+                  v-model="ImportadoraSeleccionada"
+                  :items="['Todas', 'Bodega', 'Refax', 'Alsacia', 'Mannheim', 'Bicimoto', 'Noriega', 'CuatroRuedas', 'Gabtec', 'Automarco']"
+                  label="Importadora"
+                  prepend-icon="mdi-panorama-sphere"
+                  persistent-hint
+                  single-line
+                  dense></v-select>
+            </v-col>
             <v-col cols="2">
-                <v-btn color="info" @click="Buscar()">Buscar</v-btn>
+                  <v-checkbox v-model="OcultarAgotados" @change="check($event)">
+                    <template v-slot:label>
+                      <div>
+                        Ocultar Agotados
+                      </div>
+                    </template>
+                  </v-checkbox>
             </v-col>
         </v-row>
         
                 <v-divider></v-divider>
 
-    <div style="margin-top: 1rem" v-if="Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == '' && Loader == false"> 
+
+
+            <v-col cols="12" v-if="Proceso != ''">
+              <v-alert class="mt-2 mb-2 center"
+              dense
+              outlined
+              type="success"
+              >
+                 <strong>{{ Proceso }}</strong>
+              </v-alert>
+            </v-col>
+
+    <div style="margin-top: 1rem" v-if="Chilerepuestos == '' && Refax == '' && Alsacia == '' && Bicimoto == '' && Mannheim == ''  && Noriega == ''  && CuatroRuedas == '' && Gabtec == '' && Automarco == '' && Sasval == '' && Loader == false"> 
         
         <p class="center" style="margin-top: 1rem">{{Msg}}</p>
 
@@ -39,47 +89,134 @@
       icons-and-text
     >
       <v-tabs-slider></v-tabs-slider>
-      <v-tab href="#tab-1" v-if="Refax.length != 0">
+      <v-tab href="#tab-1" v-if="Chilerepuestos.length != 0">
+        Bodega
+      </v-tab>
+      <v-tab href="#tab-2" v-if="Refax.length != 0">
         Refax 
       </v-tab>
 
-      <v-tab href="#tab-2" v-if="Alsacia.length != 0">
+      <v-tab href="#tab-3" v-if="Alsacia.length != 0">
         Alsacia
       </v-tab>
 
-      <v-tab href="#tab-3" v-if="Bicimoto.length != 0">
+      <v-tab href="#tab-4" v-if="Bicimoto.length != 0">
         Bicimoto
       </v-tab>
 
-      <v-tab href="#tab-4" v-if="Mannheim.length != 0">
+      <v-tab href="#tab-5" v-if="Mannheim.length != 0">
         Mannheim
       </v-tab>
 
-      <v-tab href="#tab-5" v-if="Noriega.length != 0">
+      <v-tab href="#tab-6" v-if="Noriega.length != 0">
         Noriega
+      </v-tab>
+      
+      <v-tab href="#tab-7" v-if="CuatroRuedas.length != 0">
+        CuatroRuedas
+      </v-tab>
+
+      <v-tab href="#tab-8" v-if="Gabtec.length != 0">
+        Gabtec
+      </v-tab>
+
+      <v-tab href="#tab-9" v-if="Automarco.length != 0">
+        Automarco
+      </v-tab>
+
+      <v-tab href="#tab-10" v-if="Sasval.length != 0">
+        Sasval
       </v-tab>
     </v-tabs>
 
     <v-tabs-items v-model="tab">
       <v-tab-item
-        v-for="i in 5"
+        v-for="i in 10"
         :key="i"
         :value="'tab-' + i"
       >
         <v-card flat>
             <v-card-text v-if="i == 1">
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">
+                        Imagen
+                      </th>
+                      <th class="text-left">
+                        Sku
+                      </th>
+                      <th class="text-left">
+                        Sku 2
+                      </th>
+                      <th class="text-left">
+                        Descripcion
+                      </th>
+                      <th class="text-left">
+                        Marca
+                      </th>
+                      <th class="text-left">
+                        Modelo
+                      </th>
+                      <th class="text-left">
+                        Fabricante
+                      </th>
+                      <th class="text-left">
+                        Origen
+                      </th>
+                      <th class="text-left">
+                        Precio
+                      </th>
+                      <th class="text-left">
+                        Stock
+                      </th>
+                      <th class="text-left">
+                        Ubicación
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="Producto, i in Chilerepuestos"
+                      :key="i"
+                    >
+                      <td><img :src="'https://chilerepuestos.com/img/productos/' + Producto.CodigoImportadora  + '-preview.jpg'" width="50px"></td>
+                      <td>{{ Producto.CodigoImportadora }}</td>
+                      <td>{{ Producto.CodigoProducto }}</td>
+                      <td>{{ Producto.Descripcion + ' ' + Producto.DatosAdicionales }}</td>
+                      <td>{{ Producto.MarcaVehiculo[0] }}</td>
+                      <td>{{ Producto.Modelo + ' ' + Producto.AñoI + ' ' + Producto.AñoT }}</td>
+                      <td>{{ Producto.Marca }}</td>
+                      <td>{{ Producto.Origen }}</td>
+                      <td>{{ Producto.PrecioCliente }}</td>
+                      <td>{{ Producto.StockCH }}</td>
+                      <td>{{ Producto.Ubicacion }}</td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            
+            </v-card-text>
+            <v-card-text v-if="i == 2">
                 
   <v-simple-table>
     <template v-slot:default>
       <thead>
         <tr>
           <th class="text-left">
-            Codigo
+            Imagen
           </th>
           <th class="text-left">
+            Sku
+          </th>
+          <th v-if="Refax[0].Oem">
+            Oem
+          </th>
+          <th class="text-left" v-if="!Refax[0].Oem">
             Marca
           </th>
-          <th class="text-left">
+          <th class="text-left" v-if="!Refax[0].Oem">
             Modelo
           </th>
           <th class="text-left">
@@ -107,16 +244,18 @@
           v-for="Producto, i in Refax"
           :key="i"
         >
+          <td><a :href="'https://img.refaxchile.cl:9092/FOTOGRAFIAS/' + Producto.Sku + '/' + Producto.Sku + 'A.jpg'" target="_blank"><img :src="'https://img.refaxchile.cl:9092/FOTOGRAFIAS/' + Producto.Sku + '/' + Producto.Sku + 'A.jpg'" width="50px"></a></td>
           <td>{{ Producto.Sku }}</td>
-          <td>{{ Producto.Marca }}</td>
-          <td v-if="Producto.Modelo != '' && Producto.Modelo" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
-          <td v-else></td>
+          <td v-if="Producto.Oem"><ul v-html="Producto.Oem"></ul></td>
+          <td v-if="!Producto.Oem">{{ Producto.Marca }}</td>
+          <td v-if="Producto.Modelo != '' && Producto.Modelo && !Producto.Oem" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
+          <td v-else-if="!Producto.Oem"></td>
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.MARCA }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.PrecioImportadora }}</td>
+          <td>{{ MargenPrecio(Producto.PrecioImportadora) }}</td>
           <td>{{ Producto.Stock }}</td>
-          <td v-if="Producto.Stock == 'DISPONIBLE'">
+          <td v-if="Producto.Stock == 'DISPONIBLE' || Producto.Stock == 'Disponible'">
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -132,6 +271,9 @@
             </v-btn>
               </template>
                 <v-list>
+                  <v-list-item link @click="VerAplicacionesR(Producto)">
+                    <v-list-item-title>Ver Aplicaciones</v-list-item-title>
+                  </v-list-item>
                   <v-list-item link @click="CrearProducto(Producto)">
                     <v-list-item-title>Crear Producto</v-list-item-title>
                   </v-list-item>
@@ -144,14 +286,14 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
   </v-simple-table>
             </v-card-text>
             
-            <v-card-text v-if="i == 2">
+            <v-card-text v-if="i == 3">
   <v-simple-table>
     <template v-slot:default>
       <thead>
@@ -190,14 +332,14 @@
           v-for="Producto, i in Alsacia"
           :key="i"
         >
-          <td>{{ Producto.Sku }}</td>
+          <td @click="ModalAlsacia(Producto.Sku)" style="color: blue; cursor: pointer;">{{ Producto.Sku }}</td>
           <td>{{ Producto.Marca }}</td>
           <td v-if="Producto.Modelo != ''" :style=" i != 0? 'border-top: 2px solid red' : ''">{{ Producto.Modelo }} {{ Producto['AñoI'] }} - {{ Producto['AñoT'] }}</td>
           <td v-else></td>
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.MARCA }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.Precio }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
           <td>{{ Producto.Stock }}</td>
           <td v-if="Producto.Stock != ''">
             <v-menu offset-y>
@@ -227,13 +369,13 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
   </v-simple-table>
             </v-card-text>
-            <v-card-text v-if="i == 3">
+            <v-card-text v-if="i == 4">
                 
   <v-simple-table>
     <template v-slot:default>
@@ -279,7 +421,7 @@
           <td>{{ Producto.Modelo }}</td>
           <td>{{ Producto.Descripcion }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.PrecioImportadora }}</td>
+          <td>{{ MargenPrecio(Producto.PrecioImportadora) }}</td>
           <td>{{ Producto.Stock }}</td>
           <td v-if="Producto.Stock != '0'">
             <v-menu offset-y>
@@ -309,17 +451,100 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
   </v-simple-table>
             </v-card-text>
-            <v-card-text v-if="i == 4">
+            <v-card-text v-if="i == 5">
+
+
+              <v-simple-table>
+                <template v-slot:default>
+                  <thead>
+                    <tr>
+                      <th class="text-left">
+                        Imagen
+                      </th>
+                      <th class="text-left">
+                        Oem
+                      </th>
+                      <th class="text-left">
+                        Marca
+                      </th>
+                      <th class="text-left">
+                        Modelo
+                      </th>
+                      <th class="text-left">
+                        Descripcion
+                      </th>
+                      <th class="text-left">
+                        Fabricante
+                      </th>
+                      <th class="text-left">
+                        Origen
+                      </th>
+                      <th class="text-left">
+                        Acción
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="Producto, i in MannheimDB"
+                      :key="i"
+                    >
+                      <td><a :href="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" target="_blank"><img :src="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" width="50px"></a></td>
+                      <td>{{ Producto.Oem }}</td>
+                      <td>{{ Producto.Marca }}</td>
+                      <td>{{ Producto.Modelo }} {{ Producto.Años }}</td>
+                      <td>{{ Producto.Descripcion }}</td>
+                      <td>{{ Producto.Fabricante  }}</td>
+                      <td>{{ Producto.Origen }}</td>
+                      <td>
+                        <v-menu offset-y>
+                          <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          class="ma-1"
+                          outlined
+                          fab
+                          small
+                          color="grey"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                          </template>
+                            <v-list>
+                              <v-list-item link @click="CrearProducto(Producto)">
+                                <v-list-item-title>Crear Producto</v-list-item-title>
+                              </v-list-item>
+                              <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                                <v-list-item-title>Pedir Producto</v-list-item-title>
+                              </v-list-item>
+                              <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                                <v-list-item-title>Ver en Importadora</v-list-item-title>
+                              </v-list-item>
+                            </v-list>
+                        </v-menu>
+                     </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+
+              <v-divider></v-divider>
+              <h5>Otros Resultados:</h5>
+
   <v-simple-table>
     <template v-slot:default>
       <thead>
         <tr>
+          <th class="text-left">
+            Imagen
+          </th>
           <th class="text-left">
             Oem
           </th>
@@ -345,11 +570,12 @@
           v-for="Producto, i in Mannheim"
           :key="i"
         >
+          <td><a :href="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" target="_blank"><img :src="'http://200.73.35.244:8080/webclient/images/' + Producto.Oem + '.jpg'" width="50px"></a></td>
           <td>{{ Producto.Oem }}</td>
           <td>{{ Producto.Descripcion }}</td>
-          <td>{{ Producto.Fabricante }}</td>
+          <td>{{ Producto.Fabricante  }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.PrecioImportadora }}</td>
+          <td>{{ MargenPrecioMannheim(Producto.PrecioImportadora) }}</td>
           <td>
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
@@ -387,7 +613,7 @@
   </v-simple-table>
 
             </v-card-text>
-            <v-card-text v-if="i == 5">
+            <v-card-text v-if="i == 6">
                 
   <v-simple-table>
     <template v-slot:default>
@@ -430,7 +656,7 @@
           <td v-else></td>
           <td>{{ Producto.Producto }} {{ Producto.Descripcion }}</td>
           <td>{{ Producto.Origen }}</td>
-          <td>{{ Producto.Precio }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
           <td>{{ Producto.Stock }}</td>
           <td v-if="Producto.Stock != ''">
             <v-menu offset-y>
@@ -460,11 +686,327 @@
                 </v-list>
             </v-menu>
          </td>
-         <td v-else></td>
+         <td v-else>Agotado.</td>
         </tr>
       </tbody>
     </template>
   </v-simple-table>
+            </v-card-text>
+            <v-card-text v-if="i == 7">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Codigo
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Stock
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Acción
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in CuatroRuedas"
+          :key="i"
+        >
+          <td>{{ Producto.Sku }}</td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td>{{ Producto.Stock }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
+            </v-card-text>
+            <v-card-text v-if="i == 8">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Imagen
+          </th>
+          <th class="text-left">
+            Sku
+          </th>
+          <th class="text-left">
+            Marca
+          </th>
+          <th class="text-left">
+            Modelo
+          </th>
+          <th class="text-left">
+            Posicion
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Fabricante
+          </th>
+          <th class="text-left">
+            Sotck
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Accion
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in Gabtec"
+          :key="i"
+        >
+          <td><a :href="'https://www.gabtec.cl/' + Producto.Img" target="_blank"><img :src="'https://www.gabtec.cl/' + Producto.Img" width="50px"></a></td>
+          <td>{{ Producto.CodigoImportadora }}</td>
+          <td>{{ Producto.Marca }}</td>
+          <td>{{ Producto.Modelo }} {{ Producto.AñoI }} - {{ Producto.AñoT}}</td>
+          <td>{{ Producto.Posicion }}</td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td><img :src="'https://www.gabtec.cl/images/marcas/' + Producto.Fabricante + '.jpg'" width="50px" :alt="Producto.Fabricante"></td>
+          <td>{{ Producto.Stock }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
+            </v-card-text>
+            <v-card-text v-if="i == 9">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Imagen
+          </th>
+          <th class="text-left">
+            Sku
+          </th>
+          <th class="text-left">
+            Marca
+          </th>
+          <th class="text-left">
+            Modelo
+          </th>
+          <th class="text-left">
+            Posicion
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Fabricante
+          </th>
+          <th class="text-left">
+            Sotck
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Accion
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in Automarco"
+          :key="i"
+        >
+          <td><a :href="'https://www.automarco.cl./' + Producto.Img" target="_blank"><img :src="'https://www.automarco.cl./' + Producto.Img" width="50px"></a></td>
+          <td>{{ Producto.CodigoImportadora }}</td>
+          <td>{{ Producto.Marca }}</td>
+          <td>{{ Producto.Modelo }} {{ Producto.Motor }} {{ Producto.AñoI }} - {{ Producto.AñoT}}</td>
+          <td>{{ Producto.Aplicacion }} </td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td><img :src="'https://www.automarco.cl./' + Producto.FabricanteImg" width="50px" :alt="Producto.Fabricante"></td>
+          <td>{{ Producto.Stock }}</td>
+          <td>{{ MargenPrecio(Producto.Precio) }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
+            </v-card-text>
+            <v-card-text v-if="i == 10">
+  <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">
+            Sku
+          </th>
+          <th class="text-left">
+            SkuProveedor
+          </th>
+          <th class="text-left">
+            Descripcion
+          </th>
+          <th class="text-left">
+            Marca
+          </th>
+          <th class="text-left">
+            Modelo
+          </th>
+          <th class="text-left">
+            Linea
+          </th>
+          <th class="text-left">
+            Precio
+          </th>
+          <th class="text-left">
+            Sotck
+          </th>
+          <th class="text-left">
+            Accion
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="Producto, i in Sasval"
+          :key="i"
+        >
+          <td>{{ Producto.Sku }}</td>
+          <td>{{ Producto.CodigoProveedor }}</td>
+          <td>{{ Producto.Descripcion }}</td>
+          <td>{{ Producto.Marca }}</td>
+          <td>{{ Producto.Modelo }}</td>
+          <td>{{ Producto.Linea }}</td>
+          <td>{{ Producto.Precio }}</td>
+          <td @click="ModalSasval(Producto.Sku)" style="color: blue; cursor: pointer;">{{ Producto.Stock }}</td>
+          <td>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              class="ma-1"
+              outlined
+              fab
+              small
+              color="grey"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+              </template>
+                <v-list>
+                  <v-list-item link @click="CrearProducto(Producto)">
+                    <v-list-item-title>Crear Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="PedirProducto(Producto, 'Refax')">
+                    <v-list-item-title>Pedir Producto</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item link @click="VerEnImportadora(Producto, 'Refax')">
+                    <v-list-item-title>Ver en Importadora</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+            </v-menu>
+         </td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
             </v-card-text>
         </v-card>
       </v-tab-item>
@@ -540,6 +1082,102 @@
         
 
 
+        <v-dialog
+      v-model="dialogRefax"
+      width="1300"
+    >
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+          {{ ProductoRefax.Sku }} - {{ ProductoRefax.Descripcion }} Aplicaciones:
+        </v-card-title>
+
+ <v-card-text>
+ 
+ <v-divider></v-divider>
+ 
+      <table v-html="AplicacionesR"></table>
+          
+            
+
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn
+            color="secondary"
+            text
+            @click="dialogRefax = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+        <v-dialog
+      v-model="dialogAlsacia"
+      width="1300"
+    >
+      <v-card>
+ <v-card-text>
+ 
+
+        <body v-html="AlsaciaHtml">
+        </body>
+
+            
+
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn
+            color="secondary"
+            text
+            @click="dialogAlsacia = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+
+
+        <v-dialog
+      v-model="dialogSasval"
+      width="1300"
+    >
+      <v-card>
+ <v-card-text>
+  
+ <v-divider></v-divider>
+
+        <table v-html="SasvalHtml">
+        </table>
+
+            
+
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-btn
+            color="secondary"
+            text
+            @click="dialogSasval = false"
+          >
+            Cerrar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
 <!-- Modal Crear Producto -->
     <v-dialog
       v-model="dialogCrearProducto"
@@ -587,28 +1225,61 @@
     </div>
 </template>
 
+
 <script>
 import API from '../../../../api.js'
-// import catalogo from './catalogo.vue';
+import { FormatearPrecio } from '../../../global-function/formatear-precio.js';
     export default {
-    name: 'buscar-factura',
+    name: 'api-importadora',
     props: [],
     //Variables
     data: () => ({
         Loader: true,
+        ImportadoraSeleccionada: 'Todas',
+        OcultarAgotados: true,
+        BestPrice: [],
+        Proceso: '',
+        SasvalHtml: `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`,
+        AlsaciaHtml: `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`,
+        dialogCrearProducto: false,
+        dialogRefax: false,
+        dialogAlsacia: false,
         dialogMannheim: false,
+        dialogSasval: false,
+        AlsaciaCookie: null,
         AplicacionesM: [],
+        AplicacionesR: [],
+        Chilerepuestos: [],
+        CuatroRuedas: [],
+        CuatroRuedasByPass: [{
+          Descripcion: ''
+        }],
         Refax: [],
         Alsacia: [],
         Bicimoto: [],
         Mannheim: [],
+        MannheimDB: [],
         Noriega: [],
+        Gabtec: [],
+        Automarco: [],
+        Sasval: [],
         Msg: 'Realice una busqueda para empezar.',
+        ProductoRefax: {
+          Descripcion: '',
+          Sku: ''
+        },
         ProductoMannheim: {
           Descripcion: '',
           Oem: ''
         },
         Solicitud: '',
+        CompSolicitud: '',
         rules: [
         value => !!value || 'Este campo es requirido para buscar.',
         value => (value || '').length <= 100 || 'Maximo 100 letras',
@@ -637,20 +1308,127 @@ import API from '../../../../api.js'
     methods: {
         // Formulario: <v-form ref="Ejemplo" lazy-validation></v-form> // :rules="EjemploRules" // EjemploRules: [(v) => !!v || "Seleccione agencia de su preferencia"] // this.$refs.formEjemplo.validate(); 
 
+      async ModalSasval(Codigo){
+        this.dialogSasval = true;
+        this.SasvalHtml = `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`;
+
+        let SasvalHtml = await API.POST_CONSULTARBODEGASASVAL(Codigo);
+
+        this.SasvalHtml = SasvalHtml
+      },
+
+
+       async ModalAlsacia(Codigo){
+        this.AlsaciaHtml = `
+        <div class="center">
+            <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+        </div>`;
+        this.dialogAlsacia = true
+        let AlsaciaHtml = await API.POST_CONSULTARALSACIA(Codigo);
+        this.AlsaciaHtml = AlsaciaHtml.toString().trim().replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('padding: 5px 0 0;', 'display: none;').replaceAll('placeholder="Buscar..."', 'style="display: none;"').replaceAll('<img', '<img width="50px"').replaceAll('th scope="col"', 'th scope="col" style="color:black"');
+       },
+
+        check(evt){
+          this.OcultarAgotados = evt;
+        },
+
+        MargenPrecio(Precio){
+
+          let NewPrecio = Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '').replaceAll('Precio:', '');
+          NewPrecio = parseInt(NewPrecio) * 2;
+
+          if(!NewPrecio){
+            return Precio;
+          }else{
+            return FormatearPrecio(NewPrecio);
+          }
+
+        },
+
+
+      async reloadAlsacia(){
+        this.AlsaciaCookie =  await API.POST_LOGIN_ALSACIA();
+      },
+
+      MargenPrecioMannheim(Precio){
+
+          Precio = Math.round(parseInt(Precio.replaceAll(' ', '').replaceAll('$', '').replaceAll('.', '').replaceAll(',', '')) * 1.70);
+
+          if(Precio == NaN){
+            return 'Oferta';
+          }else{
+            return FormatearPrecio(Precio);
+          }
+      },
+
+
         CrearProducto(Producto){
 
         },
 
-        async VerAplicacionesM(Producto){
+        async VerAplicacionesR(Producto){
+            this.dialogRefax = true;
+
+          this.AplicacionesR = `<table style="margin-top: 1rem">
+                                    <thead>
+                                      <th style="background-color: black;">Marca</th>
+                                      <th style="background-color: black;">Modelo</th>
+                                      <th style="background-color: black;">Años</th>            
+                                    </thead>
+                                             <tbody>
+                                                <tr>
+                                                  <td>
+                                                    Cargando...
+                                                  </td>
+                                                  <td>
+                                                    Cargando...
+                                                  </td>
+                                                  <td>
+                                                    Cargando...
+                                                  </td>
+                                                </tr>
+                                             </body>
+                                  </table>`
+
+            this.ProductoRefax = Producto;
             
+            let AplicacionesR = await API.POST_APLICACIONESR(Producto.Sku);
+            
+            this.AplicacionesR = `<table style="margin-top: 2rem">
+                                    <thead>
+                                      <th style="background-color: black;">Marca</th>
+                                      <th style="background-color: black;">Modelo</th>
+                                      <th style="background-color: black;">Años</th>            
+                                    </thead>
+                                             ${AplicacionesR.replaceAll('ul', 'tbody').replaceAll('li', 'tr').replaceAll('span', 'td').replaceAll('small', 'td').replaceAll('<strong></strong>', '')}
+                                  </table>`
+
+        },
+
+        async asignarCodeAlsacia(){
+          let codeAlsacia = prompt("Por favor ingrese el codigo de alsacia.");
+          if (codeAlsacia && codeAlsacia.length > 20) {
+            this.AlsaciaCookie = codeAlsacia;
+            await API.POST_ALSACIA_CODE(codeAlsacia)
+          }else if(codeAlsacia.length > 0 && codeAlsacia.length < 20){
+            alert('Codigo invalido.')
+          }
+        },
+        
+        async VerAplicacionesM(Producto){
+      
+            this.dialogMannheim = true;
+
+            this.AplicacionesM = [];
 
             this.ProductoMannheim = Producto;
             
             let AplicacionesM = await API.POST_APLICACIONESM(Producto.Aplicacion);
             
             this.AplicacionesM = AplicacionesM.aplicaciones;
-
-            this.dialogMannheim = true;
 
         },
 
@@ -660,36 +1438,835 @@ import API from '../../../../api.js'
         },
 
         async Buscar(){
+
+
             if(this.Solicitud == ''){
-                return alert('No puedes realizar una busqueda vacia.')
+              return alert('No puedes realizar una busqueda vacia.')
             }
 
             this.Loader = true;
-            let Datos = await API.POST_API_IMPORTADORA(this.Solicitud)
 
-            Datos.Refax[0].pop();
-            Datos.Refax[0].pop();
+            this.CompSolicitud = this.Solicitud;
 
-            this.Refax = Datos.Refax[0];
-            this.Alsacia = Datos.Alsacia[0];
-            this.Bicimoto = Datos.Bicimoto;
-            this.Mannheim = Datos.Mannheim;
-            this.Noriega = Datos.Noriega;
 
-            if(this.Bicimoto[0].Descripcion == '' || process.env.NODE_ENV == 'production'){
-                this.Bicimoto = [];
+            this.Refax = [];
+            this.Alsacia = [];
+            this.Bicimoto = [];
+            this.Mannheim = [];
+            this.Noriega = [];
+            this.CuatroRuedas = [];
+            this.Chilerepuestos = [];
+            this.Gabtec = [];
+            this.Sasval = [];
+            this.Automarco = [];
+            this.MannheimDB = [];
+
+
+            if(this.ImportadoraSeleccionada == 'Todas'){
+
+            this.Proceso = 'Buscando en Bodega...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
+
+            if(this.OcultarAgotados == true){
+              this.Chilerepuestos = this.Chilerepuestos.filter(e => {
+                if(e.StockCH != 0){
+                  return e;
+                }
+              })
+            }
+
+            if(this.Chilerepuestos.length != 0){
+              this.Loader = false;
+            }
+
+            if(new Date().getHours() > 8){
+              this.Proceso = 'Buscando en refax...';
+  
+              if(this.CompSolicitud != this.Solicitud){
+                this.Proceso = 'Se cancelo la busqueda.';
+                return true;
+              }
+  
+  
+              let Refax = await API.POST_API_REFAX(this.Solicitud);
+  
+              Refax[0].pop();
+              Refax[0].pop();
+  
+              this.Refax = Refax[0];
+  
+              this.Refax = this.Refax.map((e) => {
+                e.Precio = e.PrecioImportadora
+                return e;
+              });
+  
+  
+              if(this.OcultarAgotados == true){
+                this.Refax = this.Refax.filter((e) => {
+                  if(e.Stock != '0' || e.Marca != ""){
+                    return e;
+                  }
+                })
+              }
+  
+  
+              if(this.Refax.length != 0){
+                this.Loader = false;
+              }
+            }
+
+            
+            this.Proceso = 'Buscando en bicimoto...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
             }
 
 
-            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length;
+            let Bicimoto = await API.POST_API_BICIMOTO(this.Solicitud);
+            
+            if(Bicimoto[0].Descripcion == ''){
+                Bicimoto = [];
+            }
+
+            this.Bicimoto = Bicimoto;
+
+            this.Bicimoto = this.Bicimoto.map((e) => {
+              e.Precio = e.PrecioImportadora
+              return e;
+            });
+
+
+            if(this.OcultarAgotados == true){
+              this.Bicimoto = this.Bicimoto.filter(e => {
+                if(e.Stock != '0'){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Bicimoto.length != 0){
+              this.Loader = false;
+            }
+
+            // this.Proceso = 'Buscando en mannheim...';
+
+            // if(this.CompSolicitud != this.Solicitud){
+            //   this.Proceso = 'Se cancelo la busqueda.';
+            //   return true;
+            // }
+
+            // let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
+            
+            // this.Mannheim = Mannheim[0];
+
+            // this.Mannheim = this.Mannheim.map((e) => {
+            //   e.Precio = e.PrecioImportadora
+            //   return e;
+            // });
+
+            // if(this.Mannheim.length != 0){
+            //   this.Loader = false;
+            // }
+
+            this.Proceso = 'Buscando en noriega...';
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            let Noriega = await API.POST_API_NORIEGA(this.Solicitud);
+            
+            this.Noriega = Noriega;
+
+            if(this.OcultarAgotados == true){
+              this.Noriega = this.Noriega.filter(e => {
+                if(e.Stock != 'X'){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Noriega.length != 0){
+              this.Loader = false;
+            }
+
+            if(process.env.NODE_ENV == 'development'){
+              this.Proceso = 'Buscando en CuatroRuedas...'
+  
+              if(this.CompSolicitud != this.Solicitud){
+                this.Proceso = 'Se cancelo la busqueda.';
+                return true;
+              }
+  
+              let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
+  
+              this.CuatroRuedas = CuatroRuedas || [{ Descripcion: '' }];
+  
+              if(this.OcultarAgotados == true){
+                this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+                  if(e.Stock != 'NO DISPONIBLE'){
+                    return e;
+                  }
+                })
+              }
+  
+              if(this.CuatroRuedas.length != 0){
+                    this.Loader = false;
+              }
+            }
+
+
+
+            // aqui}
+            this.Proceso = 'Buscando en Gabtec...'
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
+
+            Gabtec = Gabtec.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+            this.Gabtec = Gabtec;
+
+
+            if(this.Gabtec.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Gabtec.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
+
+                  if(Gabtec[i].Precio == '0'){
+
+                      if(this.CompSolicitud != this.Solicitud){
+                        this.Proceso = 'Se cancelo la busqueda.';
+                        return true;
+                      }
+
+                        var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
+                          Gabtec.map(e => {
+                            if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Gabtec = Gabtec;
+            }
+
+
+            // automarco
+            this.Proceso = 'Buscando en Automarco...'
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            let Automarco = await API.POST_API_AUTOMARCOS(this.Solicitud);
+
+            Automarco = Automarco.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+            this.Automarco = Automarco;
+
+
+            if(this.Automarco.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Automarco.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Automarco... ' + (i + 1) + ' de '  + Automarco.length;
+
+                  if(Automarco[i].Precio == '0'){
+
+                      if(this.CompSolicitud != this.Solicitud){
+                        this.Proceso = 'Se cancelo la busqueda.';
+                        return true;
+                      }
+
+                        var RequestData = await API.POST_CONSULTARAUTOMARCOS(Automarco[i].CodigoImportadora);
+                          Automarco.map(e => {
+                            if(e.CodigoImportadora == Automarco[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Automarco = Automarco;
+            }
+
+
+            
+            this.Proceso = 'Buscando en alsacia...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
+
+            Alsacia = Alsacia[0]
+
+            this.Alsacia = Alsacia;
+            
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != ''  || e.Marca != ""){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Alsacia.length != 0){
+              this.Loader = false;
+              if(Alsacia.length > 29){
+
+                if(this.CompSolicitud != this.Solicitud){
+                  this.Proceso = 'Se cancelo la busqueda.';
+                  return true;
+                }
+
+                this.Proceso = 'Buscando mas resultados en alsacia...';
+                let Page1 = await API.POST_PAGEALSACIA(1);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1
+                ];
+              if(Page1.length > 29){
+                
+                 if(this.CompSolicitud != this.Solicitud){
+                   this.Proceso = 'Se cancelo la busqueda.';
+                   return true;
+                 }
+
+                let Page2 = await API.POST_PAGEALSACIA(2);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1,
+                  ...Page2
+                ];
+              }
+
+            this.Alsacia = Alsacia;
+
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != '' && e.Stock != '0'){
+                  e.Stock = 'Disp.'
+                  return e;
+                }
+              })
+            }
+
+
+              }
+
+            }
+
+
+            // this.Proceso = 'Buscando en Sasval...'
+
+
+            // if(this.CompSolicitud != this.Solicitud){
+            //   this.Proceso = 'Se cancelo la busqueda.';
+            //   return true;
+            // }
+
+
+            // let Sasval = await API.POST_API_SASVAL(this.Solicitud);
+
+            // Sasval = Sasval.map(e => {
+            //   e.Stock = 'Consultado...';
+            //   e.Precio = '0';
+            //   return e;
+            // })
+
+
+            // this.Sasval = Sasval;
+
+
+            // if(this.Sasval.length != 0){
+            //     this.Loader = false;
+            //     for (let i = 0; i < Sasval.length; i++) {
+            //       this.Proceso = 'Consultando Stock y Precio en Sasval... ' + (i + 1) + ' de '  + Sasval.length;
+
+            //       if(Sasval[i].Precio == '0'){
+                    
+            //             if(this.CompSolicitud != this.Solicitud){
+            //               this.Proceso = 'Se cancelo la busqueda.';
+            //               return true;
+            //             }
+
+            //             var RequestData = await API.POST_CONSULTARSASVAL(Sasval[i].Sku);
+            //               Sasval.map(e => {
+            //                 if(e.Sku == Sasval[i].Sku){
+            //                     e.Stock = RequestData.Stock;
+            //                     e.Precio = RequestData.Precio;
+            //                 }
+            //                 return e;
+            //               })
+            //       }
+
+            //     }
+            //     this.Sasval = Sasval;
+            // }
+
+
+
+
+            }else if(this.ImportadoraSeleccionada == 'Bodega'){
+            
+            this.Proceso = 'Buscando en Bodega...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            this.Chilerepuestos = await API.POST_API_CHILEREPUESTOS(this.Solicitud);
+
+            if(this.OcultarAgotados == true){
+              this.Chilerepuestos = this.Chilerepuestos.filter(e => {
+                if(e.StockCH != 0){
+                  return e;
+                }
+              })
+            }
+
+            if(this.Chilerepuestos.length != 0){
+              this.Loader = false;
+            }
+
+
+            }else if(this.ImportadoraSeleccionada == 'Refax'){
+
+            this.Proceso = 'Buscando en refax...';
+
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Refax = await API.POST_API_REFAX(this.Solicitud);
+
+
+            Refax[0].pop();
+            Refax[0].pop();
+
+            this.Refax = Refax[0];
+
+            if(this.OcultarAgotados == true){
+              this.Refax = this.Refax.filter(e => {
+                if(e.Stock != '0' || e.Marca != ""){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Refax.length != 0){
+              this.Loader = false;
+            }
+
+
+            }else if(this.ImportadoraSeleccionada == 'Alsacia'){
+
+              
+            
+            this.Proceso = 'Buscando en alsacia...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            if(this.Solicitud.split(' ').length == 1){
+                this.AlsaciaHtml = `
+                <div class="center">
+                    <img src="http://143.198.165.86:3000/etc/loader.gif" alt="Cargando...">
+                </div>`;
+                this.dialogAlsacia = true
+                let AlsaciaHtml = await API.POST_CONSULTARALSACIA(this.Solicitud);
+                this.AlsaciaHtml = AlsaciaHtml.toString().trim().replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('https://www.repuestosalsacia.com/alsacia/public/layouts/images/online_icon_right@2x.png', '').replace('padding: 5px 0 0;', 'display: none;').replaceAll('placeholder="Buscar..."', 'style="display: none;"').replaceAll('<img', '<img width="50px"').replaceAll('th scope="col"', 'th scope="col" style="color:black"');
+            }else{
+
+            let Alsacia = await API.POST_API_ALSACIA(this.Solicitud);
+
+            Alsacia = Alsacia[0]
+
+            this.Alsacia = Alsacia;
+            
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != ''  || e.Marca != ""){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Alsacia.length != 0){
+              this.Loader = false;
+              if(Alsacia.length > 29){
+                
+                if(this.CompSolicitud != this.Solicitud){
+                  this.Proceso = 'Se cancelo la busqueda.';
+                  return true;
+                }
+
+                this.Proceso = 'Buscando mas resultados en alsacia...';
+                let Page1 = await API.POST_PAGEALSACIA(1);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1
+                ];
+              if(Page1.length > 29){
+
+              if(this.CompSolicitud != this.Solicitud){
+                this.Proceso = 'Se cancelo la busqueda.';
+                return true;
+              }
+
+                let Page2 = await API.POST_PAGEALSACIA(2);
+
+                Alsacia = [
+                  ...Alsacia,
+                  ...Page1,
+                  ...Page2
+                ];
+              }
+
+            this.Alsacia = Alsacia;
+
+            if(this.OcultarAgotados == true){
+              this.Alsacia = this.Alsacia.filter(e => {
+                if(e.Stock != '' && e.Stock != '0'){
+                  e.Stock = 'Disp.'
+                  return e;
+                }
+              })
+            }
+
+
+              }
+
+            }
+
+            }
+
+
+              
+            }else if(this.ImportadoraSeleccionada == 'Bicimoto'){
+
+            this.Proceso = 'Buscando en bicimoto...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Bicimoto = await API.POST_API_BICIMOTO(this.Solicitud);
+
+            this.Bicimoto = Bicimoto;
+
+            if(this.OcultarAgotados == true){
+              this.Bicimoto = this.Bicimoto.filter(e => {
+                if(e.Stock != '0'){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Noriega.length != 0){
+              this.Loader = false;
+            }
+
+
+            }else if(this.ImportadoraSeleccionada == 'Mannheim'){
+
+            this.Proceso = 'Buscando en mannheim...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Mannheim = await API.POST_API_MANNHEIM(this.Solicitud);
+
+            this.Mannheim = Mannheim[0];
+
+            if(this.Mannheim.length != 0){
+              this.Loader = false;
+            }
+
+
+            this.MannheimDB = Mannheim[1];
+
+
+          if(this.MannheimDB.length != 0){
+              this.Loader = false;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'Noriega'){
+
+            this.Proceso = 'Buscando en noriega...';
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Noriega = await API.POST_API_NORIEGA(this.Solicitud);
+            
+            this.Noriega = Noriega;
+
+            if(this.OcultarAgotados == true){
+              this.Noriega = this.Noriega.filter(e => {
+                if(e.Stock != 'X'){
+                  return e;
+                }
+              })
+            }
+
+
+            if(this.Noriega.length != 0){
+              this.Loader = false;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'CuatroRuedas'){
+
+              if(process.env.NODE_ENV == 'development'){
+                this.Proceso = 'Buscando en CuatroRuedas...'
+    
+    
+                if(this.CompSolicitud != this.Solicitud){
+                  this.Proceso = 'Se cancelo la busqueda.';
+                  return true;
+                }
+    
+    
+                let CuatroRuedas = await API.POST_API_CUATRORUEDAS(this.Solicitud);
+    
+                this.CuatroRuedas = CuatroRuedas;
+    
+                if(this.OcultarAgotados == true){
+                  this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+                    if(e.Stock != 'NO DISPONIBLE'){
+                      return e;
+                    }
+                  })
+                }
+    
+                if(this.CuatroRuedas.length != 0){
+                      this.Loader = false;
+                }
+              }
+
+            }else if(this.ImportadoraSeleccionada == 'Gabtec'){
+
+            this.Proceso = 'Buscando en Gabtec...'
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Gabtec = await API.POST_API_GABTEC(this.Solicitud);
+
+            Gabtec = Gabtec.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+
+            this.Gabtec = Gabtec;
+
+
+            if(this.Gabtec.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Gabtec.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Gabtec... ' + (i + 1) + ' de '  + Gabtec.length;
+
+                  if(Gabtec[i].Precio == '0'){
+
+
+                  if(this.CompSolicitud != this.Solicitud){
+                    this.Proceso = 'Se cancelo la busqueda.';
+                    return true;
+                  }
+
+
+                        var RequestData = await API.POST_CONSULTARGABTEC(Gabtec[i].CodigoImportadora);
+                          Gabtec.map(e => {
+                            if(e.CodigoImportadora == Gabtec[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Gabtec = Gabtec;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'Automarco'){
+
+
+            this.Proceso = 'Buscando en Automarco...'
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+            let Automarco = await API.POST_API_AUTOMARCOS(this.Solicitud);
+
+            Automarco = Automarco.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+            this.Automarco = Automarco;
+
+
+            if(this.Automarco.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Automarco.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Automarco... ' + (i + 1) + ' de '  + Automarco.length;
+
+                  if(Automarco[i].Precio == '0'){
+
+                      if(this.CompSolicitud != this.Solicitud){
+                        this.Proceso = 'Se cancelo la busqueda.';
+                        return true;
+                      }
+
+                        var RequestData = await API.POST_CONSULTARAUTOMARCOS(Automarco[i].CodigoImportadora);
+                          Automarco.map(e => {
+                            if(e.CodigoImportadora == Automarco[i].CodigoImportadora){
+                                e.Stock = RequestData.Stock.replace('Stock: ', '');
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Automarco = Automarco;
+            }
+
+            }else if(this.ImportadoraSeleccionada == 'Sasval'){
+
+            this.Proceso = 'Buscando en Sasval...'
+
+
+            if(this.CompSolicitud != this.Solicitud){
+              this.Proceso = 'Se cancelo la busqueda.';
+              return true;
+            }
+
+
+            let Sasval = await API.POST_API_SASVAL(this.Solicitud);
+
+            Sasval = Sasval.map(e => {
+              e.Stock = 'Consultado...';
+              e.Precio = '0';
+              return e;
+            })
+
+
+            this.Sasval = Sasval;
+
+
+            if(this.Sasval.length != 0){
+                this.Loader = false;
+                for (let i = 0; i < Sasval.length; i++) {
+                  this.Proceso = 'Consultando Stock y Precio en Sasval... ' + (i + 1) + ' de '  + Sasval.length;
+
+                  if(Sasval[i].Precio == '0'){
+                    
+                        if(this.CompSolicitud != this.Solicitud){
+                          this.Proceso = 'Se cancelo la busqueda.';
+                          return true;
+                        }
+
+                        var RequestData = await API.POST_CONSULTARSASVAL(Sasval[i].Sku);
+                          Sasval.map(e => {
+                            if(e.Sku == Sasval[i].Sku){
+                                e.Stock = RequestData.Stock;
+                                e.Precio = RequestData.Precio;
+                            }
+                            return e;
+                          })
+                  }
+
+                }
+                this.Sasval = Sasval;
+            }
+
+            }
+
+
+            var Cantidad = this.Bicimoto.length + this.Refax.length + this.Mannheim.length + this.Alsacia.length + this.Noriega.length + this.CuatroRuedas.length + this.Gabtec.length + this.Automarco.length + this.Sasval.length + this.Chilerepuestos.length + this.MannheimDB.length;
 
             if(Cantidad == 0){
                 this.Msg = 'No hay resultados.'
             }
-
-            this.tab = null;
-
+            
+            this.Proceso = '';
             this.Loader = false;
+
+
+      
 
             // if(Datos.Refax == "ERROR : java.lang.Exception: Logica.ProductosLogica.BuscarArticuloGlosa5: null"){
             //     let Go = await API.POST_REFAX_AUTH();
@@ -707,7 +2284,27 @@ import API from '../../../../api.js'
 
     //Apis
     async created(){
-        this.Loader = false;
+      this.Loader = false;
+
+      this.AlsaciaCookie = await API.POST_COOKIE_ALSACIA();
+
+      await API.POST_NORIEGA_AUTH();
+      await API.POST_SASVAL_AUTH();
+      await API.POST_REFAX_AUTH();
+      await API.POST_AUTOMARCO_AUTH();
+
+      if(process.env.NODE_ENV == 'development'){
+        let CuatroRuedas = await API.POST_API_CUATRORUEDAS('kikikaka')
+        this.CuatroRuedasByPass = CuatroRuedas;
+         if(this.OcultarAgotados == true){
+            this.CuatroRuedas = this.CuatroRuedas.filter(e => {
+              if(e.Stock != 'NO DISPONIBLE'){
+                 return e;
+              }
+            })
+         }
+         await API.POST_BICIMOTO_AUTH();
+      }
     },
 
     //WindowsOnready

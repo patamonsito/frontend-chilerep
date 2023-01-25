@@ -1713,6 +1713,7 @@
           async getCarrito(){
           this.Carrito = await API.GET_CERRITO_SESSION();
 
+          console.log(this.Carrito)
           this.PrecioTotal = 0;
           this.CantidadTotal = 0;
           this.CantidadAgregada = [];
@@ -1734,11 +1735,10 @@
         async Init(){
             await this.getCarrito()
             this.$refs.formLogin.validate();
-            console.log(this.$refs.formLogin.validate());
             if (this.$refs.formLogin.validate() == true) {
               var User = await API.USER_LOGIN_ADMIN(this.UsuarioLogin, this.Correo, this.Contraseña, this.ip)
-              if(typeof(User) !== 'string'){
-                    this.Usuario = User;
+              if(typeof(User.User) !== 'string'){
+                    this.Usuario = User.User;
                     this.Login = true
                 }else{
                     this.alert = User;
@@ -1774,7 +1774,9 @@
             console.log(text)
             if(text == 'Salir'){
                 await API.DELETE_SESSION();
-                this.Usuario = [];
+                this.Usuario = [{
+                  Avatar: 'default_avatar.png'
+                }];
                 this.UsuarioLogin = null;
                 this.Correo = null;
                 this.Contraseña = null;

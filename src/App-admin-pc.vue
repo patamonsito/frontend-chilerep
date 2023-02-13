@@ -102,7 +102,6 @@
         :key="item.title"
         v-model="item.active"
         :prepend-icon="item.action"
-        v-if="item.rol.includes(Usuario.Rol)"
       >
       
         <template v-slot:activator>
@@ -1123,6 +1122,8 @@
       Iniciar Sesion
     </v-btn>
 
+    {{this.Usuario}}
+
 
     </v-card>
     </div>
@@ -1319,6 +1320,13 @@
                   items: [
                     { title: 'Gestionar Bodegas' },
                     { title: 'Gestionar Mercaderia' },
+                  ],
+                },
+                {
+                  action: 'mdi-code-json',
+                  title: 'Facebook',
+                  items: [
+                    { title: 'Marketplace' }
                   ],
                 },
                 // {
@@ -1725,8 +1733,6 @@
             this.CantidadAgregada.push({ CodigoImportadora: e.CodigoImportadora, Cantidad: e.Cantidad})
            })
 
-           console.log(this.CantidadAgregada,'CantidadAgregada')
-
           // console.log(this.Carrito)
 
           },
@@ -1738,6 +1744,7 @@
             if (this.$refs.formLogin.validate() == true) {
               var User = await API.USER_LOGIN_ADMIN(this.UsuarioLogin, this.Correo, this.Contraseña, this.ip)
               if(typeof(User.User) !== 'string'){
+                console.log('se logeo')
                     this.Usuario = User.User;
                     this.Login = true
                 }else{
@@ -1800,6 +1807,8 @@
               this.$router.push({ path: "/productos/lineas" });  
             }else if(text == 'Gestionar Bodegas'){
               this.$router.push({ path: "/bodega/gestionar-bodegas" });
+            }else if(text == 'Marketplace'){
+              this.$router.push({ path: "/facebook/marketplace" });
             }else if(text == 'Gestionar Mercaderia'){
               this.$router.push({ path: "/bodega/ingresar-mercaderia" });
             }else if(text == 'Movimientos'){
@@ -1929,29 +1938,13 @@
 
       },
       async beforeCreate() {
-    //     static async USER_LOGIN_ADMIN(Correo, Contraseña, ip){
-    //     const res = await axios.post(url+ '/user-login_admin', {
-    //         Correo: Correo,
-    //         Contraseña: Contraseña,
-    //         ip: ip
-    //     });
-    //     return res.data;
-    // }
-
-    // static async GET_USER_TOKEN_ADMIN(){
-    //     const res = await axios.post(url+ '/user_token_admin');
-    //     return res.data;
-    // }
      let User = await API.GET_USER_TOKEN_ADMIN()
 
-      console.log(User, 'User')
-
-    if(typeof(User) !== 'string'){
         this.Usuario = User[0];
+        console.log( User[0])
+        console.log( this.Usuario)
         this.Login = true
-    }else{
-      
-    }
+
 
       },
 

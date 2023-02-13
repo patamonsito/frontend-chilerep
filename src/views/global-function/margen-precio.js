@@ -19,24 +19,16 @@ export function MargenPrecio(e) {
     // e.Descripcion.toLowerCase().includes('radiador') == true ||
     // e.Descripcion.toLowerCase().includes('condensador') == true
     // ){
-      total = Math.round(((e.PrecioImportadora * 40) / 100 + e.PrecioImportadora) * 1.19)
+      total = Math.round(((e * 70) / 100 + e))
       const exp = /(\d)(?=(\d{3})+(?!\d))/g;
       const rep = '$1.';
       let arr = total.toString().split(',');
       arr[0] = arr[0].replace(exp,rep);
       var resultado = arr[1] ? arr.join(','): arr[0];
 
-      var Comprobar = parseInt(resultado.split('.')[0].slice(-1));
-
-      if(parseInt(Comprobar) < 5){
-        resultado = parseInt(resultado.split('.')[0].slice(0, -1) + 4 + '990')
-      }else{
-        resultado = parseInt(resultado.split('.')[0].slice(0, -1) + 9 + '990')
+      if(resultado != NaN){
+        resultado = resultado.slice(0, -2)+'00'
       }
 
-      if(resultado < 9000){
-        return 9990
-      }else{
-        return resultado;
-      }
+      return resultado;
 }

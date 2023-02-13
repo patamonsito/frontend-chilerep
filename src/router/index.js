@@ -129,6 +129,11 @@ const routes = [
     name: 'sucursales',
     component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/configuracion/gestionar-sucursales/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/configuracion/gestionar-sucursales/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/configuracion/gestionar-sucursales/main.vue') : console.log('Pantalla no compatible'))
   },
+  {
+    path: '/facebook/marketplace',
+    name: 'marketplace',
+    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/facebook/marketplace/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/facebook/marketplace/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/facebook/marketplace/main.vue') : console.log('Pantalla no compatible'))
+  },
 
 
 ]

@@ -4,7 +4,7 @@ import axios from 'axios';
 
 console.log(process.env.NODE_ENV)
 
-const url = process.env.NODE_ENV == 'development' ? 'http://localhost:3000/api' : 'http://137.184.198.84:3000/api'
+const url = process.env.NODE_ENV == 'development' ? 'http://192.168.1.101:3000/api' : 'http://137.184.198.84:3000/api'
 
 console.log(url)
 
@@ -21,7 +21,10 @@ export default class API {
         return res.data;
     }
 
-
+    static async POST_PRODUCTS_BY_SKU(Sku){
+        const res = await axios.post(url+ '/post-product-by-sku', {Sku});
+        return res.data;
+    }
 
     static async GET_USER_TOKEN_ADMIN(ip){
         const res = await axios.post(url+ '/user_token_admin', { ip, Token: localStorage.Token  });
@@ -584,4 +587,26 @@ export default class API {
         return res.data;
     }
 
+    //API REFAX
+    static async POST_PRODUCTS_REFAX_BY_MARCA(Marca){
+        const res = await axios.post(url+ '/product-refax-by-marca', { Marca });
+        return res.data;
+    }
+
+    static async POST_PRODUCTS_REFAX_BY_MARCA(Marca){
+        const res = await axios.post(url+ '/product-refax-by-marca', { Marca });
+        return res.data;
+    }
+
+    static async GET_MARCA_REFAX(){
+        const res = await axios.get(url+ '/get-marcas-refax');
+        return res.data;
+    }
+
+    static async POST_REFAX_MARKETPLACE(isPublicated, id){
+        const res = await axios.post(url+ '/refax-marketplace-publicated', { isPublicated, id });
+        return res.data;
+    }
+
+    
 }

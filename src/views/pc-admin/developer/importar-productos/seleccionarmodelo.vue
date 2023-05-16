@@ -36,14 +36,14 @@
     <v-row>
       <v-col cols="4" class="pa-0 ma-0 center aling-center" style="text-align: -webkit-center;">
         <v-img
-          max-width="100"
-          :src="'http://143.198.165.86:3000/marcavehiculo/' + this.imgMarca"
+          max-width="70"
+          :src="'http://localhost:3000/marcavehiculo/' + this.imgMarca"
         ></v-img>
       </v-col>
       <v-col cols="8" class="pa-0 ma-0 center aling-center" style="text-align: -webkit-center;">
         <v-img
           max-width="100"
-          :src="'http://143.198.165.86:3000/vehiculo/'+ this.imgModelo + '.png'"
+          :src="'http://localhost:3000/vehiculo/'+ this.imgModelo + '.png'"
         ></v-img>
       </v-col>
     </v-row>
@@ -57,6 +57,11 @@
 
     <div v-if="Modelo != '' && Enviando == false" class="subtitle-1 pt-2 pb-2 text--secondary">
      
+
+      <div style="margin-top: 1rem; margin-bottom: 1rem;">Descripcion del vehiculo: {{ this.MarcaSeleccionada.Descripcion }} {{this.ModeloSeleccionado.Modelo }} {{ this.ModeloSeleccionado.AñoI }} -  {{ this.ModeloSeleccionado.AñoT }} / {{this.ModeloSeleccionado.CodigoModelo}}</div>
+
+      <div style="margin-top: 1rem; margin-bottom: 1rem;">{{ this.ModeloSeleccionado.Motor }}</div>
+
     <v-simple-table dense>
     <template v-slot:default>
       <thead>
@@ -419,14 +424,16 @@ export default {
 var Productos = []
 
 for(var i = 1; i < cantidad; i++ ){
-    var CodigoImportadora = $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(7) > a').text();
-    var Descripcion = $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(3)').text().trim() + ' ' + $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(4)').text().trim().replaceAll('  ', ' ').replaceAll('  ', ' ').replaceAll('  ', ' ').replaceAll('DEL', 'DELANTERO').replaceAll('USA', '').replaceAll('INF', 'INFERIOR').replaceAll('IZQ', 'IZQUIERDO').replaceAll('DER', 'DERECHO').replaceAll('ESTRUCTURA', '').replaceAll('ESC', 'ESCAPE').replaceAll('ADM', 'ADMISION').replaceAll('SUP', 'SUPERIOR').replaceAll('STD', 'ESTANDAR').replaceAll('EXT', 'EXTREMO').replaceAll('LARGO', '').replaceAll('TRAS', 'TRASERO');
+
+    var Sku = $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(7) > a').text();
+    var Producto = $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(3)').text().trim();
+    var Descripcion = $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(4)').text().trim().replaceAll('  ', ' ').replaceAll('  ', ' ').replaceAll('  ', ' ');
     var Origen =  $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(5)').text().trim()
     var Marca = $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(6)').text().trim()
     var PrecioImportadora = parseInt($('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(8)').text().trim().replaceAll('.', ''))
     var Stock = $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(9)').text().trim();
     var Importadora = 'Refax';
-    var CodigoProducto = 'M-${this.CodigoProducto}-' + i;
+    var CodigoProducto = 'UL' + $('#modeloa > table > tbody > tr:nth-child(' +  i + ') > td:nth-child(7) > a').text().split('').reverse().join('') + 'TI';
     var Modelo = '${this.Modelo}';
     var AñoI = ${this.AñoI};
     var AñoT = ${this.AñoT};
@@ -436,9 +443,10 @@ for(var i = 1; i < cantidad; i++ ){
     Productos.push({
         Importadora,
         CodigoProducto,
-        CodigoImportadora,
-        CodigoModelo,
+        Sku,
+        Producto,
         Descripcion,
+        CodigoModelo,
         Origen,
         Marca,
         MarcaVehiculo,

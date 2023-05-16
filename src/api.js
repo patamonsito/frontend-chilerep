@@ -4,7 +4,7 @@ import axios from 'axios';
 
 console.log(process.env.NODE_ENV)
 
-const url = process.env.NODE_ENV == 'development' ? 'http://192.168.1.101:3000/api' : 'http://137.184.198.84:3000/api'
+const url = process.env.NODE_ENV == 'development' ? 'http://localhost:3000/api' : 'http://137.184.198.84:3000/api'
 
 console.log(url)
 
@@ -18,6 +18,28 @@ export default class API {
             ip
         });
         localStorage.setItem("Token", res.data.Token)
+        return res.data;
+    }
+
+
+    static async GET_PRODUCTS_GABTEC_BY_SKU(CodigoImportadora){
+        const res = await axios.post(url+ '/products-gabtec-by-sku', { CodigoImportadora });
+        return res.data;
+    }
+
+    static async POST_GABTEC_MARKETPLACE(isPublicated, id){
+        const res = await axios.post(url+ '/gabtec-marketplace-publicated', { isPublicated, id });
+        return res.data;
+    }
+
+    static async POST_PRODUCTS_GABTEC(Categoria){
+        const res = await axios.post(url+ '/product-gabtec', {Categoria: Categoria});
+        return res.data;
+    }
+
+
+    static async POST_PRODUCTS_BY_SKU(Sku){
+        const res = await axios.post(url+ '/post-product-by-sku', {Sku});
         return res.data;
     }
 
@@ -138,7 +160,7 @@ export default class API {
 
     //MARCAS CRUD
     static async GET_MARCAS(){
-        const res = await axios.get(url+ '/marcas');
+        const res = await axios.get(url+ '/marcas-erp-ulti-spa');
         return res.data;
     }
     //MODELOS CRUD
@@ -148,7 +170,7 @@ export default class API {
     }
 
     static async GET_MODELSBYMARCA(id){
-        const res = await axios.get(url+ '/models/' + id);
+        const res = await axios.post(url+ '/models', { id } );
         return res.data;
     }
 
@@ -245,8 +267,8 @@ export default class API {
     }
 
     //ordenes
-    static async POST_SAVEORDEN(Json){
-        const res = await axios.post(url+ '/guardar-orden', { Json } );
+    static async POST_GENERAR_ORDEN_COMPRA(Json){
+        const res = await axios.post(url+ '/generar-orden', { Json } );
         return res.data;
     }
 

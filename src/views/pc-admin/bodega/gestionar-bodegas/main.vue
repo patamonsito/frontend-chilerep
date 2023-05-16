@@ -27,10 +27,7 @@
   <v-simple-table v-if="Bodegas.length > 0">
     <template v-slot:default>
       <thead>
-        <tr>
-          <th class="text-left">
-            Sucursal
-          </th>
+        <tr> 
           <th class="text-left">
             Bodega
           </th>
@@ -59,7 +56,6 @@
           v-for="Bodega in Bodegas"
           :key="Bodega._id"
         >
-          <td>{{ Bodega.Sucursal }}</td>
           <td>{{ Bodega.Bodega }}</td>
           <td>{{ Bodega.FilaDesde }} - {{ Bodega.FilaHasta }}</td>
           <td>{{ Bodega.ColumnaDesde }} - {{ Bodega.ColumnaHasta }}</td>

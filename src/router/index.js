@@ -130,9 +130,14 @@ const routes = [
     component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/configuracion/gestionar-sucursales/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/configuracion/gestionar-sucursales/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/configuracion/gestionar-sucursales/main.vue') : console.log('Pantalla no compatible'))
   },
   {
-    path: '/facebook/marketplace',
-    name: 'marketplace',
-    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/facebook/marketplace/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/facebook/marketplace/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/facebook/marketplace/main.vue') : console.log('Pantalla no compatible'))
+    path: '/facebook/marketplace-refax',
+    name: 'marketplace refax',
+    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/facebook/marketplace-refax/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/facebook/marketplace-refax/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/facebook/marketplace-refax/main.vue') : console.log('Pantalla no compatible'))
+  },
+  {
+    path: '/facebook/marketplace-gabtec',
+    name: 'marketplace-gabtec',
+    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/facebook/marketplace-gabtec/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/facebook/marketplace-gabtec/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/facebook/marketplace-gabtec/main.vue') : console.log('Pantalla no compatible'))
   },
 
 

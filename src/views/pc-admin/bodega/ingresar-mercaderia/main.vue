@@ -526,7 +526,7 @@
                               placeholder="Cantidad"
                               @blur="CantidadController(i)"
                               :disabled="
-                                Producto.Descripcion == null || ''
+                                Producto.Producto == null || ''
                                   ? true
                                   : false
                               "
@@ -543,7 +543,7 @@
                               placeholder="Precio"
                               @blur="PrecioImportadoraController(i)"
                               :disabled="
-                                Producto.Descripcion == null || ''
+                                Producto.Producto == null || ''
                                   ? true
                                   : false
                               "
@@ -745,7 +745,7 @@
                               <v-text-field
                                 label="Descripcion"
                                 v-model="
-                                  ProductoSeleccionado.Producto.Descripcion
+                                  ProductoSeleccionado.Producto.Producto
                                 "
                                 :rules="ProveedorRules"
                                 prepend-icon="mdi-code"
@@ -1028,7 +1028,7 @@ export default {
           let Json = {
             CodigoImportadora: this.ProductoSeleccionado.CodigoImportadora,
             IdRegistro: this.ProductoSeleccionado._id,
-            Descripcion: this.ProductoSeleccionado.Producto.Descripcion,
+            Descripcion: this.ProductoSeleccionado.Producto.Producto,
             Ubicacion: this.Ubicaciones,
             Cantidad: parseInt(
               this.ProductoSeleccionado.Cantidad.toString()
@@ -1283,9 +1283,9 @@ export default {
               return true;
             }
             let Product = await API.POST_PRODUCTS_CODE(e.CodigoImportadora);
-            console.log(Product);
+            console.log(Product, 'aqui estamos', Product[0].Producto);
             if (Product[0]) {
-              (e.Descripcion = Product[0].Descripcion),
+              (e.Descripcion = Product[0].Producto),
                 (e.PrecioImportadora = Product[0].PrecioImportadora);
               this.PrecioController();
               if (

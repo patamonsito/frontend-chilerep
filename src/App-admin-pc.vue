@@ -1326,7 +1326,8 @@
                   action: 'mdi-code-json',
                   title: 'Facebook',
                   items: [
-                    { title: 'Marketplace' }
+                    { title: 'Marketplace refax' },
+                    { title: 'Marketplace gabtec' },
                   ],
                 },
                 // {
@@ -1807,8 +1808,10 @@
               this.$router.push({ path: "/productos/lineas" });  
             }else if(text == 'Gestionar Bodegas'){
               this.$router.push({ path: "/bodega/gestionar-bodegas" });
-            }else if(text == 'Marketplace'){
-              this.$router.push({ path: "/facebook/marketplace" });
+            }else if(text == 'Marketplace refax'){
+              this.$router.push({ path: "/facebook/marketplace-refax" });
+            }else if(text == 'Marketplace gabtec'){
+              this.$router.push({ path: "/facebook/marketplace-gabtec" });
             }else if(text == 'Gestionar Mercaderia'){
               this.$router.push({ path: "/bodega/ingresar-mercaderia" });
             }else if(text == 'Movimientos'){

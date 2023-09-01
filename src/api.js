@@ -234,7 +234,6 @@ export default class API {
     }
 
 
-
     static async POST_EMITIR_DOCUMENTO(Documento){
 
         if(Documento.TipoDocumento == 'Cotización'){
@@ -512,6 +511,12 @@ export default class API {
         return res.data;
     }
 
+    static async CREAR_REGISTRO_VENTA(Json){
+        const res = await axios.post(url+ '/crear-registro-venta', { Json });
+        return res.data;
+    }
+
+
     static async UPDATE_REGISTRO(Json){
         const res = await axios.post(url+ '/update-registro', Json );
         return res.data;
@@ -630,5 +635,22 @@ export default class API {
         return res.data;
     }
 
+    //Imagenes alsacia
     
+    static async GET_IMAGENES_ALSACIA(){
+        const res = await axios.post(url+'/get-request-imagenes');
+        return res.data;
+    }
+
+    static async POST_ALSACIA_IMAGENES(ImgUrl, CodigoImportadora){
+        const res = await axios.post(url+'/imagenes-alsacia', {ImgUrl, CodigoImportadora});
+        return res.data;
+    }
+
+
+    static async GET_REQUEST_IMAGENES_SKIP(CodigoImportadora){
+        const res = await axios.post(url+'/get-request-imagenes-skip', {CodigoImportadora: CodigoImportadora});
+        return res.data;
+    }
+
 }

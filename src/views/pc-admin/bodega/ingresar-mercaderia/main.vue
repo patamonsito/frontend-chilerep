@@ -10,6 +10,9 @@
     <v-divider></v-divider>
     <v-row>
       <v-col cols="12" class="mt-2 mb-2" style="text-align-last: right">
+        <v-btn color="secondary" @click="Modal_Venta()">
+          <v-icon small dark>mdi-package</v-icon> Disminuir {{ ModuloName }}
+        </v-btn>
         <v-btn color="primary" @click="Modal()">
           <v-icon small dark>mdi-package</v-icon> Crear {{ ModuloName }}
         </v-btn>
@@ -78,7 +81,7 @@
                     <td style="width: 4rem">{{ Dato.Folio }}</td>
                     <td style="width: 9rem">{{ Dato.razon_social }}</td>
                     <td style="width: 5rem">{{ Dato.CodigoImportadora }}</td>
-                    <td style="width: auto">{{ Dato.Producto.Descripcion }}</td>
+                    <td style="width: auto">{{ Dato.Descripcion }}</td>
                     <td v-if="Dato.Entrada == true" style="width: 7rem">
                       {{ Dato.CantidadTotal }} {{ "+" + Dato.Cantidad }} 
                       <v-icon color="green">
@@ -184,7 +187,7 @@
                     <td style="width: 4rem">{{ Dato.Folio }}</td>
                     <td style="width: 9rem">{{ Dato.razon_social }}</td>
                     <td style="width: 5rem">{{ Dato.CodigoImportadora }}</td>
-                    <td style="width: auto">{{ Dato.Producto.Descripcion }}</td>
+                    <td style="width: auto">{{ Dato.Descripcion }}</td>
                     <td v-if="Dato.Entrada == true" style="width: 7rem">
                       {{ Dato.Producto.Bodega }} {{ "+" + Dato.Cantidad }}
                       <v-icon color="green">
@@ -289,7 +292,7 @@
                     <td style="width: 4rem">{{ Dato.Folio }}</td>
                     <td style="width: 9rem">{{ Dato.razon_social }}</td>
                     <td style="width: 5rem">{{ Dato.CodigoImportadora }}</td>
-                    <td style="width: auto">{{ Dato.Producto.Descripcion }}</td>
+                    <td style="width: auto">{{ Dato.Descripcion }}</td>
                     <td v-if="Dato.Entrada == true" style="width: 7rem">
                       {{ Dato.Producto.Bodega }} {{ "+" + Dato.Cantidad }}
                       <v-icon color="green">
@@ -526,7 +529,7 @@
                               placeholder="Cantidad"
                               @blur="CantidadController(i)"
                               :disabled="
-                                Producto.Producto == null || ''
+                                Producto.Descripcion == null || ''
                                   ? true
                                   : false
                               "
@@ -645,6 +648,44 @@
         </template>
       </v-dialog>
     </v-form>
+
+
+<!-- Form disminuir stock  -->
+
+<v-form ref="formUbicacion" lazy-validation>
+  <v-dialog
+    transition="dialog-bottom-transition"
+    max-width="1200"
+    v-model="dialogDisminuirStock"
+  >
+    <template>
+      <v-card>
+        <v-card-text class="text-center">
+          <v-alert
+            v-if="Alert != ''"
+            class="mt-2"
+            dense
+            outlined
+            :type="AlertType"
+          >
+            <strong>{{ Alert }}</strong>
+          </v-alert>
+          <v-col cols="12">
+            <p>Prueba de modal disminuir stock</p>
+          </v-col>
+        </v-card-text>
+        <v-card-actions class="justify-end" v-if="Loader == false">
+          <v-btn text color="primary" @click="Disminuir_Stock()"
+            >Crear</v-btn
+          >
+          <v-btn text color="secondary" @click="dialogUbicacion = false"
+            >Cerrar</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </template>
+  </v-dialog>
+</v-form>
 
     <!-- Form Ubicacion  -->
     <v-form ref="formUbicacion" lazy-validation>
@@ -931,6 +972,7 @@ export default {
     FacturaNull: false,
     dialogUbicacion: false,
     dialogCrear: false,
+    dialogDisminuirStock: false,
     Alert: "",
     AlertType: "error",
     ProveedorRules: [(v) => !!v || "Falta completar este campo."],
@@ -1283,7 +1325,7 @@ export default {
               return true;
             }
             let Product = await API.POST_PRODUCTS_CODE(e.CodigoImportadora);
-            console.log(Product, 'aqui estamos', Product[0].Producto);
+            
             if (Product[0]) {
               (e.Descripcion = Product[0].Producto),
                 (e.PrecioImportadora = Product[0].PrecioImportadora);
@@ -1418,6 +1460,12 @@ export default {
       this.Loader = false;
     },
 
+
+    Modal_Venta(){
+      this.dialogDisminuirStock = true;
+    },
+
+
     Modal() {
       this.Iva = false;
       this.FacturaNull = false;
@@ -1441,6 +1489,11 @@ export default {
       //Ingrese los datos por defecto
       this.$refs.formCrear.resetValidation();
       this.dialogCrear = true;
+    },
+
+
+    async Disminuir_Stock() {
+      console.log('Disminuir Stock')
     },
 
     async Crear() {

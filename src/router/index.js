@@ -17,7 +17,12 @@ const routes = [
   {
     path: '/dev/gestionar-imagenes',
     name: 'gestionar-imagenes',
-    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/developer/gestionar-imagenes/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/developer/gestionar-imagenes/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/developer/gestionar-imagenes/main.vue') : console.log('Pantalla no compatible'))
+    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/developer/imagenes-alsacia/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/developer/gestionar-imagenes/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/developer/gestionar-imagenes/main.vue') : console.log('Pantalla no compatible'))
+  }, 
+  {
+    path: '/dev/gestionar-imagenes-alsacia',
+    name: 'gestionar-imagenes-alsacia',
+    component: () => (window.matchMedia("(max-width: 600px)").matches == true ? import('../views/pc-admin/developer/imagenes-alsacia/main.vue') : window.matchMedia("(max-width: 1264px)").matches == true ? import('../views/pc-admin/developer/imagenes-alsacia/main.vue') : window.matchMedia("(max-width: 9999px)").matches == true ? import('../views/pc-admin/developer/imagenes-alsacia/main.vue') : console.log('Pantalla no compatible'))
   }, 
   {
     path: '/productos/catalogo',
